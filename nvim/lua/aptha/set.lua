@@ -1,5 +1,15 @@
-vim.opt.nu = true
+-- Set number and relativenumber globally
+vim.opt.number = true
 vim.opt.relativenumber = true
+
+-- Create an autocmd to enforce number and relativenumber in Netrw (:Vex)
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "netrw",
+    callback = function()
+        vim.opt_local.number = true
+        vim.opt_local.relativenumber = true
+    end,
+})
 
 vim.opt.expandtab = true
 

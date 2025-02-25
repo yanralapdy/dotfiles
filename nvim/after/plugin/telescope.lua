@@ -7,3 +7,4 @@ end)
 vim.keymap.set('n', '<leader>fi', function()
 	builtin.grep_string({ search = vim.fn.input("Grep --ignore-case > ") })
 end)
+
