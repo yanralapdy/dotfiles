@@ -1,6 +1,6 @@
 # Step
 ## A. Install zsh
-1. Follow instruction [here link](https://ohmyz.sh/#install)
+1. Follow instruction [here](https://ohmyz.sh/#install)
 2. Copy .zshrc if needed
 ## B. Set Bash script
 1. Copy all the bash file that i use to search for folder project and open new tmux session to folder local/scripts
