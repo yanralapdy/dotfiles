@@ -9,7 +9,7 @@
 3. Clone TPM git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 4. Run tmux open tmux.conf prefix + I
 5. Tmux is set
-## C. Neovim
+## C.1. Neovim with packer
 1. Install neovim
 2. Copy nvim folder content to .config/nvim
 3. install packer (git clone --depth 1 https://github.com/wbthomason/packer.nvim\
@@ -18,3 +18,7 @@
 5. go to packer.lua
 6. source file (:so)
 7. install plugin (:PackerSync)
+## C.2. Neovim with lazy
+1. Install neovim
+2. Copy nvim folder content to .config/nvim
+4. Open vim and its done
