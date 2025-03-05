@@ -12,12 +12,14 @@
 ## C.1. Neovim with packer
 1. Install neovim
 2. Copy nvim folder content to .config/nvim
-3. install packer (git clone --depth 1 https://github.com/wbthomason/packer.nvim\
+3. Comment all content of lua/aptha/lazy.lua
+4. Uncomment content of lua/aptha/packer.lua
+5. install packer (git clone --depth 1 https://github.com/wbthomason/packer.nvim\
  ~/.local/share/nvim/site/pack/packer/start/packer.nvim)
-4. Open nvim folder with nvim
-5. go to packer.lua
-6. source file (:so)
-7. install plugin (:PackerSync)
+6. Open nvim folder with nvim
+7. go to packer.lua
+8. source file (:so)
+9. install plugin (:PackerSync)
 ## C.2. Neovim with lazy
 1. Install neovim
 2. Copy nvim folder content to .config/nvim
