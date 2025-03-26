@@ -51,5 +51,13 @@ return {
             { "L3MON4D3/LuaSnip" },
         }
     },
+    {
+        "echasnovski/mini.align",
+        version = false,
+    },
+    {
+        "stevearc/conform.nvim",
+        lazy = true,
+        event = { "BufReadPre", "BufNewFile" },
+    },
 }
-
