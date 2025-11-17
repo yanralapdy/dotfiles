@@ -9,6 +9,8 @@ return {
         dependencies = { "nvim-lua/plenary.nvim" }
     },
 
+    { 'folke/tokyonight.nvim' },
+
     -- Catppuccin theme
     { "catppuccin/nvim", name = "catppuccin" },
 
@@ -41,7 +43,6 @@ return {
     -- LSP + Autocompletion
     {
         "VonHeikemen/lsp-zero.nvim",
-        branch = "v3.x",
         dependencies = {
             { "williamboman/mason.nvim" },
             { "williamboman/mason-lspconfig.nvim" },
@@ -59,5 +60,17 @@ return {
         "stevearc/conform.nvim",
         lazy = true,
         event = { "BufReadPre", "BufNewFile" },
+    },
+    {
+        "akinsho/flutter-tools.nvim",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "stevearc/dressing.nvim",        -- optional
+            "nvim-telescope/telescope.nvim", -- optional
+        },
+        config = function()
+            require("after.plugin.flutter-tools")() -- we’ll define this in `after/plugin`
+        end,
+        ft = { "dart", "flutter" },
     },
 }

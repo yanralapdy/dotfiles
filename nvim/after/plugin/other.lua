@@ -1,3 +1,8 @@
+-- Set colorscheme
+--vim.opt.termguicolors = true
+--vim.cmd.colorscheme('tokyonight')
+--vim.cmd.colorscheme('catppuccin')
+
 -- Function to add all files from a folder to the quickfix list
 function AddAllFilesToQuickfix(folder)
     -- Get the list of files in the specified folder
