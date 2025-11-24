@@ -25,10 +25,10 @@ git clone git@github.com:yanralapdy/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 
 # Stow everything at once
-stow --dotfiles -v */
+stow .
 
 # Or stow individually if you prefer
-# stow --dotfiles -v zsh kitty tmux nvim karabiner yazi shellscript
+# stow zsh kitty tmux nvim karabiner yazi shellscript
 ```
 # Detailed Per-Package Setup
 ### zsh + Oh My Zsh
@@ -76,6 +76,6 @@ stow --restow --dotfiles -v */   # or just the ones you changed
 ```bash
 stow -D zsh        # example: remove only zsh symlinks
 # or remove everything
-stow -D --dotfiles */
+stow -D .
 ```
 Enjoy a clean, portable, and maintainable dotfiles setup!
