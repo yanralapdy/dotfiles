@@ -20,7 +20,8 @@ sudo pacman -S stow zsh tmux neovim stow
 
 ```bash
 # Clone the repo (you can put it anywhere, ~/.dotfiles is conventional)
-git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
+# git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
+git clone git@github.com:yanralapdy/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 
 # Stow everything at once
