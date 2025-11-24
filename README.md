@@ -64,7 +64,7 @@ All scripts are symlinked into ~/scripts/ (or ~/.local/bin/ if you prefer).
 Make sure the directory is in your $PATH.
 Example usage after install:
 ```bash
-tns m_d 3 s_n myproject ~/projects   # search max-depth 3, session name "myproject"
+tns "path=/Users/thanurking/sites;m_d=4;s_n=prosper"   # search max-depth 3, session name "myproject"
 ```
 # Updating
 ```bash
