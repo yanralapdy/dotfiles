@@ -24,11 +24,8 @@ sudo pacman -S stow zsh tmux neovim stow
 git clone git@github.com:yanralapdy/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 
-# Stow everything at once
-stow .
-
-# Or stow individually if you prefer
-# stow zsh kitty tmux nvim karabiner yazi shellscript
+# stow the directory
+stow zsh kitty tmux nvim karabiner yazi shellscript
 ```
 # Detailed Per-Package Setup
 ### zsh + Oh My Zsh
