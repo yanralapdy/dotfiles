@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-path_list="$HOME/Site $HOME/.config"
+path_list="$HOME/Sites $HOME/.config"
 max_depth=5
 custom_selected_name="false"
 selected_name="home"

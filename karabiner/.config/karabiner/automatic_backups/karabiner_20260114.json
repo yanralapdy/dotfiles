@@ -13,10 +13,6 @@
                                             {
                                                 "product_id": 144,
                                                 "vendor_id": 9610
-                                            },
-                                            {
-                                                "product_id": 20229,
-                                                "vendor_id": 44033
                                             }
                                         ],
                                         "type": "device_if"
@@ -36,10 +32,6 @@
                                             {
                                                 "product_id": 144,
                                                 "vendor_id": 9610
-                                            },
-                                            {
-                                                "product_id": 20229,
-                                                "vendor_id": 44033
                                             }
                                         ],
                                         "type": "device_if"

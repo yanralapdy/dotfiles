@@ -151,6 +151,10 @@ alias kafka="$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.pro
 alias vim='NVIM_APPNAME=nvim nvim'
 alias nvim-kickstart='NVIM_APPNAME=nvim-kickstart nvim'
 
+# C++
+alias g++='clang++ -std=c++17'
+
+
 export PATH=/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:/opt/homebrew/bin
 
 # laravel global
@@ -199,6 +203,9 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"
 
+# Change docker config
+export DOCKER_CONFIG="$HOME/.config/docker"
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
@@ -206,7 +213,7 @@ export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"
 source <(fzf --zsh)
 export PATH="/opt/homebrew/sbin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
-export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
+export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 
 ## [Completion]
