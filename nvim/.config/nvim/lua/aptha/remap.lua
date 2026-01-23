@@ -100,3 +100,35 @@ vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iag
 vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
 vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
 vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+
+vim.keymap.set("n", "<leader>co", function()
+    local current = vim.api.nvim_get_current_buf()
+
+    -- Harpoon v2
+    local harpoon = require("harpoon")
+    local harpoon_files = {}
+    for _, item in ipairs(harpoon:list().items) do
+        harpoon_files[item.value] = true
+    end
+
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if buf ~= current and vim.api.nvim_buf_is_loaded(buf) then
+            local bt = vim.bo[buf].buftype
+            local modified = vim.bo[buf].modified
+            local name = vim.api.nvim_buf_get_name(buf)
+
+            -- Only close real file buffers that are:
+            -- - not modified
+            -- - not harpoon-listed
+            -- - not special buffers
+            if bt == ""
+                and name ~= ""
+                and not modified
+                and not harpoon_files[name]
+            then
+                vim.api.nvim_buf_delete(buf, { force = false })
+            end
+        end
+    end
+end, { desc = "Close buffers except current (Harpoon + unsaved aware)" })
+
