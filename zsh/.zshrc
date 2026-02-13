@@ -180,7 +180,8 @@ export PATH="$HOME/fvm/default/bin:$PATH"
 export PATH=$PATH:/usr/local/mysql-8.0.32-macos13-arm64/bin
 
 # JAVA HOME ZULU
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+# export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+# export PATH=$JAVA_HOME/bin:$PATH
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -237,3 +238,7 @@ function y() {
 export PATH="$HOME/.local/bin:$PATH"
 
 eval "$(zoxide init zsh)"
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
