@@ -1,3 +1,5 @@
 nvim/plugin/
 tmux/.config/tmux/plugins/
+shellscript/.local/share/
+shellscript/.local/state/
 
