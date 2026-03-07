@@ -62,7 +62,12 @@
                             {
                                 "conditions": [
                                     {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
+                                        "identifiers": [
+                                            {
+                                                "product_id": 833,
+                                                "vendor_id": 1452
+                                            }
+                                        ],
                                         "type": "device_if"
                                     }
                                 ],

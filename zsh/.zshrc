@@ -149,6 +149,7 @@ alias zookeeper="$KAFKA_HOME/bin/zookeeper-server-start.sh $KAFKA_HOME/config/zo
 alias kafka="$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties"
 
 alias vim='NVIM_APPNAME=nvim nvim'
+alias code='NVIM_APPNAME=nvim nvim'
 alias nvim-kickstart='NVIM_APPNAME=nvim-kickstart nvim'
 
 # C++
@@ -199,9 +200,13 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 # # NVM
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+[ -s "$(brew --prefix)/opt/nvm/nvm.sh" ] && \. "$(brew --prefix)/opt/nvm/nvm.sh" # This loads nvm
+[ -s "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion
+
 export PATH="/opt/homebrew/opt/openjdk@11/bin:$PATH"
 
 # Change docker config
