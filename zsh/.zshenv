@@ -3,26 +3,16 @@
 
 export NVM_DIR="$HOME/.nvm"
 
-# Load nvm if it exists (for Node.js)
-if [[ -d "$NVM_DIR" ]]; then
-    unset NVM_DIR_SILENCE
-    for nvm_sh in "$NVM_DIR/nvm.sh" "$NVM_DIR/versions/node/*/bin"; do
-        if [[ -f "$nvm_sh" ]]; then
-            case "$nvm_sh" in
-                */nvm.sh)
-                    if [[ -s "$nvm_sh" ]]; then
-                        . "$nvm_sh"
-                    fi
-                    ;;
-                */bin)
-                    export PATH="$nvm_sh:$PATH"
-                    ;;
-            esac
-        fi
-    done
+# Load nvm as a function
+if [[ -s "$NVM_DIR/nvm.sh" ]]; then
+    . "$NVM_DIR/nvm.sh"
 fi
 
-# Also try to load from Homebrew's nvm (macOS)
-if [[ -s "$(brew --prefix)/opt/nvm/nvm.sh" ]]; then
-    . "$(brew --prefix)/opt/nvm/nvm.sh"
+# Set default node version if not set
+if [[ -z "$NODE_PATH" ]] && [[ -d "$NVM_DIR/versions/node" ]]; then
+    # Use the latest LTS version
+    LTS_VERSION=$(ls -1 "$NVM_DIR/versions/node" | grep "^v20" | sort -V | tail -1)
+    if [[ -n "$LTS_VERSION" ]]; then
+        export PATH="$NVM_DIR/versions/node/$LTS_VERSION/bin:$PATH"
+    fi
 fi
