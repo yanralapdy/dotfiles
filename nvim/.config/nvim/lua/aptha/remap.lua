@@ -31,8 +31,12 @@ vim.keymap.set("n", "Q", "<nop>")
 --vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww ~/.local/scripts/tmux-sessionizer<CR>")
 
 vim.keymap.set("n", "<leader>f", function()
-    vim.lsp.buf.format()
-end)
+  require("conform").format({
+    lsp_fallback = true,
+    async = false,
+    timeout_ms = 1000,
+  })
+end, { desc = "Format file" })
 
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set("n", "<leader>sc",

@@ -3,6 +3,7 @@ local conform = require("conform")
 conform.setup({
     formatters_by_ft = {
         php = { "php" },
+        json = { "jq" },
     },
     format_on_save = {
         lsp_fallback = false,
@@ -17,9 +18,14 @@ conform.setup({
                 "fix",
                 "$FILENAME",
                 "--config=/your/path/to/config/file/[filename].php",
-                "--allow-risky=yes", -- if you have risky stuff in config, if not you dont need it.
+                "--allow-risky=yes",
             },
             stdin = false,
-        }
+        },
+        -- Custom jq configuration
+        jq = {
+            -- --indent 4 for 4 spaces, or --tab for tabs
+            args = { "--indent", "2", "." }, 
+        },
     }
 })
