@@ -173,6 +173,8 @@ export KAFKA_HOME="$HOME/Sites/kafka_2.13-3.6.1"
 export GOENV_ROOT="$HOME/.goenv"
 export PATH="$GOENV_ROOT/bin:$PATH"
 eval "$(goenv init -)"
+export PATH="$GOROOT/bin:$PATH"
+export PATH="$PATH:$GOPATH/bin"
 
 # Flutter Path
 export PATH="$HOME/fvm/default/bin:$PATH"
