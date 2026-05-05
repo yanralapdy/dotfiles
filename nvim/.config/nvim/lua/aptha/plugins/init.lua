@@ -43,7 +43,7 @@ return {
             ensure_installed = {
                 "dart", "c", "lua", "vim", "vimdoc", "query",
                 "markdown", "markdown_inline", "javascript",
-                "typescript", "php", "css"
+                "typescript", "php", "css", "vue"
             },
             sync_install = false,
             auto_install = true,
@@ -94,6 +94,22 @@ return {
     },
 
     { "echasnovski/mini.align", version = false },
+
+    {
+        "numToStr/Comment.nvim",
+        event = { "BufReadPost", "BufNewFile" },
+        dependencies = {
+            { "JoosepAlviste/nvim-ts-context-commentstring", opts = {} },
+        },
+        config = function()
+            vim.g.skip_ts_context_commentstring_module = true
+            require("Comment").setup({
+                pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+            })
+        end,
+    },
+
+    { "folke/snacks.nvim", opts = { input = {}, picker = {} } },
 
     {
         "stevearc/conform.nvim",
@@ -159,7 +175,7 @@ return {
             },
             {
                 "<leader>os",
-                function() require("opencode").ask("@selection: ") end,
+                function() require("opencode").ask("@this: ") end,
                 desc = "Ask opencode about selection",
                 mode = "v",
             }
