@@ -46,9 +46,6 @@ alias php82='brew link --overwrite php@8.2'
 alias flutter='fvm flutter'
 alias dart='fvm dart'
 
-# Pi agent config
-export PI_CODING_AGENT_DIR="$HOME/.config/pi"
-
 # Tools
 alias f2v='vim $(fzf -m --preview="bat --color=always {}")'
 alias tns='~/.local/scripts/tmux-new-session'
