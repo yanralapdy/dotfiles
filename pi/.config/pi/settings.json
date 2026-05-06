@@ -3,5 +3,9 @@
   "defaultProvider": "openrouter",
   "defaultModel": "tencent/hy3-preview:free",
   "defaultThinkingLevel": "medium",
-  "packages": ["pi-nvim"]
+  "packages": ["pi-nvim"],
+  "extensions": [
+    "/Users/tnkapdy/.config/pi/extensions/plan-mode/index.ts",
+    "/Users/tnkapdy/.config/pi/extensions/workflow-orchestrator.ts"
+  ]
 }
