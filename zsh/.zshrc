@@ -192,38 +192,9 @@ fi
 export PATH="/Users/tnkapdy/.antigravity/antigravity/bin:$PATH"
 export RIPGREP_CONFIG_PATH=~/.rgrc
 
-# Pi alias - no extensions/skills by default
-alias pi='pi --no-extensions --no-skills'
-
-# Pi full - with all extensions and skills (original behavior)
-alias pi-full='pi'
-
-# Fixed pi-full alias (use full path to avoid recursion)
-alias pi-full='/Users/tnkapdy/.nvm/versions/node/v24.15.0/bin/pi'
-
-# Pi full - with all extensions and skills (original behavior, use full path)
-alias pi-full='/Users/tnkapdy/.nvm/versions/node/v24.15.0/bin/pi'
-
-# Pi - extensions auto-load from ~/.pi/agent/extensions/ (use /plan to activate)
+# Pi aliases
+# Default: loads extensions/skills from ~/.pi/agent/
 alias pi='/Users/tnkapdy/.nvm/versions/node/v24.15.0/bin/pi'
 
-# Pi minimal - no extensions or skills
-alias pi-minimal='/Users/tnkapdy/.nvm/versions/node/v24.15.0/bin/pi --no-extensions --no-skills'
-
-# Pi - loads ALL extensions and skills (default pi behavior)
-alias pi='/Users/tnkapdy/.nvm/versions/node/v24.15.0/bin/pi'
-
-# Pi minimal - no extensions or skills
-alias pi-mi='/Users/tnkapdy/.nvm/versions/node/v24.15.0/bin/pi --no-extensions --no-skills'
-
-# Pi - loads ALL extensions and skills (default behavior)
-alias pi='/Users/tnkapdy/.nvm/versions/node/v24.15.0/bin/pi'
-
-# Pi minimal - no extensions or skills (passive mode)
-alias pi-mi='/Users/tnkapdy/.nvm/versions/node/v24.15.0/bin/pi --no-extensions --no-skills'
-
-# Pi - loads ALL extensions and skills (default behavior)
-alias pi='/Users/tnkapdy/.nvm/versions/node/v24.15.0/bin/pi'
-
-# Pi minimal - no extensions or skills (passive mode)
+# Minimal: no extensions or skills (passive mode)
 alias pi-mi='/Users/tnkapdy/.nvm/versions/node/v24.15.0/bin/pi --no-extensions --no-skills'
