@@ -6,6 +6,7 @@
   "packages": ["pi-nvim"],
   "extensions": [
     "/Users/tnkapdy/.config/pi/extensions/plan-mode/index.ts",
-    "/Users/tnkapdy/.config/pi/extensions/workflow-orchestrator.ts"
+    "/Users/tnkapdy/.config/pi/extensions/workflow-orchestrator.ts",
+    "/Users/tnkapdy/.config/pi/extensions/mode-switcher.js"
   ]
 }
