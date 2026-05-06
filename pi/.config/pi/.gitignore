@@ -1,0 +1,14 @@
+# Sensitive credentials
+auth.json
+
+# Session files (device-specific, contain absolute paths)
+sessions/
+
+# Backup files from manual edits
+*.backup
+
+# Temporary files
+*.tmp
+
+# macOS
+.DS_Store
