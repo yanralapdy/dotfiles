@@ -201,5 +201,13 @@ return {
             vim.keymap.set("n", "<S-C-d>", function() require("opencode").command("session.half.page.down") end,
                 { desc = "Scroll opencode down" })
         end,
-    }
+    },
+
+    -- Pi-Nvim: Send code from Neovim to Pi coding agent
+    {
+        "carderne/pi-nvim",
+        config = function()
+            require("pi-nvim").setup()
+        end,
+    },
 }

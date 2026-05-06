@@ -2,5 +2,6 @@
   "lastChangelogVersion": "0.73.0",
   "defaultProvider": "openrouter",
   "defaultModel": "tencent/hy3-preview:free",
-  "defaultThinkingLevel": "medium"
+  "defaultThinkingLevel": "medium",
+  "packages": ["pi-nvim"]
 }
