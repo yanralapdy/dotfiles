@@ -1,0 +1,101 @@
+[manager]
+# Enter opens files with Neovim (instead of default opener)
+enter = "open_with nvim"
+
+# Alternative: Keep Enter for default opener, use Ctrl+Enter for Neovim
+# enter = "open"
+# ctrl_enter = "open_with nvim"
+
+# Bookmark management
+# 'a' - add current file/directory to bookmarks
+a = "bookmark add"
+# 'b' - show bookmarks list
+b = "bookmark list"
+# 'B' - remove bookmark
+B = "bookmark remove"
+
+# Search enhancements
+# '/' - search (filter) - this is usually default but making explicit
+'/' = "filter"
+# 'f' - open finder/search dialog (if you want alternative search)
+# f = "finder"
+
+# Panel management
+# 'p' - toggle preview pane
+'[' = "toggle_preview"
+# 'P' - toggle preview position (left/right)
+'{' = "toggle_preview_side"
+
+# Open with variations
+# 'v' - open selected file in vertical Neovim split
+v = "open_with nvim -c 'vsplit'"
+# 't' - open selected file in new Neovim tab
+t = "open_with nvim -c 'tabedit'"
+# 'T' - open selected file in new Neovim window
+T = "open_with nvim"
+
+# Shell integration
+# 's' - open terminal at current directory (using $SHELL)
+s = "shell -w %cur %{ $SHELL }"
+# 'S' - open selected file's directory in terminal
+S = "shell -w %{ $SHELL }"
+
+# Navigation
+# 'h' - go to parent directory (usually default)
+# 'l' - enter directory/open file (usually default)
+# 'H' - go to history back
+H = "history -"
+# 'L' - go to history forward
+L = "history +"
+
+# Selection
+# 'x' - cut selection to clipboard
+x = "cut"
+# 'c' - copy selection to clipboard
+c = "copy"
+# 'p' - paste from clipboard (note: conflicts with preview toggle above)
+# Choose one: preview toggle or paste
+# Uncomment one below:
+# p = "toggle_preview"     # Preview toggle (as above)
+p = "paste"               # Paste from clipboard
+
+# Create new
+# 'n' - create new file
+n = "create"
+# 'm' - create new directory
+m = "mkdir"
+
+# Delete
+# 'd' - delete (move to trash)
+d = "delete"
+# 'D' - delete permanently
+D = "delete_permanent"
+
+# Information
+# 'i' - show file info
+i = "info"
+# 'I' - show detailed file info
+I = "info_verbose"
+
+# Help
+# '?' - show help
+'?' = "help"
+
+# Quit
+# 'q' - quit
+q = "quit"
+
+[pager]
+# Preview pane navigation (if preview enabled)
+# Scroll down
+down = "scroll down"
+# Scroll up
+up = "scroll up"
+# Page down
+page_down = "scroll page_down"
+# Page up
+page_up = "scroll page_up"
+# Go to top
+home = "scroll top"
+# Go to bottom
+end = "scroll bottom"

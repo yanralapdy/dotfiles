@@ -1,31 +1,44 @@
-[mgr]
-sort_by = "natural"
-sort_dir_first = true
-show_hidden = false
+[style]
+flavor = "gruvbox-dark"
 
-[opener]
-edit = [
-    { run = "nvim %s", desc = "Neovim", for = "unix" },
-]
-play = [
-    { run = "open %s", desc = "Open", for = "macos" },
-    { run = "xdg-open %s1", desc = "Open", for = "linux" },
-]
-open = [
-    { run = "open %s", desc = "Open", for = "macos" },
-    { run = "xdg-open %s1", desc = "Open", for = "linux" },
-]
-reveal = [
-    { run = "open -R %s1", desc = "Reveal", for = "macos" },
-    { run = "xdg-open %d1", desc = "Reveal", for = "linux" },
-]
+# Git integration
+[git]
+status = true
+added     = { fg = "#b8bb26" }    # Green
+modified  = { fg = "#fabd2f" }    # Yellow
+deleted   = { fg = "#fb4934" }    # Red
+renamed   = { fg = "#83a598" }    # Blue
+untracked = { fg = "#d3869b" }    # Purple
+ignored   = { fg = "#665c54" }    # Gray
 
+# Manager settings
+[manager]
+show_hidden = true
+
+# Preview pane (requires terminal with image support)
 [preview]
-max_width = 600
-max_height = 900
+enabled = true
+image_enabled = true
 
-[tasks]
-macro_workers = 10
+# List columns
+[list]
+icon    = true
+name    = true
+size    = true
+date    = true
+perm    = false
 
-[input]
-cursor_blink = false
+# Sorting
+[sorter]
+primary = "type"
+secondary = "name"
+
+# Status bar
+[status-line]
+left = "%{~}"
+right = "%{git_branch} %$(if [ -n \"$VIRTUAL_ENV\" ]; then basename \"$VIRTUAL_ENV\"; fi) %{selection}%{pinned}"
+
+# Behavior
+[behavior]
+auto_refresh = false
+delete_without_confirm = false
