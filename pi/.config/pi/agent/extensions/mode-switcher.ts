@@ -9,15 +9,17 @@
  * - /mode code-reviewer - Switch to code reviewer mode
  */
 
-export default function (pi) {
+import type { ExtensionAPI, ExtensionCommandContext } from "@earendil-works/pi-coding-agent";
+
+export default function (pi: ExtensionAPI) {
     pi.registerCommand("mode", {
         description: "Switch between modes (researcher, plan, architect, builder, code-reviewer). Usage: /mode <name>",
-        getArgumentCompletions: (prefix) => {
+        getArgumentCompletions: (prefix: string) => {
             const modes = ["researcher", "plan", "architect", "builder", "code-reviewer"];
             const filtered = modes.filter(m => m.startsWith(prefix.toLowerCase()));
             return filtered.length > 0 ? filtered.map(m => ({ value: m, label: m })) : null;
         },
-        handler: async (args, ctx) => {
+        handler: async (args: string, ctx: ExtensionCommandContext) => {
             const mode = args.trim().toLowerCase();
             
             if (!mode) {
@@ -33,7 +35,7 @@ export default function (pi) {
             }
             
             // Map mode to the corresponding command
-            const modeToCommand = {
+            const modeToCommand: Record<string, string> = {
                 "researcher": "/researcher",
                 "plan": "/plan",
                 "architect": "/architect",
