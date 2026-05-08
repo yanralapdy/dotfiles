@@ -6,8 +6,10 @@ nvim/.config/nvim/plugin/
 tmux/.config/tmux/plugins/
 
 # Shell script local data
-shellscript/.local/share/
-shellscript/.local/state/
+# Ignore everything in .local/ except scripts/
+shellscript/.local/**
+!shellscript/.local/scripts/
+!shellscript/.local/scripts/**
 
 # macOS
 .DS_Store
