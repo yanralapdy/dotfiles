@@ -1,5 +1,7 @@
 [style]
 flavor = "gruvbox-dark"
+bg = "#282828"
+fg = "#ebdbb2"
 
 # Git integration
 [git]
