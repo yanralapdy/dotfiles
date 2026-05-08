@@ -1,0 +1,18 @@
+{
+  "lastChangelogVersion": "0.74.0",
+  "defaultProvider": "openrouter",
+  "defaultModel": "tencent/hy3-preview:free",
+  "defaultThinkingLevel": "medium",
+  "packages": [
+    "https://github.com/carderne/pi-nvim"
+  ],
+  "extensions": [
+    "/Users/tnkapdy/.config/pi/agent/extensions/plan-mode/index.js",
+    "/Users/tnkapdy/.config/pi/agent/extensions/workflow-orchestrator.js",
+    "/Users/tnkapdy/.config/pi/agent/extensions/mode-switcher.js"
+  ],
+  "terminal.showImages": true,
+  "terminal.imageWidthCells": 60,
+  "images.autoResize": true,
+  "images.blockImages": false
+}

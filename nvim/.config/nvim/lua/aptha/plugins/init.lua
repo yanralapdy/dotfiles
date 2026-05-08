@@ -109,7 +109,7 @@ return {
         end,
     },
 
-    { "folke/snacks.nvim", opts = { input = {}, picker = {} } },
+    { "folke/snacks.nvim",      opts = { input = {}, picker = {} } },
 
     {
         "stevearc/conform.nvim",
