@@ -49,7 +49,7 @@ shellscript/.local/share/nvim/mason/
 
 # Pi agent - ignore auth and sessions
 pi/.config/pi/agent/auth.json
-pi/.config/pi/sessions/
+pi/.config/pi/agent/sessions/
 
 # OpenCode - ignore auth files
 shellscript/.local/share/opencode/auth.json

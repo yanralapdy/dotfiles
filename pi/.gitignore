@@ -24,3 +24,5 @@ npm-debug.log*
 
 # Auth/credentials - NEVER commit
 .config/pi/agent/auth.json
+
+.config/pi/agent/sessions/*
