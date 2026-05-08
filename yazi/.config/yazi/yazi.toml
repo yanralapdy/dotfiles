@@ -12,7 +12,7 @@ untracked = { fg = "#d3869b" }    # Purple
 ignored   = { fg = "#665c54" }    # Gray
 
 # Manager settings
-[manager]
+[mgr]
 show_hidden = true
 
 # Preview pane (requires terminal with image support)
