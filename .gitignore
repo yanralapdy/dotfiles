@@ -44,9 +44,15 @@ node_modules/
 # Lazy nvim lock file (often regenerated)
 **/lazy-lock.json
 
-# Pi agent (if you want to ignore local pi configs)
-# pi/.config/pi/agent/
-# pi/.config/pi/sessions/
+# Mason packages (LSP servers - managed by nvim, not dotfiles)
+shellscript/.local/share/nvim/mason/
+
+# Pi agent - ignore auth and sessions
+pi/.config/pi/agent/auth.json
+pi/.config/pi/sessions/
+
+# OpenCode - ignore auth files
+shellscript/.local/share/opencode/auth.json
 
 # Build artifacts
 *.o

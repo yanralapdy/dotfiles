@@ -1,0 +1,26 @@
+# Node modules
+node_modules/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~
+
+# Build artifacts (uncomment if you don't want to commit dist folders)
+# dist/
+# *.js.map
+
+# IDE
+.vscode/
+.idea/
+
+# Auth/credentials - NEVER commit
+.config/pi/agent/auth.json
