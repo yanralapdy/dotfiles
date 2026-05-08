@@ -1,5 +1,66 @@
+# Neovim plugins (managed by lazy.nvim)
 nvim/plugin/
+nvim/.config/nvim/plugin/
+
+# Tmux plugins (managed by TPM)
 tmux/.config/tmux/plugins/
+
+# Shell script local data
 shellscript/.local/share/
 shellscript/.local/state/
 
+# macOS
+.DS_Store
+._.DS_Store
+.Spotlight-V100
+.Trashes
+__MACOSX/
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+*.cache
+
+# Node modules (if any)
+node_modules/
+
+# Cache directories
+.cache/
+**/.cache/
+
+# Lazy nvim lock file (often regenerated)
+**/lazy-lock.json
+
+# Pi agent (if you want to ignore local pi configs)
+# pi/.config/pi/agent/
+# pi/.config/pi/sessions/
+
+# Build artifacts
+*.o
+*.so
+*.dylib
+*.exe
+*.dll
+
+# Log files
+*.log
+
+# Ignore .git in submodules (they are part of the submodule)
+# But do not ignore .gitmodules and .gitignore
+!.gitmodules
+!!.gitignore
+
+# Ignore OS-specific files
+Thumbs.db
+Desktop.ini
