@@ -16,3 +16,5 @@ if [[ -z "$NODE_PATH" ]] && [[ -d "$NVM_DIR/versions/node" ]]; then
         export PATH="$NVM_DIR/versions/node/$LTS_VERSION/bin:$PATH"
     fi
 fi
+
+export KIRO_HOME="$HOME/.config/kiro"

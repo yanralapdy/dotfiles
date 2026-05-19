@@ -43,7 +43,8 @@ return {
             ensure_installed = {
                 "dart", "c", "lua", "vim", "vimdoc", "query",
                 "markdown", "markdown_inline", "javascript",
-                "typescript", "php", "css", "vue"
+                "typescript", "php", "css", "vue",
+                "latex", "typst"
             },
             sync_install = false,
             auto_install = true,
@@ -209,5 +210,10 @@ return {
         config = function()
             require("pi-nvim").setup()
         end,
+    },
+
+    {
+        "OXY2DEV/markview.nvim",
+        lazy = false,
     },
 }

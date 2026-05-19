@@ -47,6 +47,12 @@ node_modules/
 # Mason packages (LSP servers - managed by nvim, not dotfiles)
 shellscript/.local/share/nvim/mason/
 
+# Kiro - ignore sessions, secrets, and transient state
+kiro/.config/kiro/sessions/
+kiro/.config/kiro/settings/mcp.json
+kiro/.config/kiro/settings/feed_state.json
+kiro/.config/kiro/.cli_bash_history
+
 # Pi agent - ignore auth and sessions
 pi/.config/pi/agent/auth.json
 pi/.config/pi/agent/sessions/

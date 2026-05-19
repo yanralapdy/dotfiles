@@ -1,0 +1,51 @@
+{
+  "name": "builder",
+  "description": "Implements code based on architect's spec.md. Runs tests before signaling completion.",
+  "model": "claude-sonnet-4",
+  "keyboardShortcut": "ctrl+shift+b",
+  "welcomeMessage": "Builder ready. Point me to a spec and I'll implement it.",
+  "tools": ["fs_read", "fs_write", "glob", "grep", "code", "execute_bash", "todo_list"],
+  "allowedTools": ["fs_read", "glob", "grep", "code"],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "src/**",
+        "lib/**",
+        "app/**",
+        "pkg/**",
+        "cmd/**",
+        "internal/**",
+        "components/**",
+        "pages/**",
+        "routes/**",
+        "api/**",
+        "database/**",
+        "migrations/**",
+        "tests/**",
+        "test/**",
+        "spec/**",
+        "resources/**",
+        "public/**",
+        "static/**",
+        "config/**",
+        ".kiro/context/**"
+      ]
+    },
+    "execute_bash": {
+      "autoAllowReadonly": true
+    }
+  },
+  "resources": [
+    "file://.kiro/steering.md",
+    "file://.kiro/context/spec.md",
+    "file://.kiro/context/review.md"
+  ],
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "cat .kiro/context/spec.md 2>/dev/null || echo 'No spec found. Ask architect to write one first.'"
+      }
+    ]
+  },
+  "prompt": "You are the builder agent.\n\nFirst action: Detect the project stack by reading config files and understand the test/build commands available.\n\nYour responsibilities:\n- Read .kiro/context/spec.md before writing any code\n- If review.md exists, address all issues listed there first\n- Implement exactly what the spec describes — no more, no less\n- Run tests after implementation; fix failures before signaling done\n\nImplementation rules:\n- Follow conventions in steering.md if present\n- Match existing code style — read neighboring files before writing\n- Write tests for new functionality using the project's existing test framework\n- Run the project's test command and confirm passing\n- Use the project's linter/formatter if configured\n\nCompletion criteria:\n- All spec items implemented\n- Tests pass\n- No linting errors\n\nDo not modify files outside the spec's scope."
+}
