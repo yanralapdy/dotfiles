@@ -51,7 +51,11 @@ shellscript/.local/share/nvim/mason/
 kiro/.config/kiro/sessions/
 kiro/.config/kiro/settings/mcp.json
 kiro/.config/kiro/settings/feed_state.json
+kiro/.config/kiro/settings/survey_state.json
 kiro/.config/kiro/.cli_bash_history
+kiro/.kiro/sessions/
+kiro/.kiro/settings/feed_state.json
+kiro/.kiro/.cli_bash_history
 
 # Pi agent - ignore auth and sessions
 pi/.config/pi/agent/auth.json
