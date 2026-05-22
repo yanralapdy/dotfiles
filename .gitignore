@@ -54,7 +54,7 @@ kiro/.config/kiro/settings/feed_state.json
 kiro/.config/kiro/settings/survey_state.json
 kiro/.config/kiro/.cli_bash_history
 kiro/.kiro/sessions/
-kiro/.kiro/settings/feed_state.json
+kiro/.kiro/settings/
 kiro/.kiro/.cli_bash_history
 
 # Pi agent - ignore auth and sessions
