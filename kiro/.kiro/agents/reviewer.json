@@ -1,28 +1,14 @@
 {
   "name": "reviewer",
   "description": "Reviews implementation against spec.md. Writes review.md with pass/fail and issues.",
-  "model": "claude-sonnet-4.6",
+  "model": "claude-sonnet-4",
   "keyboardShortcut": "ctrl+shift+r",
   "welcomeMessage": "Reviewer ready. I'll check the implementation against the spec.",
-  "tools": [
-    "fs_read",
-    "fs_write",
-    "glob",
-    "grep",
-    "code",
-    "execute_bash"
-  ],
-  "allowedTools": [
-    "fs_read",
-    "glob",
-    "grep",
-    "code"
-  ],
+  "tools": ["fs_read", "fs_write", "glob", "grep", "code", "execute_bash"],
+  "allowedTools": ["fs_read", "glob", "grep", "code"],
   "toolsSettings": {
     "fs_write": {
-      "allowedPaths": [
-        ".kiro/context/**"
-      ]
+      "allowedPaths": [".kiro/context/**"]
     },
     "execute_bash": {
       "autoAllowReadonly": true

@@ -1,37 +1,15 @@
 {
   "name": "orchestrator",
   "description": "Delegates tasks across the dev pipeline: architect → builder → reviewer → documenter",
-  "model": "claude-sonnet-4.6",
+  "model": "claude-sonnet-4",
   "keyboardShortcut": "ctrl+shift+o",
   "welcomeMessage": "Orchestrator ready. Describe the feature or task and I'll coordinate the pipeline.",
-  "tools": [
-    "fs_read",
-    "fs_write",
-    "glob",
-    "grep",
-    "subagent",
-    "todo_list"
-  ],
-  "allowedTools": [
-    "fs_read",
-    "glob",
-    "grep",
-    "todo_list"
-  ],
+  "tools": ["fs_read", "fs_write", "glob", "grep", "subagent", "todo_list"],
+  "allowedTools": ["fs_read", "glob", "grep", "todo_list"],
   "toolsSettings": {
     "crew": {
-      "availableAgents": [
-        "architect",
-        "builder",
-        "reviewer",
-        "documenter"
-      ],
-      "trustedAgents": [
-        "architect",
-        "builder",
-        "reviewer",
-        "documenter"
-      ]
+      "availableAgents": ["architect", "builder", "reviewer", "documenter"],
+      "trustedAgents": ["architect", "builder", "reviewer", "documenter"]
     }
   },
   "resources": [

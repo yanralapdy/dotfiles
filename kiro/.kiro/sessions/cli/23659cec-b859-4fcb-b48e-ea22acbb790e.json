@@ -1,0 +1,341 @@
+{
+  "session_id": "23659cec-b859-4fcb-b48e-ea22acbb790e",
+  "cwd": "/Users/tnkapdy/sites/php/laravel/prosper/src",
+  "created_at": "2026-05-20T01:36:29.824871Z",
+  "updated_at": "2026-05-20T09:12:23.190934Z",
+  "title": "init .kiro config for this project you can use the source code you can read ./AGENTS.md ./README.md for reference you can read ~/Downloads/work/not...",
+  "session_state": {
+    "version": "v1",
+    "conversation_metadata": {
+      "user_turn_metadatas": [
+        {
+          "loop_id": {
+            "agent_id": {
+              "name": "kiro_default",
+              "parent_id": null,
+              "rand": null
+            },
+            "rand": 2833321155
+          },
+          "result": {
+            "Ok": {
+              "id": "ca958af9-0cc4-45d7-b71c-53ea8e6fbb02",
+              "role": "assistant",
+              "content": [
+                {
+                  "kind": "text",
+                  "data": ""
+                },
+                {
+                  "kind": "toolUse",
+                  "data": {
+                    "toolUseId": "tooluse_Lf1gq36OMKuDd14sGc4HFG",
+                    "name": "read",
+                    "input": {
+                      "__tool_use_purpose": "Check for AGENTS.md in project root and explore notes directory",
+                      "operations": [
+                        {
+                          "mode": "Directory",
+                          "path": "/Users/tnkapdy/sites/php/laravel/prosper/src",
+                          "depth": 1
+                        },
+                        {
+                          "mode": "Directory",
+                          "path": "/Users/tnkapdy/Downloads/work/notes/Prosper",
+                          "depth": 2
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "meta": {
+                "timestamp": 1779241267
+              }
+            }
+          },
+          "message_ids": [
+            "59cedad6-2419-426e-b8bf-8123608a398c",
+            "bcb8dbf5-2c97-4755-bc11-7ec347f81b41",
+            "13cc8639-54f5-445d-9d82-d8c02c652696",
+            "229b71e1-9900-4ec5-aba1-f97a7a0f88e9",
+            "b0b44875-bff3-4b03-b5ec-34dfa8095a15",
+            "b098aef6-f569-44ad-a675-926d113e9566"
+          ],
+          "total_request_count": 3,
+          "number_of_cycles": 3,
+          "builtin_tool_uses": 3,
+          "turn_duration": {
+            "secs": 29,
+            "nanos": 40773458
+          },
+          "end_reason": "ToolUseRejected",
+          "end_timestamp": "2026-05-20T01:41:07.951433Z",
+          "input_token_count": 0,
+          "output_token_count": 0,
+          "context_usage_percentage": 3.7739,
+          "metering_usage": [
+            {
+              "value": 0.13269405854063018,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.13465624228855722,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.08255295820895522,
+              "unit": "credit",
+              "unitPlural": "credits"
+            }
+          ]
+        },
+        {
+          "loop_id": {
+            "agent_id": {
+              "name": "kiro_default",
+              "parent_id": null,
+              "rand": null
+            },
+            "rand": 1345453835
+          },
+          "result": {
+            "Ok": {
+              "id": "1c2703f4-b314-4cd5-b7b2-39d75c84a779",
+              "role": "assistant",
+              "content": [
+                {
+                  "kind": "text",
+                  "data": "Done. Here's what was created/updated:\n\n**`.kiro/settings.json`** — Project metadata, important files list, exclude patterns, and Docker commands for lint/analyse/test/build.\n\n**`.kiro/skills/prosper-patterns/SKILL.md`** — Comprehensive patterns guide including:\n- Docker environment reminder\n- CRUD controller pattern (BaseWebCrudDto with typed properties)\n- Model pattern (HasBaseOwner + 6 base fields)\n- DTO patterns (Resource + Request)\n- Frontend patterns (API, Page, TypeScript interfaces, i18n)\n- Routes pattern\n- Known gotchas table (from AGENTS.md)\n- Auth & team gating patterns\n- Full 12-step CRUD checklist for new resources\n\nThe existing `steering.md` was already solid so I left it as-is. The SKILL.md now serves as the actionable reference that gets loaded when writing code in this project."
+                }
+              ],
+              "meta": {
+                "timestamp": 1779241558
+              }
+            }
+          },
+          "message_ids": [
+            "281d1cd9-8ddf-4bfe-ad02-1d994502dbc3",
+            "00642e7b-6908-4a66-96de-c48fdefb41c4",
+            "8c0323a1-9299-4000-aad7-5cd70d33f548",
+            "be23471e-2338-4ac5-8bab-7b1680a08896",
+            "7161e1fe-3c0e-44a4-87e5-8a3416ec4ae8",
+            "619b9ac6-82c3-4d7c-b1bb-03bb3535839f",
+            "cd2a4ad0-8cdd-44b4-862f-4c3b3ab92625",
+            "fdacf0ea-bf16-4cf8-aac3-62fcbc527156",
+            "65b59254-315d-4c3c-8a23-726ada3c9a93",
+            "9fd6f154-bf21-4709-b809-af521364bb8c",
+            "1608a25d-256d-4c14-8814-a86e7439b26b",
+            "1c8e7ffe-b715-4cad-b497-37b5e1dad3b6",
+            "95be57ca-6147-4832-836c-474bd72b66d1",
+            "a30ed896-4b39-4a70-8162-7ae73cbfef98",
+            "793f2a33-2a9e-4c99-9a00-2bc3090e4fb1",
+            "a4360933-955d-4efd-934e-f291e254804c",
+            "39cbca64-4fdb-4a70-9d85-34dc8fd908f6",
+            "e65e09ae-77e5-4e70-b6ae-d517573e25bf",
+            "1080689c-67c5-41a5-883a-0fa845461da6",
+            "02a7dc5c-9ce2-4c62-bbef-dd3e595acd87",
+            "7d5c658f-cc2f-4147-b411-fbcabc13f296",
+            "3a1120f8-e688-45c2-a941-cb42e2da8a9d"
+          ],
+          "total_request_count": 11,
+          "number_of_cycles": 10,
+          "builtin_tool_uses": 10,
+          "turn_duration": {
+            "secs": 276,
+            "nanos": 252240667
+          },
+          "end_reason": "UserTurnEnd",
+          "end_timestamp": "2026-05-20T01:45:58.142792Z",
+          "input_token_count": 0,
+          "output_token_count": 0,
+          "context_usage_percentage": 9.7992,
+          "metering_usage": [
+            {
+              "value": 0.08888080149253731,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.13339622719734662,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.1629144160862355,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.23665642835820894,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.17343516600331677,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.2504657606965174,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.32275932072968494,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.3565145033167496,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.4074004431177446,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.2252107456053068,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.33216201426202324,
+              "unit": "credit",
+              "unitPlural": "credits"
+            }
+          ]
+        },
+        {
+          "loop_id": {
+            "agent_id": {
+              "name": "kiro_default",
+              "parent_id": null,
+              "rand": null
+            },
+            "rand": 2501892183
+          },
+          "result": {
+            "Err": {
+              "Stream": {
+                "original_request_id": null,
+                "original_status_code": null,
+                "original_message": null,
+                "kind": {
+                  "kind": "interrupted"
+                }
+              }
+            }
+          },
+          "message_ids": [
+            "7a249c80-65a0-4685-96eb-7a20d863d165",
+            null
+          ],
+          "total_request_count": 1,
+          "number_of_cycles": 0,
+          "builtin_tool_uses": 0,
+          "turn_duration": {
+            "secs": 1,
+            "nanos": 809325291
+          },
+          "end_reason": "Cancelled",
+          "end_timestamp": "2026-05-20T06:48:51.826247Z",
+          "input_token_count": 0,
+          "output_token_count": 0,
+          "context_usage_percentage": null,
+          "metering_usage": []
+        },
+        {
+          "loop_id": {
+            "agent_id": {
+              "name": "kiro_default",
+              "parent_id": null,
+              "rand": null
+            },
+            "rand": 832706069
+          },
+          "result": {
+            "Ok": {
+              "id": "8459188d-af1e-4afd-a118-daae4b7f62e3",
+              "role": "assistant",
+              "content": [
+                {
+                  "kind": "text",
+                  "data": "Use the `/usage` command:\n\n```\n/usage\n```\n\nIt shows your plan name, agentic request usage (used/limit/percentage), overage charges, and any bonus credits with expiry dates."
+                }
+              ],
+              "meta": {
+                "timestamp": 1779268343
+              }
+            }
+          },
+          "message_ids": [
+            "39c1e56b-125e-4f9f-821b-4f1328d653ac",
+            "fdb558f9-6e61-4f49-aa68-9ec45dace491",
+            "c8bf924b-baf6-4850-a090-808c25b5929b",
+            "421fdc53-60a1-49fb-aea1-ba4b19026dda"
+          ],
+          "total_request_count": 2,
+          "number_of_cycles": 1,
+          "builtin_tool_uses": 1,
+          "turn_duration": {
+            "secs": 12,
+            "nanos": 707230292
+          },
+          "end_reason": "UserTurnEnd",
+          "end_timestamp": "2026-05-20T09:12:23.178405Z",
+          "input_token_count": 0,
+          "output_token_count": 0,
+          "context_usage_percentage": 10.4232,
+          "metering_usage": [
+            {
+              "value": 0.3197446635157546,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.26729247976782755,
+              "unit": "credit",
+              "unitPlural": "credits"
+            }
+          ]
+        }
+      ],
+      "user_turn_start_request": null,
+      "last_request": null
+    },
+    "rts_model_state": {
+      "conversation_id": "23659cec-b859-4fcb-b48e-ea22acbb790e",
+      "model_info": {
+        "model_id": "auto",
+        "context_window_tokens": 200000
+      },
+      "context_usage_percentage": 10.4232
+    },
+    "permissions": {
+      "filesystem": {
+        "allowed_read_paths": [
+          "/Users/tnkapdy/sites/php/laravel/prosper/src"
+        ],
+        "allowed_write_paths": [],
+        "denied_read_paths": [],
+        "denied_write_paths": []
+      },
+      "trusted_tools": [
+        {
+          "BuiltIn": "fsRead"
+        },
+        {
+          "BuiltIn": "fsWrite"
+        }
+      ],
+      "denied_tools": [],
+      "allowed_commands": []
+    },
+    "agent_name": "kiro_default"
+  }
+}

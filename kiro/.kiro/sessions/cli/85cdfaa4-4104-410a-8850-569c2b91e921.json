@@ -1,0 +1,477 @@
+{
+  "session_id": "85cdfaa4-4104-410a-8850-569c2b91e921",
+  "cwd": "/Users/tnkapdy",
+  "created_at": "2026-05-19T13:04:39.503463Z",
+  "updated_at": "2026-05-19T16:17:39.457187Z",
+  "title": "create new vault for my dotfiles docs ~/.dotfiles/ and the obsidian vault is located ~/Downloads/work/notes/",
+  "session_state": {
+    "version": "v1",
+    "conversation_metadata": {
+      "user_turn_metadatas": [
+        {
+          "loop_id": {
+            "agent_id": {
+              "name": "kiro_default",
+              "parent_id": null,
+              "rand": null
+            },
+            "rand": 705052585
+          },
+          "result": {
+            "Ok": {
+              "id": "eb7cbc01-b183-4473-8229-e50d6e1710a8",
+              "role": "assistant",
+              "content": [
+                {
+                  "kind": "text",
+                  "data": "Done! Created the **Dotfiles** vault at `~/Downloads/work/notes/Dotfiles/` with:\n\n- `.obsidian/` folder (so Obsidian recognizes it as a vault)\n- `_index.md` — Overview with links to all modules and quick reference commands\n- Individual notes for each stow module: zsh, nvim, tmux, kitty, karabiner, yazi, shellscript, docker, kiro, pi\n\nAll notes use `[[wikilinks]]`, YAML frontmatter with tags, and follow the conventions from your other vaults. Open it in Obsidian via \"Open folder as vault\" → select `~/Downloads/work/notes/Dotfiles/`."
+                }
+              ],
+              "meta": {
+                "timestamp": 1779195997
+              }
+            }
+          },
+          "message_ids": [
+            "22d5feaa-e673-41d1-9745-e7f920341ad0",
+            "edcfd26b-f4c9-46f1-a895-19aa74b86735",
+            "2d289c41-63cc-4393-b382-16444ef1d6b3",
+            "1327325e-a45f-45ee-9717-766da78f8a28",
+            "5875c55a-5727-4838-8299-63feb41081a9",
+            "05e2781d-9ede-4351-83a0-b8cdc0be329d",
+            "47a1b874-2633-4e35-ba19-f5ef7de48456",
+            "24f656f1-b9f9-4a24-bf68-427a98137812",
+            "73d69c73-d79d-44c4-80d6-19af90709743",
+            "433dc6a7-97b1-49e0-a9e0-b15ee348a517",
+            "d0c5bbee-bb4c-4b5b-8956-411431aeb2d8",
+            "eb2348c2-0f17-4395-80a5-806d77813369",
+            "f1e46f98-6d03-456f-801e-f345f68fcde6",
+            "0230a4c8-3d71-40fd-9c5e-389f3a420b11",
+            "c2d698b3-2881-47b0-bde0-79615aca8739",
+            "1bde641b-73c0-401c-aa47-4c2ce41cfa49"
+          ],
+          "total_request_count": 8,
+          "number_of_cycles": 7,
+          "builtin_tool_uses": 16,
+          "turn_duration": {
+            "secs": 68,
+            "nanos": 700810000
+          },
+          "end_reason": "UserTurnEnd",
+          "end_timestamp": "2026-05-19T13:06:37.474284Z",
+          "input_token_count": 0,
+          "output_token_count": 0,
+          "context_usage_percentage": 5.264,
+          "metering_usage": [
+            {
+              "value": 0.12580312139303482,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.08203781160862354,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.16333638938640133,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.10795293051409618,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.09699287213930348,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.14179799203980098,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.33233744759535655,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.1462313265339967,
+              "unit": "credit",
+              "unitPlural": "credits"
+            }
+          ]
+        },
+        {
+          "loop_id": {
+            "agent_id": {
+              "name": "kiro_default",
+              "parent_id": null,
+              "rand": null
+            },
+            "rand": 3033246393
+          },
+          "result": {
+            "Err": {
+              "Stream": {
+                "original_request_id": null,
+                "original_status_code": null,
+                "original_message": null,
+                "kind": {
+                  "kind": "interrupted"
+                }
+              }
+            }
+          },
+          "message_ids": [
+            "458a93a3-de06-49e8-9340-e9bac858ec67",
+            null
+          ],
+          "total_request_count": 1,
+          "number_of_cycles": 0,
+          "builtin_tool_uses": 0,
+          "turn_duration": {
+            "secs": 3,
+            "nanos": 986134083
+          },
+          "end_reason": "Cancelled",
+          "end_timestamp": "2026-05-19T15:58:37.971259Z",
+          "input_token_count": 0,
+          "output_token_count": 0,
+          "context_usage_percentage": null,
+          "metering_usage": []
+        },
+        {
+          "loop_id": {
+            "agent_id": {
+              "name": "kiro_default",
+              "parent_id": null,
+              "rand": null
+            },
+            "rand": 2949800130
+          },
+          "result": {
+            "Ok": {
+              "id": "f121297f-045d-4650-b795-1d80b4ab7852",
+              "role": "assistant",
+              "content": [
+                {
+                  "kind": "text",
+                  "data": "Got it — I've noted your git workflow conventions. I'll follow these when working with version control:\n\n- Branch naming: `feature/`, `fix/`, `chore/`, `refactor/`\n- Conventional commits with scope, imperative mood, ≤72 char subject\n- Small logical commits, push with `-u`, squash merge PRs\n- Never commit secrets, env files, deps, IDE config, or build output\n\nI'll apply these whenever making commits or PRs. Want me to save this somewhere (e.g., your Obsidian vault or a project doc)?"
+                }
+              ],
+              "meta": {
+                "timestamp": 1779206349
+              }
+            }
+          },
+          "message_ids": [
+            "5db45022-2681-4e33-8618-1c24e44742ce",
+            "eb1c1cda-eaba-418d-a838-6ade8097e9e3"
+          ],
+          "total_request_count": 1,
+          "number_of_cycles": 0,
+          "builtin_tool_uses": 0,
+          "turn_duration": {
+            "secs": 6,
+            "nanos": 648440542
+          },
+          "end_reason": "UserTurnEnd",
+          "end_timestamp": "2026-05-19T15:59:09.336464Z",
+          "input_token_count": 0,
+          "output_token_count": 0,
+          "context_usage_percentage": 5.3437,
+          "metering_usage": [
+            {
+              "value": 0.11149489237147596,
+              "unit": "credit",
+              "unitPlural": "credits"
+            }
+          ]
+        },
+        {
+          "loop_id": {
+            "agent_id": {
+              "name": "kiro_default",
+              "parent_id": null,
+              "rand": null
+            },
+            "rand": 3770717367
+          },
+          "result": {
+            "Ok": {
+              "id": "38db0542-014c-4052-9dd6-f7ed7d03ae91",
+              "role": "assistant",
+              "content": [
+                {
+                  "kind": "text",
+                  "data": "You're on `master` with only 2 commits. This looks like a migration squash + feature additions. Since you asked to push all changes directly, I'll stage everything, commit, and push. Given the scope (migration consolidation + new seeders + app changes), I'd suggest a commit message like:\n\n```\nrefactor(db): consolidate migrations and add kompas module seeders\n```\n\nWant me to proceed with that, or would you prefer a different message? Also noting this pushes directly to `master` — want me to go ahead?"
+                }
+              ],
+              "meta": {
+                "timestamp": 1779206415
+              }
+            }
+          },
+          "message_ids": [
+            "c87ac1fd-b89d-4043-9809-5b1a83a53be4",
+            "e4790a20-fbbf-463a-887a-98c77f515365",
+            "04d81699-474b-46d6-9688-637c8abdcd95",
+            "1f70ef4d-7551-4c9f-b854-87407be8901a",
+            "2f91e896-ef32-456a-9003-512907486e9e",
+            "dd435d49-b148-4a15-bc5c-db0ab60e565d"
+          ],
+          "total_request_count": 3,
+          "number_of_cycles": 2,
+          "builtin_tool_uses": 2,
+          "turn_duration": {
+            "secs": 15,
+            "nanos": 985348250
+          },
+          "end_reason": "UserTurnEnd",
+          "end_timestamp": "2026-05-19T16:00:15.581931Z",
+          "input_token_count": 0,
+          "output_token_count": 0,
+          "context_usage_percentage": 5.6007004,
+          "metering_usage": [
+            {
+              "value": 0.10666411691542288,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.1533383928689884,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.11224644013266998,
+              "unit": "credit",
+              "unitPlural": "credits"
+            }
+          ]
+        },
+        {
+          "loop_id": {
+            "agent_id": {
+              "name": "kiro_default",
+              "parent_id": null,
+              "rand": null
+            },
+            "rand": 718318747
+          },
+          "result": {
+            "Ok": {
+              "id": "d1445698-12b0-4b34-bab3-6f271f31a031",
+              "role": "assistant",
+              "content": [
+                {
+                  "kind": "text",
+                  "data": "Done. Committed and pushed `be1461d` to `origin/master` — 56 files changed (+5465, -767)."
+                }
+              ],
+              "meta": {
+                "timestamp": 1779206440
+              }
+            }
+          },
+          "message_ids": [
+            "727dd64d-cd39-49ed-ae8e-469b18cf6c2d",
+            "f35c4607-803a-43b8-9e9d-d4c139c08af3",
+            "c2f6e80c-7eec-4e0a-91e3-0fa0e83d9924",
+            "18e1866e-f4ae-4dfd-af2d-694ed3ee7dfd",
+            "3ebb44ab-37cc-4259-af1f-10d0cc9df05d",
+            "33941486-1f70-457b-b1d0-feea60e5a569"
+          ],
+          "total_request_count": 3,
+          "number_of_cycles": 2,
+          "builtin_tool_uses": 2,
+          "turn_duration": {
+            "secs": 13,
+            "nanos": 840337833
+          },
+          "end_reason": "UserTurnEnd",
+          "end_timestamp": "2026-05-19T16:00:40.952996Z",
+          "input_token_count": 0,
+          "output_token_count": 0,
+          "context_usage_percentage": 5.7492,
+          "metering_usage": [
+            {
+              "value": 0.1122729968490879,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.1252976864013267,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.10178950215588724,
+              "unit": "credit",
+              "unitPlural": "credits"
+            }
+          ]
+        },
+        {
+          "loop_id": {
+            "agent_id": {
+              "name": "kiro_default",
+              "parent_id": null,
+              "rand": null
+            },
+            "rand": 3575799194
+          },
+          "result": {
+            "Ok": {
+              "id": "6da4ce1b-5a3d-4222-8652-72a53f419ab2",
+              "role": "assistant",
+              "content": [
+                {
+                  "kind": "text",
+                  "data": "Done. Pushed `719bcfb` to `origin/master` — 41 files changed (+2749, -1793)."
+                }
+              ],
+              "meta": {
+                "timestamp": 1779206486
+              }
+            }
+          },
+          "message_ids": [
+            "8d12f206-ea2a-4161-ab0d-fe2e688bb614",
+            "ee34f91f-3b96-4aff-8eef-2dbc0d1350bb",
+            "4866398a-950b-4765-98b2-ebd381a6dfc9",
+            "ca4b1778-021a-4dc2-99fd-d80f412f1b84",
+            "7d9e78a1-9947-40f9-ba9f-702e83f5d0eb",
+            "cc2d3310-47b0-4838-84e9-9680759bf6fb"
+          ],
+          "total_request_count": 3,
+          "number_of_cycles": 2,
+          "builtin_tool_uses": 2,
+          "turn_duration": {
+            "secs": 15,
+            "nanos": 709531375
+          },
+          "end_reason": "UserTurnEnd",
+          "end_timestamp": "2026-05-19T16:01:26.155383Z",
+          "input_token_count": 0,
+          "output_token_count": 0,
+          "context_usage_percentage": 5.9330997,
+          "metering_usage": [
+            {
+              "value": 0.11451631061359868,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.13331559966832507,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.11074535671641794,
+              "unit": "credit",
+              "unitPlural": "credits"
+            }
+          ]
+        },
+        {
+          "loop_id": {
+            "agent_id": {
+              "name": "kiro_default",
+              "parent_id": null,
+              "rand": null
+            },
+            "rand": 3083547569
+          },
+          "result": {
+            "Ok": {
+              "id": "f560404b-ed71-4168-9db5-4a25c1f489e5",
+              "role": "assistant",
+              "content": [
+                {
+                  "kind": "text",
+                  "data": "Done. Pushed `0194e09` to `origin/main` — 36 files changed (+1184, -253). Added kiro skills/agents, updated yazi/nvim/zsh/pi configs."
+                }
+              ],
+              "meta": {
+                "timestamp": 1779207459
+              }
+            }
+          },
+          "message_ids": [
+            "a14e1915-7888-4b0d-916b-5f36b647fb93",
+            "635e853c-122d-4d82-9640-0aa3c78b74e4",
+            "e9106053-e271-4d2b-98f0-2805fd636f9e",
+            "521129de-c4f1-4be3-bff5-e2cdbeb4eee7",
+            "143e35d2-96a5-4e72-8529-bfc24a7fad6b",
+            "d1036352-ca9c-49d5-9fdb-3eccc2e68d7e"
+          ],
+          "total_request_count": 3,
+          "number_of_cycles": 2,
+          "builtin_tool_uses": 2,
+          "turn_duration": {
+            "secs": 17,
+            "nanos": 255036125
+          },
+          "end_reason": "UserTurnEnd",
+          "end_timestamp": "2026-05-19T16:17:39.450090Z",
+          "input_token_count": 0,
+          "output_token_count": 0,
+          "context_usage_percentage": 6.0919003,
+          "metering_usage": [
+            {
+              "value": 0.19933888441127698,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.12072311741293532,
+              "unit": "credit",
+              "unitPlural": "credits"
+            },
+            {
+              "value": 0.12140169883913765,
+              "unit": "credit",
+              "unitPlural": "credits"
+            }
+          ]
+        }
+      ],
+      "user_turn_start_request": null,
+      "last_request": null
+    },
+    "rts_model_state": {
+      "conversation_id": "85cdfaa4-4104-410a-8850-569c2b91e921",
+      "model_info": {
+        "model_id": "auto",
+        "context_window_tokens": 200000
+      },
+      "context_usage_percentage": 6.0919003
+    },
+    "permissions": {
+      "filesystem": {
+        "allowed_read_paths": [
+          "/Users/tnkapdy"
+        ],
+        "allowed_write_paths": [],
+        "denied_read_paths": [],
+        "denied_write_paths": []
+      },
+      "trusted_tools": [
+        {
+          "BuiltIn": "fsWrite"
+        },
+        {
+          "BuiltIn": "executeCmd"
+        }
+      ],
+      "denied_tools": [],
+      "allowed_commands": []
+    },
+    "agent_name": "kiro_default"
+  }
+}

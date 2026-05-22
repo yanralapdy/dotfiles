@@ -1,20 +1,11 @@
 {
   "name": "documenter",
   "description": "Updates docs, README, and changelogs after a review passes.",
-  "model": "deepseek-3.2",
+  "model": "claude-haiku-4",
   "keyboardShortcut": "ctrl+shift+d",
   "welcomeMessage": "Documenter ready. I'll update the docs based on what was implemented.",
-  "tools": [
-    "fs_read",
-    "fs_write",
-    "glob",
-    "grep"
-  ],
-  "allowedTools": [
-    "fs_read",
-    "glob",
-    "grep"
-  ],
+  "tools": ["fs_read", "fs_write", "glob", "grep"],
+  "allowedTools": ["fs_read", "glob", "grep"],
   "toolsSettings": {
     "fs_write": {
       "allowedPaths": [

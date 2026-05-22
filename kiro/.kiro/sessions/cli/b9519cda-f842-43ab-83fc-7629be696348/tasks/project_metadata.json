@@ -1,0 +1,6 @@
+{
+  "description": "Symlink ~/.kiro via GNU Stow from ~/.dotfiles/kiro/.kiro/",
+  "context": [
+    "Created ~/.dotfiles/kiro/.kiro/ directory"
+  ]
+}

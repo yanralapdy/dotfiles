@@ -1,8 +1,8 @@
 {
-  "lastChangelogVersion": "0.74.0",
+  "lastChangelogVersion": "0.75.4",
   "defaultProvider": "openrouter",
   "defaultModel": "qwen/qwen3-coder:free",
-  "defaultThinkingLevel": "medium",
+  "defaultThinkingLevel": "high",
   "packages": [
     "https://github.com/carderne/pi-nvim"
   ],

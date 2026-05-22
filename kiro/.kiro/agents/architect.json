@@ -1,28 +1,14 @@
 {
   "name": "architect",
   "description": "Analyzes requirements and produces a detailed spec.md before any code is written",
-  "model": "claude-opus-4.7",
+  "model": "claude-opus-4",
   "keyboardShortcut": "ctrl+shift+a",
   "welcomeMessage": "Architect ready. Give me the requirements and I'll design the solution.",
-  "tools": [
-    "fs_read",
-    "fs_write",
-    "glob",
-    "grep",
-    "code",
-    "todo_list"
-  ],
-  "allowedTools": [
-    "fs_read",
-    "glob",
-    "grep",
-    "code"
-  ],
+  "tools": ["fs_read", "fs_write", "glob", "grep", "code", "todo_list"],
+  "allowedTools": ["fs_read", "glob", "grep", "code"],
   "toolsSettings": {
     "fs_write": {
-      "allowedPaths": [
-        ".kiro/context/**"
-      ]
+      "allowedPaths": [".kiro/context/**"]
     }
   },
   "resources": [

@@ -1,0 +1,6 @@
+{
+  "id": "1",
+  "subject": "Create ~/.dotfiles/kiro/.kiro/ directory if it doesn't exist",
+  "description": "",
+  "status": "completed"
+}

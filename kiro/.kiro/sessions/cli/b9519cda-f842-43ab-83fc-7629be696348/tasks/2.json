@@ -1,0 +1,6 @@
+{
+  "id": "2",
+  "subject": "Move contents of ~/.dotfiles/kiro/.config/kiro/ into ~/.dotfiles/kiro/.kiro/ (no overwrite)",
+  "description": "",
+  "status": "pending"
+}
