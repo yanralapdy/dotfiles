@@ -49,6 +49,18 @@ Add an entry to the relevant database with status, priority, and description.
 ### Save research
 Create a page with source links, key findings, and personal notes.
 
+## Workspace Knowledge
+
+### Daily Todo List (`2b514b36-001a-8059-a4f5-c026e286b63d`)
+- Each day is a separate **inline database** titled `Todo List YYYY-MM-DD`
+- Today's database: `Todo List @Today` (ID: `36e14b36-001a-812b-b99c-ca655dcf4ff6`)
+- Task properties: `Task name`, `Status` (Not started / In progress / Done), `Priority` (Low/Medium/High), `Assignee`, `Created At`, `Started At`, `Finished At`, `Description`
+- To create a new day's database, use the REST API directly (`POST /v1/databases`) — the MCP `create-a-data-source` tool does not support this
+- Notion API token is in `~/.kiro/settings/mcp.json`
+
+### Other Key Pages
+- **Daily Notes** (`2c014b36-001a-80c1-8f34-fcdb9cd47a7f`) — general daily notes
+
 ## Rules
 - Never delete pages without explicit permission
 - Ask which database/parent page to use if unclear

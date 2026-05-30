@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.75.4",
+  "lastChangelogVersion": "0.75.5",
   "defaultProvider": "openrouter",
   "defaultModel": "qwen/qwen3-coder:free",
   "defaultThinkingLevel": "high",

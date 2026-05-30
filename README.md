@@ -75,4 +75,18 @@ stow -D zsh        # example: remove only zsh symlinks
 # or remove everything
 stow -D .
 ```
+
+# Kiro Skills (Optional)
+
+The `kiro-skills/` directory contains adapted skills from Matt Pocock's skills repository, formatted for kiro-cli:
+
+```bash
+cd ~/.dotfiles/kiro-skills
+./scripts/install.sh list          # See available skills
+./scripts/install.sh install tdd   # Install specific skill
+./scripts/install.sh install --all # Install everything
+```
+
+Skills include engineering workflows (`tdd`, `diagnose`, `grill-with-docs`), productivity tools (`caveman`, `handoff`), and misc utilities (`git-guardrails`, `setup-pre-commit`).
+
 Enjoy a clean, portable, and maintainable dotfiles setup!
