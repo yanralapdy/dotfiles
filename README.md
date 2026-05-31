@@ -25,8 +25,12 @@ git clone git@github.com:yanralapdy/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 
 # stow the directory
-stow zsh kitty tmux nvim karabiner yazi shellscript
+stow zsh kitty tmux nvim karabiner yazi shellscript kiro pi
 ```
+
+> Cross-platform: configs work on both macOS and Ubuntu/WSL. Paths use `$HOME`/`~`
+> and OS detection, so the same repo runs on either machine regardless of username.
+> `karabiner` is macOS-only.
 # Detailed Per-Package Setup
 ### zsh + Oh My Zsh
 ```bash
@@ -76,6 +80,12 @@ stow -D zsh        # example: remove only zsh symlinks
 stow -D .
 ```
 
+### Kiro CLI & Pi agent configs
+```bash
+stow kiro pi   # symlinks ~/.kiro, ~/.config/kiro, and ~/.config/pi
+```
+Agent skill references use `~`, so they resolve on any machine.
+
 # Kiro Skills (Optional)
 
 The `kiro-skills/` directory contains adapted skills from Matt Pocock's skills repository, formatted for kiro-cli:
@@ -88,5 +98,7 @@ cd ~/.dotfiles/kiro-skills
 ```
 
 Skills include engineering workflows (`tdd`, `diagnose`, `grill-with-docs`), productivity tools (`caveman`, `handoff`), and misc utilities (`git-guardrails`, `setup-pre-commit`).
+
+Run `install.sh install --all` once on each machine (macOS and WSL) to create the `~/.kiro/skills` symlinks.
 
 Enjoy a clean, portable, and maintainable dotfiles setup!
