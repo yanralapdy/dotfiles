@@ -185,13 +185,23 @@ fi
 # p10k instant prompt
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Added by Antigravity
-export PATH="/Users/tnkapdy/.antigravity/antigravity/bin:$PATH"
-export RIPGREP_CONFIG_PATH=~/.rgrc
+# ============ ANTIGRAVITY ============
+if [[ -d "$HOME/.antigravity/antigravity/bin" ]]; then
+    export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
+fi
+export RIPGREP_CONFIG_PATH="$HOME/.rgrc"
 
-# Pi aliases
-# Default: loads extensions/skills from ~/.pi/agent/
-alias pi='/Users/tnkapdy/.nvm/versions/node/v24.15.0/bin/pi'
+# ============ PI AGENT ============
+export PI_CODING_AGENT_DIR="$HOME/.config/pi/agent"
+if command -v pi &> /dev/null; then
+    # Minimal: no extensions or skills (passive mode)
+    alias pi-mi='pi --no-extensions --no-skills'
+fi
 
-# Minimal: no extensions or skills (passive mode)
-alias pi-mi='/Users/tnkapdy/.nvm/versions/node/v24.15.0/bin/pi --no-extensions --no-skills'
+# ============ KIRO ============
+if command -v kiro-cli &> /dev/null; then
+    alias kiro='kiro-cli'
+fi
+
+# ============ BROWSER-HARNESS ============
+export BU_CDP_URL="http://127.0.0.1:9222"

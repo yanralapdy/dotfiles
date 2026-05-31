@@ -43,9 +43,9 @@
     "file://.kiro/steering.md",
     "file://.kiro/context/spec.md",
     "file://.kiro/context/review.md",
-    "skill:///home/thanurking/.kiro/skills/tdd/SKILL.md",
-    "skill:///home/thanurking/.kiro/skills/refactoring/SKILL.md",
-    "skill:///home/thanurking/.kiro/skills/git-workflow/SKILL.md"
+    "skill://~/.kiro/skills/tdd/SKILL.md",
+    "skill://~/.kiro/skills/refactoring/SKILL.md",
+    "skill://~/.kiro/skills/git-workflow/SKILL.md"
   ],
   "hooks": {
     "agentSpawn": [
