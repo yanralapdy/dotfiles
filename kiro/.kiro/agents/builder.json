@@ -4,7 +4,7 @@
   "model": "claude-sonnet-4",
   "keyboardShortcut": "ctrl+shift+b",
   "welcomeMessage": "Builder ready. Point me to a spec and I'll implement it.",
-  "tools": ["fs_read", "fs_write", "glob", "grep", "code", "execute_bash", "todo_list"],
+  "tools": ["fs_read", "fs_write", "glob", "grep", "code", "execute_bash", "todo_list", "subagent"],
   "allowedTools": ["fs_read", "glob", "grep", "code"],
   "toolsSettings": {
     "fs_write": {
@@ -33,12 +33,19 @@
     },
     "execute_bash": {
       "autoAllowReadonly": true
+    },
+    "crew": {
+      "availableAgents": ["test-runner", "doc-fetcher"],
+      "trustedAgents": ["test-runner", "doc-fetcher"]
     }
   },
   "resources": [
     "file://.kiro/steering.md",
     "file://.kiro/context/spec.md",
-    "file://.kiro/context/review.md"
+    "file://.kiro/context/review.md",
+    "skill:///home/thanurking/.kiro/skills/tdd/SKILL.md",
+    "skill:///home/thanurking/.kiro/skills/refactoring/SKILL.md",
+    "skill:///home/thanurking/.kiro/skills/git-workflow/SKILL.md"
   ],
   "hooks": {
     "agentSpawn": [

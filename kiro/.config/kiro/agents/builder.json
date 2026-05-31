@@ -11,7 +11,8 @@
     "grep",
     "code",
     "execute_bash",
-    "todo_list"
+    "todo_list",
+    "subagent"
   ],
   "allowedTools": [
     "fs_read",
@@ -46,12 +47,25 @@
     },
     "execute_bash": {
       "autoAllowReadonly": true
+    },
+    "crew": {
+      "availableAgents": [
+        "test-runner",
+        "doc-fetcher"
+      ],
+      "trustedAgents": [
+        "test-runner",
+        "doc-fetcher"
+      ]
     }
   },
   "resources": [
     "file://.kiro/steering.md",
     "file://.kiro/context/spec.md",
-    "file://.kiro/context/review.md"
+    "file://.kiro/context/review.md",
+    "skill:///home/thanurking/.config/kiro/skills/tdd/SKILL.md",
+    "skill:///home/thanurking/.config/kiro/skills/refactoring/SKILL.md",
+    "skill:///home/thanurking/.config/kiro/skills/git-workflow/SKILL.md"
   ],
   "hooks": {
     "agentSpawn": [
