@@ -1,7 +1,7 @@
 {
   "name": "builder",
   "description": "Implements code based on architect's spec.md. Runs tests before signaling completion.",
-  "model": "deepseek-3.2",
+  "model": "claude-sonnet-4.6",
   "keyboardShortcut": "ctrl+shift+b",
   "welcomeMessage": "Builder ready. Point me to a spec and I'll implement it.",
   "tools": [

@@ -1,7 +1,7 @@
 {
   "name": "doc-fetcher",
   "description": "Pulls external library/API documentation from the web so the parent agent doesn't burn context browsing.",
-  "model": "deepseek-3.2",
+  "model": "glm-5",
   "tools": [
     "fs_read",
     "web_search",

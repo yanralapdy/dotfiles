@@ -1,7 +1,7 @@
 {
   "name": "documenter",
   "description": "Updates docs, README, and changelogs after a review passes.",
-  "model": "deepseek-3.2",
+  "model": "glm-5",
   "keyboardShortcut": "ctrl+shift+d",
   "welcomeMessage": "Documenter ready. I'll update the docs based on what was implemented.",
   "tools": [

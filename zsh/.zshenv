@@ -18,3 +18,4 @@ if [[ -z "$NODE_PATH" ]] && [[ -d "$NVM_DIR/versions/node" ]]; then
 fi
 
 export KIRO_HOME="$HOME/.config/kiro"
+. "$HOME/.cargo/env"

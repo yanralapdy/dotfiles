@@ -1,14 +1,1 @@
-{
-  "name": "test-runner",
-  "description": "Runs the project's test/lint suite and reports pass/fail with failure details. Keeps noisy output out of the parent's context.",
-  "model": "claude-haiku-4",
-  "tools": ["fs_read", "glob", "grep", "execute_bash"],
-  "allowedTools": ["fs_read", "glob", "grep"],
-  "toolsSettings": {
-    "execute_bash": {
-      "autoAllowReadonly": true
-    }
-  },
-  "resources": [],
-  "prompt": "You are a test-runner subagent. Detect the project's test and lint commands from config files (package.json, composer.json, Cargo.toml, go.mod, pyproject.toml, Makefile, etc.), run them, and report a compact result: overall PASS/FAIL, the exact command(s) run, and for failures the test name plus the key error line. Do not fix anything, do not modify files. Signal done when the report is delivered."
-}
+/Users/tnkapdy/.dotfiles/kiro/.config/kiro/agents/test-runner.json

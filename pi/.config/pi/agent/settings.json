@@ -1,8 +1,11 @@
 {
-  "lastChangelogVersion": "0.75.5",
-  "defaultProvider": "openrouter",
-  "defaultModel": "qwen/qwen3-coder:free",
+  "lastChangelogVersion": "0.79.4",
+  "defaultProvider": "opencode-go",
+  "defaultModel": "mimo-v2.5",
   "defaultThinkingLevel": "high",
+  "skills": [
+    "~/.config/kiro/skills"
+  ],
   "packages": [
     "https://github.com/carderne/pi-nvim"
   ],
@@ -14,5 +17,6 @@
   "terminal.showImages": true,
   "terminal.imageWidthCells": 60,
   "images.autoResize": true,
-  "images.blockImages": false
+  "images.blockImages": false,
+  "theme": "dark"
 }

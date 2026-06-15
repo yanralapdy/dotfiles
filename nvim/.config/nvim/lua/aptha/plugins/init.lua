@@ -72,7 +72,28 @@ return {
         },
     },
 
-    { "christoomey/vim-tmux-navigator" },
+    {
+        "christoomey/vim-tmux-navigator",
+        lazy = false,
+        init = function()
+            vim.g.tmux_navigator_disable_netrw_workaround = 1
+        end,
+        cmd = {
+            "TmuxNavigateLeft",
+            "TmuxNavigateDown",
+            "TmuxNavigateUp",
+            "TmuxNavigateRight",
+            "TmuxNavigatePrevious",
+            "TmuxNavigatorProcessList",
+        },
+        keys = {
+            { "<c-h>",  "<cmd><C-U>TmuxNavigateLeft<cr>" },
+            { "<c-j>",  "<cmd><C-U>TmuxNavigateDown<cr>" },
+            { "<c-k>",  "<cmd><C-U>TmuxNavigateUp<cr>" },
+            { "<c-l>",  "<cmd><C-U>TmuxNavigateRight<cr>" },
+            { "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+        },
+    },
     { "mbbill/undotree" },
     { "tpope/vim-fugitive" },
 
@@ -215,5 +236,42 @@ return {
     {
         "OXY2DEV/markview.nvim",
         lazy = false,
+    },
+
+    {
+        "yanralapdy/kiro.nvim",
+        version = "v0.2.0",
+        lazy = false,
+        dependencies = { "folke/snacks.nvim" },
+        opts = {
+            pane = nil,
+            prefix = "look at ",
+            features = {
+                context = true,
+                prompts = true,
+                operator = true,
+                commands = true,
+                statusline = true,
+                checkhealth = true,
+                select = true,
+            },
+        },
+        keys = {
+            { "<leader>kf", function() require("kiro").send_file() end,      desc = "Kiro: send file" },
+            { "<leader>ka", function() require("kiro").ask_selection() end,  desc = "Kiro: ask about selection", mode = "v" },
+            { "<leader>ks", function() require("kiro").select() end,         desc = "Kiro: select action",       mode = "v" },
+            { "<leader>kp", function() require("kiro").select_and_ask() end, desc = "Kiro: select prompt",       mode = "v" },
+            {
+                "gk",
+                function()
+                    vim.o.opfunc = "v:lua.require'kiro.operator'.opfunc"
+                    return "g@"
+                end,
+                desc = "Kiro: send range",
+                expr = true,
+                silent = true
+            },
+            { "gkk", function() require("kiro.operator").send_line() end, desc = "Kiro: send line", silent = true },
+        },
     },
 }

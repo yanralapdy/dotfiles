@@ -1,7 +1,7 @@
 {
   "name": "architect",
   "description": "Analyzes requirements and produces a detailed spec.md before any code is written",
-  "model": "claude-opus-4.7",
+  "model": "claude-opus-4.8",
   "keyboardShortcut": "ctrl+shift+a",
   "welcomeMessage": "Architect ready. Give me the requirements and I'll design the solution.",
   "tools": [

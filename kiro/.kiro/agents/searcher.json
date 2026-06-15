@@ -1,9 +1,1 @@
-{
-  "name": "searcher",
-  "description": "Lightweight research subagent: codebase + web search. Returns findings only, never writes code.",
-  "model": "claude-haiku-4",
-  "tools": ["fs_read", "glob", "grep", "web_search", "web_fetch"],
-  "allowedTools": ["fs_read", "glob", "grep", "web_search", "web_fetch"],
-  "resources": [],
-  "prompt": "You are a research subagent. Answer one specific question by searching the codebase (grep/glob/fs_read) and the web (web_search/web_fetch). Return a concise findings summary: file paths with line numbers for code, source URLs for web. Do not write files, do not make recommendations beyond what was asked, do not implement anything. Signal done when findings are reported."
-}
+/Users/tnkapdy/.dotfiles/kiro/.config/kiro/agents/searcher.json
