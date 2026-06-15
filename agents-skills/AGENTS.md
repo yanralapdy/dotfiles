@@ -59,10 +59,10 @@ After running `/workflow-orchestrator` to activate:
 
 ## Skills
 
-Skills are organized by category. All skills are available in both kiro (`~/.config/kiro/skills/`) and pi (`~/.pi/agent/skills/`).
+Skills are organized by category. All skills live in one canonical location (`~/.dotfiles/agents-skills/skills/`) and are exposed to both kiro and pi through symlinks.
 
 ### Engineering
-* **diagse** — Disciplined diagnosis loop for hard bugs and performance regressions
+* **diagnose** — Disciplined diagnosis loop for hard bugs and performance regressions
 * **grill-with-docs** — Grilling session that updates CONTEXT.md and ADRs inline
 * **triage** — Triage issues through a state machine of triage roles
 * **architecture-review** — Find deepening opportunities in a codebase
@@ -116,11 +116,13 @@ Skills are organized by category. All skills are available in both kiro (`~/.con
 ### Skills
 | Location | Purpose |
 |----------|---------|
-| `~/.dotfiles/kiro/.config/kiro/skills/` | Canonical kiro skill files |
-| `~/.dotfiles/kiro/.kiro/skills/` | Symlinks → `~/.config/kiro/skills/` |
-| `~/.dotfiles/kiro-skills/skills/` | Source repo (install script symlinks to `~/.config/kiro/skills/`) |
-| `~/.dotfiles/pi/.config/pi/agent/skills/` | Pi skill files (not symlinked, allows pi-specific modifications) |
-| `~/.pi/agent/skills/` | Symlinks → `~/.dotfiles/pi/.config/pi/agent/skills/` |
+| `~/.dotfiles/agents-skills/skills/` | **Canonical source** for all skills |
+| `~/.config/kiro/skills/` | Symlink → `~/.dotfiles/agents-skills/skills/` |
+| `~/.kiro/skills/` | Symlink → `~/.dotfiles/agents-skills/skills/` |
+| `~/.dotfiles/kiro/.config/kiro/skills/` | Symlink → `~/.dotfiles/agents-skills/skills/` |
+| `~/.dotfiles/kiro/.kiro/skills/` | Symlink → `~/.dotfiles/agents-skills/skills/` |
+| `~/.dotfiles/pi/.config/pi/agent/skills/` | Symlink → `~/.dotfiles/agents-skills/skills/` |
+| `~/.pi/agent/skills/` | Symlink → `~/.dotfiles/agents-skills/skills/` |
 
 ### Agents
 | Location | Purpose |
@@ -135,17 +137,28 @@ Skills are organized by category. All skills are available in both kiro (`~/.con
 |----------|---------|
 | `~/.dotfiles/pi/.config/pi/agent/extensions/` | Pi extensions (mode-switcher, workflow-orchestrator, plan-mode, etc.) |
 
-## Deduplication Status
+## Consolidation Status
 
-- ✅ Kiro skills: `~/.kiro/skills/` → symlinks to `~/.config/kiro/skills/`
-- ✅ Kiro agents: `~/.kiro/agents/` → symlinks to `~/.config/kiro/agents/`
-- ✅ Kiro-skills repo: install script symlinks to `~/.config/kiro/skills/`
-- ✅ Pi skills: all kiro skills copied to `~/.dotfiles/pi/.config/pi/agent/skills/`
-- ✅ Pi `~/.pi/agent/skills/` broken symlinks fixed
-- ✅ Pi settings.json includes `"skills": ["~/.config/kiro/skills"]` for cross-discovery
+All skills are now unified under a single canonical directory and exposed to both kiro and pi via symlinks:
+
+- ✅ Canonical source: `~/.dotfiles/agents-skills/skills/`
+- ✅ Kiro runtime: `~/.config/kiro/skills/` → symlink to canonical
+- ✅ Kiro runtime: `~/.kiro/skills/` → symlink to canonical
+- ✅ Kiro dotfiles: `~/.dotfiles/kiro/.config/kiro/skills/` → symlink to canonical
+- ✅ Kiro dotfiles: `~/.dotfiles/kiro/.kiro/skills/` → symlink to canonical
+- ✅ Pi dotfiles: `~/.dotfiles/pi/.config/pi/agent/skills/` → symlink to canonical
+- ✅ Pi runtime: `~/.pi/agent/skills/` → symlink to canonical
+- ✅ Old `kiro-skills/` directory renamed to `agents-skills/`
+- ✅ Duplicate skill directories removed (backups in `~/.dotfiles/.backups/`)
 - ✅ Pi-original persona skills (architect, builder, code-reviewer, researcher) converted to agent definitions
 - ✅ spec-tester kept as skill (it's domain-specific, not a persona)
 - ✅ Unique skills merged both ways (knowledge-manager, write-a-skill, pdf-reader, stop-slop, notion-vault)
+
+### Adding or modifying skills
+
+1. Edit files in `~/.dotfiles/agents-skills/skills/<skill-name>/`
+2. Changes are immediately visible to both kiro and pi through the symlink chain
+3. Do **not** create pi-specific or kiro-specific copies — if a skill needs environment-aware behavior, branch inside the skill itself
 
 ## Best Practices
 

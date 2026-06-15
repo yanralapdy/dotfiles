@@ -1,144 +1,124 @@
-# Kiro Skills
+# Agent Skills
 
-Skills for Real Engineers — adapted from Matt Pocock's skills repo for kiro-cli.
+Single canonical home for skills used by **kiro** and **pi** coding agents.
 
-Developing real applications is hard. These skills are designed to be small, easy to adapt, and composable. They work with any model. They're based on decades of engineering experience. Hack around with them. Make them your own. Enjoy.
+## Layout
 
-## Quickstart
+```
+~/.dotfiles/agents-skills/
+├── skills/                 # Canonical source — every skill lives here
+│   ├── handoff/
+│   ├── tdd/
+│   ├── diagnose/
+│   └── ...
+├── AGENTS.md               # Full inventory of agents and skills
+└── README.md               # This file
+```
 
-1. Clone this repo (or use it from your dotfiles):
+Each skill is a directory containing at minimum a `SKILL.md`. Some skills also bundle scripts, templates, or reference files.
+
+## How It Works
+
+Both agents discover skills from the same directory through symlinks. Editing a skill in `~/.dotfiles/agents-skills/skills/<name>/` immediately affects both kiro and pi.
+
+```
+~/.dotfiles/agents-skills/skills/       ← canonical source
+        ↑
+        ├── ~/.config/kiro/skills/      ← symlink
+        ├── ~/.kiro/skills/             ← symlink
+        ├── ~/.dotfiles/kiro/.config/kiro/skills/   ← symlink
+        ├── ~/.dotfiles/kiro/.kiro/skills/          ← symlink
+        ├── ~/.dotfiles/pi/.config/pi/agent/skills/ ← symlink
+        └── ~/.pi/agent/skills/                     ← symlink
+```
+
+## Setup (for agents / new machines)
+
+If you are setting this up from scratch:
+
+1. Ensure the canonical directory exists:
    ```bash
-   # If using from dotfiles:
-   cd ~/.dotfiles/kiro-skills
-   
-   # Or clone standalone:
-   git clone https://github.com/yourusername/kiro-skills.git
-   cd kiro-skills
+   ls ~/.dotfiles/agents-skills/skills
    ```
 
-2. Install skills:
+2. Remove any existing kiro/pi skill directories (not symlinks) and replace them with symlinks:
    ```bash
-   ./scripts/install.sh list          # See all available skills
-   ./scripts/install.sh install tdd   # Install specific skill
-   ./scripts/install.sh install --all # Install everything
+   CANONICAL="$HOME/.dotfiles/agents-skills/skills"
+
+   # Kiro
+   rm -rf ~/.config/kiro/skills
+   ln -s "$CANONICAL" ~/.config/kiro/skills
+
+   rm -rf ~/.kiro/skills
+   ln -s "$CANONICAL" ~/.kiro/skills
+
+   # Kiro dotfiles mirrors (if present)
+   rm -rf ~/.dotfiles/kiro/.config/kiro/skills
+   ln -s "$CANONICAL" ~/.dotfiles/kiro/.config/kiro/skills
+
+   rm -rf ~/.dotfiles/kiro/.kiro/skills
+   ln -s "$CANONICAL" ~/.dotfiles/kiro/.kiro/skills
+
+   # Pi
+   rm -rf ~/.dotfiles/pi/.config/pi/agent/skills
+   ln -s "$CANONICAL" ~/.dotfiles/pi/.config/pi/agent/skills
+
+   rm -rf ~/.pi/agent/skills
+   ln -s "$CANONICAL" ~/.pi/agent/skills
    ```
 
-3. Skills will be symlinked to `~/.kiro/skills/` where kiro-cli can discover them.
+3. Verify every path resolves to the canonical source:
+   ```bash
+   for p in ~/.config/kiro/skills ~/.kiro/skills ~/.dotfiles/kiro/.config/kiro/skills \
+            ~/.dotfiles/kiro/.kiro/skills ~/.dotfiles/pi/.config/pi/agent/skills \
+            ~/.pi/agent/skills; do
+     printf "%-55s -> %s\n" "$p" "$(readlink "$p")"
+   done
+   ```
 
-## Why These Skills Exist
+4. Confirm both agents can list the same skills:
+   ```bash
+   ls ~/.config/kiro/skills | wc -l
+   ls ~/.pi/agent/skills | wc -l
+   # Both should show 37 (or current skill count)
+   ```
 
-I built these skills as a way to fix common failure modes I see with AI coding agents.
+## Adding a New Skill
 
-### #1: The Agent Didn't Do What I Want
+1. Create a directory under `~/.dotfiles/agents-skills/skills/<skill-name>/`
+2. Add a `SKILL.md` following the standard skill structure:
+   - **Name** — short, kebab-case
+   - **Description** — one-line trigger for when to load the skill
+   - **Usage** — how the agent should invoke it
+   - **Instructions** — the actual workflow/prompt
+   - **Examples / References** — optional supporting files
+3. Both kiro and pi will discover it automatically on next load.
 
-**The Problem**. The most common failure mode in software development is misalignment. You think the dev knows what you want. Then you see what they've built - and you realize it didn't understand you at all.
+See the `write-a-skill` skill for a detailed template.
 
-This is just the same in the AI age. There is a communication gap between you and the agent. The fix for this is a **grilling session** - getting the agent to ask you detailed questions about what you're building.
+## Modifying an Existing Skill
 
-**The Fix** is to use:
-* `grill-me` - for non-code uses
-* `grill-with-docs` - same as `grill-me`, but adds more goodies (see below)
+1. Edit the canonical copy only:
+   ```bash
+   # Good
+   nvim ~/.dotfiles/agents-skills/skills/<skill-name>/SKILL.md
 
-These are my most popular skills. They help you align with the agent before you get started, and think deeply about the change you're making. Use them *every* time you want to make a change.
+   # Bad — do not edit through a symlink target thinking it is separate
+   nvim ~/.config/kiro/skills/<skill-name>/SKILL.md   # same file, fine
+   ```
+2. Never create kiro-specific or pi-specific copies. If a skill needs environment-aware behavior, handle the branch inside the skill instructions.
 
-### #2: The Agent Is Way Too Verbose
+## Troubleshooting
 
-**The Problem**: At the start of a project, devs and the people they're building the software for (the domain experts) are usually speaking different languages.
+| Symptom | Fix |
+|---------|-----|
+| Kiro/pi don't see a new skill | Check that `~/.config/kiro/skills` and `~/.pi/agent/skills` are symlinks, not real directories. |
+| Symlink was replaced with a real dir by an update | Re-run the setup commands above. |
+| Skill content differs between kiro and pi | You have duplicate copies. Delete all non-canonical skill dirs and re-create symlinks. |
+| `readlink` returns wrong path | Remove the symlink and recreate it pointing to `~/.dotfiles/agents-skills/skills`. |
 
-I felt the same tension with my agents. Agents are usually dropped into a project and asked to figure out the jargon as they go. So they use 20 words where 1 will do.
+## History
 
-**The Fix** for this is a shared language. It's a document that helps agents decode the jargon used in the project.
+This repo evolved from a standalone `kiro-skills` directory into `agents-skills` so that kiro and pi share one source of truth. The previous duplicate copies across `~/.dotfiles/kiro/.config/kiro/skills/` and `~/.dotfiles/pi/.config/pi/agent/skills/` were removed and replaced with symlinks.
 
-Example
-
-Here's an example `CONTEXT.md`, from my `course-video-manager` repo. Which one is easier to read?
-* **BEFORE**: "There's a problem when a lesson inside a section of a course is made 'real' (i.e. given a spot in the file system)"
-* **AFTER**: "There's a problem with the materialization cascade"
-
-This concision pays off session after session.
-
-This is built into `grill-with-docs`. It's a grilling session, but that helps you build a shared language with the AI, and document hard-to-explain decisions in ADR's.
-
-It's hard to explain how powerful this is. It might be the single coolest technique in this repo. Try it, and see.
-
-Tip
-
-A shared language has many other benefits than reducing verbosity:
-* **Variables, functions and files are named consistently**, using the shared language
-* As a result, the **codebase is easier to navigate** for the agent
-* The agent also **spends fewer tokens on thinking**, because it has access to a more concise language
-
-### #3: The Code Doesn't Work
-
-**The Problem**: Let's say that you and the agent are aligned on what to build. What happens when the agent *still* produces crap?
-
-It's time to look at your feedback loops. Without feedback on how the code it produces actually runs, the agent will be flying blind.
-
-**The Fix**: You need the usual tranche of feedback loops: static types, browser access, and automated tests.
-
-For automated tests, a red-green-refactor loop is critical. This is where the agent writes a failing test first, then fixes the test. This helps give the agent a consistent level of feedback that results in far better code.
-
-I've built a **`tdd` skill** you can slot into any project. It encourages red-green-refactor and gives the agent plenty of guidance on what makes good and bad tests.
-
-For debugging, I've also built a **`diagnose`** skill that wraps best debugging practices into a simple loop.
-
-### #4: We Built A Ball Of Mud
-
-**The Problem**: Most apps built with agents are complex and hard to change. Because agents can radically speed up coding, they also accelerate software entropy. Codebases get more complex at an unprecedented rate.
-
-**The Fix** for this is a radical new approach to AI-powered development: caring about the design of the code.
-
-This is built in to every layer of these skills:
-* `to-prd` quizzes you about which modules you're touching before creating a PRD
-* `zoom-out` tells the agent to explain code in the context of the whole system
-
-And crucially, `improve-codebase-architecture` helps you rescue a codebase that has become a ball of mud. I recommend running it on your codebase once every few days.
-
-### Summary
-
-Software engineering fundamentals matter more than ever. These skills are my best effort at condensing these fundamentals into repeatable practices, to help you ship the best apps of your career. Enjoy.
-
-## Reference
-
-### Engineering
-
-Skills I use daily for code work.
-* **diagnose** — Disciplined diagnosis loop for hard bugs and performance regressions: reproduce → minimise → hypothesise → instrument → fix → regression-test.
-* **grill-with-docs** — Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates `CONTEXT.md` and ADRs inline.
-* **triage** — Triage issues through a state machine of triage roles.
-* **improve-codebase-architecture** — Find deepening opportunities in a codebase, informed by the domain language in `CONTEXT.md` and the decisions in `docs/adr/`.
-* **setup-skills** — Scaffold the per-repo config (issue tracker, triage label vocabulary, domain doc layout) that the other engineering skills consume. Run once per repo before using `to-issues`, `to-prd`, `triage`, `diagnose`, `tdd`, `improve-codebase-architecture`, or `zoom-out`.
-* **tdd** — Test-driven development with a red-green-refactor loop. Builds features or fixes bugs one vertical slice at a time.
-* **to-issues** — Break any plan, spec, or PRD into independently-grabbable GitHub issues using vertical slices.
-* **to-prd** — Turn the current conversation context into a PRD and submit it as a GitHub issue. No interview — just synthesizes what you've already discussed.
-* **zoom-out** — Tell the agent to zoom out and give broader context or a higher-level perspective on an unfamiliar section of code.
-* **prototype** — Build a throwaway prototype to answer a design question — either a runnable terminal app for state/business-logic questions, or several radically different UI variations toggleable from one route.
-
-### Productivity
-
-General workflow tools, not code-specific.
-* **caveman** — Ultra-compressed communication mode. Cuts token usage ~75% by dropping filler while keeping full technical accuracy.
-* **grill-me** — Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved.
-* **handoff** — Compact the current conversation into a handoff document so another agent can continue the work.
-* **write-a-skill** — Create new skills with proper structure, progressive disclosure, and bundled resources.
-
-### Misc
-
-Tools I keep around but rarely use.
-* **git-guardrails** — Set up kiro-cli hooks to block dangerous git commands (push, reset --hard, clean, etc.) before they execute.
-* **migrate-to-shoehorn** — Migrate test files from `as` type assertions to @total-typescript/shoehorn.
-* **scaffold-exercises** — Create exercise directory structures with sections, problems, solutions, and explainers.
-* **setup-pre-commit** — Set up Husky pre-commit hooks with lint-staged, Prettier, type checking, and tests.
-
-## About
-
-Skills for Real Engineers. Adapted from Matt Pocock's skills repo for kiro-cli.
-
-### Resources
-
-* [Original Matt Pocock skills repo](https://github.com/mattpocock/skills)
-* [Kiro CLI documentation](https://kiro.dev/docs/cli/)
-
-### License
-
-MIT license
+See `AGENTS.md` for the current agent definitions and skill catalog.

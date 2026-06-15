@@ -1,259 +1,203 @@
 #!/bin/bash
 set -e
 
-# Colors for output
+# Setup script for agents-skills
+# Creates symlinks from kiro/pi skill directories to the canonical source.
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Paths
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-KIRO_SKILLS_DIR="$HOME/.config/kiro/skills"
-SKILLS_SRC_DIR="$REPO_ROOT/skills"
+CANONICAL_DIR="$REPO_ROOT/skills"
 
-# Check if kiro-cli is installed
-check_kiro_installed() {
-    if ! command -v kiro-cli &> /dev/null; then
-        echo -e "${RED}Error: kiro-cli is not installed or not in PATH${NC}"
-        echo "Install kiro-cli first: https://kiro.dev/docs/cli/installation/"
-        exit 1
-    fi
-}
+# All locations that should resolve to the canonical skills directory.
+# Format: "target_dir|relative_symlink_path"
+# The relative path is computed from target_dir's *physical* parent back to
+# CANONICAL_DIR. Note that ~/.config/kiro and ~/.kiro are themselves symlinks
+# into ~/.dotfiles/kiro/, so their skill paths share inodes with the dotfiles
+# paths below and are intentionally omitted.
+LINK_TARGETS=(
+    "$HOME/.dotfiles/kiro/.config/kiro/skills|../../../agents-skills/skills"
+    "$HOME/.dotfiles/kiro/.kiro/skills|../../agents-skills/skills"
+    "$HOME/.dotfiles/pi/.config/pi/agent/skills|../../../../agents-skills/skills"
+    "$HOME/.pi/agent/skills|../../.dotfiles/agents-skills/skills"
+)
 
-# Find all skills in the repo
-find_skills() {
-    find "$SKILLS_SRC_DIR" -name "SKILL.md" -type f | while read -r skill_file; do
-        local skill_dir="$(dirname "$skill_file")"
+# List all skills in the canonical directory
+list_skills() {
+    echo -e "${BLUE}Available skills (${CANONICAL_DIR}):${NC}"
+    echo "================================"
+
+    local count=0
+    for skill_dir in "$CANONICAL_DIR"/*/; do
+        [[ -f "$skill_dir/SKILL.md" ]] || continue
         local skill_name="$(basename "$skill_dir")"
-        local category="$(basename "$(dirname "$skill_dir")")"
-        echo "$category:$skill_name:$skill_dir"
+        local description="$(get_skill_description "$skill_dir")"
+        echo -e "  ${GREEN}$skill_name${NC}"
+        echo -e "    ${YELLOW}$description${NC}"
+        ((count++))
     done
+
+    echo ""
+    echo -e "Total: ${GREEN}$count${NC} skills"
 }
 
-# Extract description from SKILL.md
+# Extract description from SKILL.md YAML frontmatter
 get_skill_description() {
     local skill_dir="$1"
     local skill_file="$skill_dir/SKILL.md"
-    
+
     if [[ -f "$skill_file" ]]; then
-        # Extract description from YAML frontmatter
-        awk '/^description:/ {print substr($0, index($0, $2)); exit}' "$skill_file" 2>/dev/null || echo "No description"
+        awk '/^description:/ {sub(/^description:[[:space:]]*/, ""); print; exit}' "$skill_file" 2>/dev/null || echo "No description"
     else
         echo "No SKILL.md found"
     fi
 }
 
-# List all available skills
-list_skills() {
-    echo -e "${BLUE}Available skills:${NC}"
-    echo "=================="
-    
-    for category in engineering productivity misc; do
-        local category_dir="$SKILLS_SRC_DIR/$category"
-        [[ -d "$category_dir" ]] || continue
-        
-        local has_skills=0
-        for skill_dir in "$category_dir"/*/; do
-            [[ -f "$skill_dir/SKILL.md" ]] && has_skills=1 && break
-        done
-        [[ $has_skills -eq 0 ]] && continue
-        
-        echo -e "\n${GREEN}$(echo "$category" | tr '[:lower:]' '[:upper:]'):${NC}"
-        for skill_dir in "$category_dir"/*/; do
-            [[ -f "$skill_dir/SKILL.md" ]] || continue
-            local skill_name="$(basename "$skill_dir")"
-            local installed=""
-            if [[ -L "$KIRO_SKILLS_DIR/$skill_name" ]]; then
-                installed=" ${GREEN}✓${NC}"
+# Create or repair symlinks for all configured locations
+setup_links() {
+    echo -e "${BLUE}Setting up agents-skills symlinks...${NC}"
+
+    local fixed=0
+    for entry in "${LINK_TARGETS[@]}"; do
+        local target="${entry%%|*}"
+        local rel_link="${entry##*|}"
+
+        # Create parent directory if it doesn't exist
+        local parent
+        parent="$(dirname "$target")"
+        mkdir -p "$parent"
+
+        if [[ -L "$target" ]]; then
+            local current_link
+            current_link="$(readlink "$target")"
+            if [[ "$current_link" == "$rel_link" ]]; then
+                echo -e "  ${GREEN}✓${NC} $target"
+                continue
+            else
+                echo -e "  ${YELLOW}↻${NC} $target (wrong target: $current_link)"
+                rm "$target"
             fi
-            local description="$(get_skill_description "$skill_dir")"
-            echo -e "  $skill_name$installed"
-            echo -e "    ${YELLOW}$description${NC}"
-        done
+        elif [[ -e "$target" ]]; then
+            echo -e "  ${YELLOW}⚠${NC} $target exists as real file/dir — moving to $target.backup"
+            mv "$target" "$target.backup"
+        fi
+
+        ln -s "$rel_link" "$target"
+        echo -e "  ${GREEN}✓${NC} $target -> $rel_link"
+        ((fixed++))
     done
+
+    echo ""
+    echo -e "${GREEN}Done.${NC} $fixed new/repaired symlinks."
 }
 
-# Install a skill
-install_skill() {
-    local skill_name="$1"
-    local skill_dir="$2"
-    
-    if [[ -z "$skill_dir" ]]; then
-        # Find skill by name
-        skill_dir=""
-        while IFS=: read -r category found_name found_dir; do
-            if [[ "$found_name" == "$skill_name" ]]; then
-                skill_dir="$found_dir"
-                break
-            fi
-        done < <(find_skills)
-        
-        if [[ -z "$skill_dir" ]]; then
-            echo -e "${RED}Error: Skill '$skill_name' not found${NC}"
-            return 1
-        fi
-    fi
-    
-    local target="$KIRO_SKILLS_DIR/$skill_name"
-    
-    # Check if already installed
-    if [[ -L "$target" ]]; then
-        local current_link="$(readlink "$target")"
-        if [[ "$current_link" == "$skill_dir" ]]; then
-            echo -e "${YELLOW}Skill '$skill_name' is already installed${NC}"
-            return 0
-        else
-            echo -e "${YELLOW}Skill '$skill_name' is already installed from different source${NC}"
-            echo -e "  Current: $current_link"
-            echo -e "  New: $skill_dir"
-            read -p "Overwrite? (y/N): " -n 1 -r
-            echo
-            [[ ! $REPLY =~ ^[Yy]$ ]] && return 0
-        fi
-    fi
-    
-    # Create symlink
-    mkdir -p "$KIRO_SKILLS_DIR"
-    ln -sfn "$skill_dir" "$target"
-    echo -e "${GREEN}Installed skill '$skill_name'${NC}"
-}
-
-# Install all skills
-install_all() {
-    echo -e "${BLUE}Installing all skills...${NC}"
-    local count=0
-    
-    while IFS=: read -r category skill_name skill_dir; do
-        if install_skill "$skill_name" "$skill_dir"; then
-            ((count++))
-        fi
-    done < <(find_skills)
-    
-    echo -e "${GREEN}Installed $count skills${NC}"
-}
-
-# Install by category
-install_category() {
-    local target_category="$1"
-    echo -e "${BLUE}Installing $target_category skills...${NC}"
-    local count=0
-    
-    while IFS=: read -r category skill_name skill_dir; do
-        if [[ "$category" == "$target_category" ]]; then
-            if install_skill "$skill_name" "$skill_dir"; then
-                ((count++))
-            fi
-        fi
-    done < <(find_skills)
-    
-    echo -e "${GREEN}Installed $count $target_category skills${NC}"
-}
-
-# Uninstall a skill
-uninstall_skill() {
-    local skill_name="$1"
-    local target="$KIRO_SKILLS_DIR/$skill_name"
-    
-    if [[ -L "$target" ]]; then
-        rm "$target"
-        echo -e "${GREEN}Uninstalled skill '$skill_name'${NC}"
-    else
-        echo -e "${YELLOW}Skill '$skill_name' is not installed${NC}"
-    fi
-}
-
-# Show status
+# Show status of all configured locations and installed skills
 show_status() {
-    echo -e "${BLUE}Installed skills:${NC}"
-    echo "================="
-    
-    if [[ ! -d "$KIRO_SKILLS_DIR" ]]; then
-        echo "No skills installed"
-        return
-    fi
-    
-    local found=0
-    for skill_link in "$KIRO_SKILLS_DIR"/*; do
-        if [[ -L "$skill_link" ]]; then
-            local skill_name="$(basename "$skill_link")"
-            local source="$(readlink "$skill_link")"
-            local description="$(get_skill_description "$source")"
-            
-            echo -e "${GREEN}$skill_name${NC}"
-            echo -e "  Source: $source"
-            echo -e "  Description: ${YELLOW}$description${NC}"
-            echo
-            found=1
+    echo -e "${BLUE}Symlink status:${NC}"
+    echo "==============="
+
+    local all_ok=1
+    for entry in "${LINK_TARGETS[@]}"; do
+        local target="${entry%%|*}"
+        local expected="${entry##*|}"
+
+        if [[ -L "$target" ]]; then
+            local current_link
+            current_link="$(readlink "$target")"
+            if [[ "$current_link" == "$expected" ]]; then
+                echo -e "  ${GREEN}✓${NC} $target -> $current_link"
+            else
+                echo -e "  ${YELLOW}⚠${NC} $target -> $current_link (expected: $expected)"
+                all_ok=0
+            fi
+        elif [[ -e "$target" ]]; then
+            echo -e "  ${RED}✗${NC} $target is a real file/dir, not a symlink"
+            all_ok=0
+        else
+            echo -e "  ${RED}✗${NC} $target missing"
+            all_ok=0
         fi
     done
-    
-    if [[ $found -eq 0 ]]; then
-        echo "No skills installed"
+
+    echo ""
+    if [[ $all_ok -eq 1 ]]; then
+        echo -e "${GREEN}All symlinks OK.${NC}"
+    else
+        echo -e "${YELLOW}Run '$0 setup' to repair.${NC}"
     fi
+
+    echo ""
+    echo -e "${BLUE}Skills in canonical directory:${NC} $(ls -1 "$CANONICAL_DIR"/*/SKILL.md 2>/dev/null | wc -l | tr -d ' ')"
 }
 
-# Main
+# Verify that all symlinked locations can read the same skill files
+verify() {
+    echo -e "${BLUE}Verifying skill visibility...${NC}"
+
+    local first_count
+    first_count=$(ls "$CANONICAL_DIR" | wc -l | tr -d ' ')
+
+    # Check runtime access paths (kiro is reached through ~/.config/kiro which
+    # symlinks into ~/.dotfiles/kiro/.config/kiro).
+    local check_paths=(
+        "$HOME/.config/kiro/skills"
+        "$HOME/.kiro/skills"
+        "$HOME/.pi/agent/skills"
+    )
+
+    for target in "${check_paths[@]}"; do
+        if [[ ! -e "$target" ]]; then
+            echo -e "  ${RED}✗${NC} $target missing"
+            continue
+        fi
+        local count
+        count=$(ls "$target" | wc -l | tr -d ' ')
+        if [[ "$count" == "$first_count" ]]; then
+            echo -e "  ${GREEN}✓${NC} $target -> $count skills"
+        else
+            echo -e "  ${RED}✗${NC} $target -> $count skills (expected $first_count)"
+        fi
+    done
+}
+
+# Print usage
+usage() {
+    echo -e "${BLUE}agents-skills setup${NC}"
+    echo "===================="
+    echo "Commands:"
+    echo "  list       - List all available skills"
+    echo "  setup      - Create/repair all symlinks to the canonical source"
+    echo "  status     - Show symlink and skill status"
+    echo "  verify     - Verify kiro/pi see the same skills"
+    echo ""
+    echo "Examples:"
+    echo "  $0 list"
+    echo "  $0 setup"
+    echo "  $0 status"
+    echo "  $0 verify"
+}
+
 main() {
-    check_kiro_installed
-    
     case "${1:-}" in
         list)
             list_skills
             ;;
-        install)
-            case "${2:-}" in
-                --all)
-                    install_all
-                    ;;
-                --category)
-                    if [[ -z "${3:-}" ]]; then
-                        echo -e "${RED}Error: Category required${NC}"
-                        echo "Usage: $0 install --category <engineering|productivity|misc>"
-                        exit 1
-                    fi
-                    install_category "$3"
-                    ;;
-                *)
-                    if [[ -z "${2:-}" ]]; then
-                        echo -e "${RED}Error: Skill name required${NC}"
-                        echo "Usage: $0 install <skill-name>"
-                        exit 1
-                    fi
-                    install_skill "$2"
-                    ;;
-            esac
-            ;;
-        uninstall)
-            if [[ -z "${2:-}" ]]; then
-                echo -e "${RED}Error: Skill name required${NC}"
-                echo "Usage: $0 uninstall <skill-name>"
-                exit 1
-            fi
-            uninstall_skill "$2"
+        setup)
+            setup_links
+            verify
             ;;
         status)
             show_status
             ;;
+        verify)
+            verify
+            ;;
         *)
-            echo -e "${BLUE}kiro-skills installer${NC}"
-            echo "======================"
-            echo "Commands:"
-            echo "  list                    - List all available skills"
-            echo "  install <skill>         - Install specific skill"
-            echo "  install --all           - Install all skills"
-            echo "  install --category <cat>- Install all skills in category"
-            echo "  uninstall <skill>       - Uninstall skill"
-            echo "  status                  - Show installed skills"
-            echo ""
-            echo "Examples:"
-            echo "  $0 list"
-            echo "  $0 install tdd"
-            echo "  $0 install --category engineering"
-            echo "  $0 install --all"
-            echo "  $0 uninstall tdd"
-            echo "  $0 status"
+            usage
             ;;
     esac
 }

@@ -61,6 +61,9 @@ kiro/.kiro/.cli_bash_history
 pi/.config/pi/agent/auth.json
 pi/.config/pi/agent/sessions/
 
+# Local backups created during dotfile reorganization
+.backups/
+
 # OpenCode - ignore auth files
 shellscript/.local/share/opencode/auth.json
 

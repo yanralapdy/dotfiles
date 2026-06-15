@@ -86,19 +86,19 @@ stow kiro pi   # symlinks ~/.kiro, ~/.config/kiro, and ~/.config/pi
 ```
 Agent skill references use `~`, so they resolve on any machine.
 
-# Kiro Skills (Optional)
+# Agent Skills (Optional)
 
-The `kiro-skills/` directory contains adapted skills from Matt Pocock's skills repository, formatted for kiro-cli:
+The `agents-skills/` directory is the single canonical home for skills used by both **kiro** and **pi**. Skills are adapted from Matt Pocock's skills repository and formatted for kiro-cli / pi.
 
 ```bash
-cd ~/.dotfiles/kiro-skills
-./scripts/install.sh list          # See available skills
-./scripts/install.sh install tdd   # Install specific skill
-./scripts/install.sh install --all # Install everything
+cd ~/.dotfiles/agents-skills
+./scripts/install.sh list    # See available skills
+./scripts/install.sh setup   # Create symlinks for kiro and pi
+./scripts/install.sh status  # Verify symlinks
 ```
 
 Skills include engineering workflows (`tdd`, `diagnose`, `grill-with-docs`), productivity tools (`caveman`, `handoff`), and misc utilities (`git-guardrails`, `setup-pre-commit`).
 
-Run `install.sh install --all` once on each machine (macOS and WSL) to create the `~/.kiro/skills` symlinks.
+Run `./scripts/install.sh setup` once on each machine (macOS and WSL) to create the `~/.config/kiro/skills` and `~/.pi/agent/skills` symlinks.
 
 Enjoy a clean, portable, and maintainable dotfiles setup!
