@@ -225,14 +225,6 @@ return {
         end,
     },
 
-    -- Pi-Nvim: Send code from Neovim to Pi coding agent
-    {
-        "carderne/pi-nvim",
-        config = function()
-            require("pi-nvim").setup()
-        end,
-    },
-
     {
         "OXY2DEV/markview.nvim",
         lazy = false,
