@@ -1,13 +1,10 @@
 {
-  "lastChangelogVersion": "0.79.4",
+  "lastChangelogVersion": "0.79.6",
   "defaultProvider": "opencode-go",
-  "defaultModel": "mimo-v2.5",
+  "defaultModel": "deepseek-v4-pro",
   "defaultThinkingLevel": "high",
   "skills": [
     "~/.config/kiro/skills"
-  ],
-  "packages": [
-    "https://github.com/carderne/pi-nvim"
   ],
   "extensions": [
     "~/.config/pi/agent/extensions/plan-mode/index.ts",

@@ -17,6 +17,12 @@ plugins=(
     zsh-syntax-highlighting
 )
 
+# Fix broken docker completion symlink (WSL)
+if [[ -L /usr/share/zsh/vendor-completions/_docker ]] && [[ ! -f /usr/share/zsh/vendor-completions/_docker ]]; then
+    rm /usr/share/zsh/vendor-completions/_docker 2>/dev/null
+fi
+fpath=(~/.zsh/completions $fpath)
+
 source $ZSH/oh-my-zsh.sh
 
 # Detect OS
@@ -30,7 +36,7 @@ esac
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  export EDITOR='nvim'
+  export EDITOR="$HOME/.local/nvim/bin/nvim"
 fi
 
 # ============ ALIASES ============
@@ -54,8 +60,8 @@ alias dart='fvm dart'
 alias f2v='vim $(fzf -m --preview="bat --color=always {}")'
 alias tns='~/.local/scripts/tmux-new-session'
 alias cnmt='curl --connect-timeout 0 --max-time 0'
-alias vim='NVIM_APPNAME=nvim nvim'
-alias code='NVIM_APPNAME=nvim nvim'
+alias vim='NVIM_APPNAME=nvim ~/.local/nvim/bin/nvim'
+alias code='NVIM_APPNAME=nvim ~/.local/nvim/bin/nvim'
 alias g++='clang++ -std=c++17'
 
 # ============ PATH CONFIGURATION ============
@@ -83,7 +89,7 @@ if [[ "$OS" == "macOS" ]]; then
         export PATH="$PATH:/usr/local/mysql-8.0.32-macos13-arm64/bin"
     fi
 elif [[ "$OS" == "Linux" ]]; then
-    export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/.local/bin"
+    export PATH="$HOME/.local/nvim/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/.local/bin"
     
     # Linuxbrew paths
     if [[ -d "/home/linuxbrew/.linuxbrew/bin" ]]; then
@@ -156,7 +162,18 @@ export DOCKER_CONFIG="$HOME/.config/docker"
 
 # ============ FUZZY FINDER ============
 if command -v fzf &> /dev/null; then
-    source <(fzf --zsh)
+    # Load fzf shell integration (OS-aware paths)
+    if fzf --zsh &>/dev/null 2>&1; then
+        source <(fzf --zsh)
+    elif [[ "$OS" == "Linux" ]] && [[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]]; then
+        source /usr/share/doc/fzf/examples/key-bindings.zsh
+    elif [[ "$OS" == "Linux" ]] && [[ -f /usr/share/fzf/key-bindings.zsh ]]; then
+        source /usr/share/fzf/key-bindings.zsh
+    elif [[ "$OS" == "macOS" ]] && [[ -f /opt/homebrew/opt/fzf/shell/key-bindings.zsh ]]; then
+        source /opt/homebrew/opt/fzf/shell/key-bindings.zsh
+    elif [[ -f ~/.fzf.zsh ]]; then
+        source ~/.fzf.zsh
+    fi
 fi
 
 # ============ ZOXIDE ============
@@ -213,3 +230,4 @@ export BU_CDP_URL="http://127.0.0.1:9222"
 
 # Kiro CLI post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
+. "$HOME/.cargo/env"
