@@ -1,7 +1,7 @@
 {
-  "lastChangelogVersion": "0.79.6",
+  "lastChangelogVersion": "0.79.8",
   "defaultProvider": "opencode-go",
-  "defaultModel": "deepseek-v4-pro",
+  "defaultModel": "minimax-m3",
   "defaultThinkingLevel": "high",
   "skills": [
     "~/.config/kiro/skills"
@@ -15,5 +15,6 @@
   "terminal.imageWidthCells": 60,
   "images.autoResize": true,
   "images.blockImages": false,
-  "theme": "dark"
+  "theme": "dark",
+  "packages": []
 }

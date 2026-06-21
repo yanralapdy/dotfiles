@@ -11,6 +11,12 @@ description: >
   or any situation where a discussion or review needs to be turned into structured, executable
   instructions for an agent. Always use this skill when the user has had a substantial conversation
   and wants to capture its output as a plan — even if they just say "plan this" or "plan it out".
+
+  Also generates multi-agent pi-peer prompts (builder, tester, reviewer) from completed plans.
+  Triggers include: "create agent prompts for this plan", "set up pi-peer for this plan",
+  "generate builder/tester prompts", "create pi-peer workflow", "wire up agents for this plan",
+  "I want agents to execute this", "set up multi-agent for this plan", or when the user asks
+  to have a plan executed by multiple agents with pi-peer communication.
 ---
 
 # Session Planner
@@ -21,6 +27,16 @@ plan with clean directory structure and deep implementation detail.
 The output must be so complete that a fresh agent, reading only the plan files, can execute the
 work without asking follow-up questions. Every ambiguity should be resolved in the plan. Every
 decision should be documented with its rationale.
+
+Optionally, generates pi-peer agent prompts so the plan can be executed by a team of peer agents
+(builder → tester → reviewer) communicating through the pi-peer extension. See Step 6.
+
+Write every plan as if you are explaining the work to a junior developer who is competent but
+brand new to this codebase. Assume they understand code — but do not assume they know this
+project's conventions, history, or unwritten rules. Define any project-specific terms the first
+time they appear. Always explain the *why* behind a step, not just the *what*. If something
+feels obvious, write it anyway — misunderstood "obvious" steps are the most common reason
+plans fail in execution. Never use phrases like "as usual", "simply", or "of course".
 
 ---
 
@@ -37,6 +53,8 @@ Before doing anything, determine the session type and read the corresponding ref
 Also read `references/directory-structure.md` — it defines the canonical output layout.
 
 If the session is mixed (e.g., started casual, turned into a grill-me), read both files and blend.
+
+If the user expects multi-agent execution, also read `references/pi-peer-workflow.md`.
 
 ---
 
@@ -60,6 +78,11 @@ they already said — find it. Build an internal model of:
 **Emotional and priority signals**
 - What did the person seem most energized or worried about?
 - Were there any "definitely must do" vs "would be nice" signals?
+
+**Multi-agent signals** (for Step 6)
+- Did the user mention wanting agents, automation, or delegation?
+- Did they reference pi-peer, builder, tester, or reviewer roles?
+- Is the plan large enough (>5 tasks, multiple skill domains) to benefit from agent splitting?
 
 If critical context is missing (no project name, no clear scope), ask ONE targeted question before
 proceeding. Don't hold up the whole plan for minor details — use `[TBD: description]` placeholders.
@@ -148,6 +171,12 @@ Before creating any file, do a silent self-review:
 
 If any box is unchecked, fill the gap before writing.
 
+**If generating pi-peer agent prompts (Step 6), also check:**
+- [ ] Does each task map to test cases the tester can independently run?
+- [ ] Are task dependencies clear enough to serialize for the builder?
+- [ ] Does the plan include enough stack/architecture detail for the reviewer?
+- [ ] Are "out of scope" items clearly marked so agents don't stray?
+
 ---
 
 ## Step 5 — Output the files
@@ -164,6 +193,102 @@ anything that needs attention.
 
 ---
 
+## Step 6 — Optionally generate pi-peer agent prompts
+
+If the user intends the plan to be executed by multiple agents (or if you detect that the
+plan's size and skill domains warrant it), generate pi-peer agent prompts that let a builder,
+tester, and reviewer agent collaborate through the pi-peer extension.
+
+**Read `references/pi-peer-workflow.md`** before generating prompts. It contains the full
+template, communication protocol, and directory conventions.
+
+### When to generate agent prompts
+
+Generate prompts when:
+- The user explicitly asks ("set up pi-peer agents", "multi-agent this plan", "create builder/tester prompts")
+- The plan has 5+ tasks spanning multiple skill domains
+- The user mentioned agents, delegation, or automation during the session
+- The plan's testing strategy benefits from independent verification
+
+Skip prompts when:
+- The plan is a single-task fix
+- The plan is purely informational (documentation, research notes)
+- There's no clear testing strategy (cannot build a tester prompt)
+
+### Agent role assignment
+
+Map the plan's content to agent roles dynamically based on what skills are needed:
+
+| Role | Purpose | Skills to assign | Derived from |
+|------|---------|-----------------|--------------|
+| **Builder** | Implements tasks from the plan | Implementation skills (e.g., react-patterns, laravel-best-practices, vue3-composition-api, tdd, refactoring, doctree) + caveman | The plan's tech stack and task files |
+| **Tester** | Verifies each task against test cases | Testing skills (e.g., testing, spec-tester, diagnose, browser-harness) + caveman | The plan's testing file |
+| **Reviewer** | Reviews complete work for architecture, performance, security | Quality skills (e.g., architecture-review, performance-optimization, security-review, zoom-out) + caveman | The plan's architecture and risk register |
+
+Always include `caveman` for all three — it saves tokens in pi-peer communication.
+
+If the user specifies custom skill assignments, use those instead.
+
+### Directory for pi-peer prompts
+
+```
+~/brain-dump/pi-peer-prompts/
+└── <project-name>/
+    └── <feature-name>/
+        ├── builder-agent.md
+        ├── tester-agent.md
+        ├── reviewer-agent.md
+        └── feedback-*.md   ← created at runtime by tester/reviewer
+```
+
+### Generating the prompts
+
+For each agent prompt, fill in the template from `references/pi-peer-workflow.md`:
+
+1. **Map plan files to agent knowledge**: Each agent needs specific plan files:
+   - Builder: `plan.md`, context, tasks, architecture, decisions — everything needed to implement
+   - Tester: `plan.md`, requirements, tasks (for "Done when" checklists), testing, context
+   - Reviewer: `plan.md`, architecture, context, risk register, tasks (for what was built), open decisions
+
+2. **Map tasks to test cases**: Create explicit task→test-case mappings for the tester
+
+3. **Determine skills**: Pick from the available skills list based on the plan's stack:
+   - Builder: implementation skills matching the tech stack
+   - Tester: `testing` + stack-appropriate verification skills
+   - Reviewer: `architecture-review` + `performance-optimization` + `security-review`
+
+4. **Fill in project info**: Repo path, build command, stack description, config details
+
+5. **Wire the communication protocol**: Each agent prompt must contain the full pi-peer protocol
+   so the agent knows how to start up, notify peers, handle feedback, and escalate.
+
+6. **Add guardrails**: Anti-stray rules — out of scope features, iteration limits, escalation path.
+
+### Agent workflow
+
+```
+Builder implements T-01 → verifies → peer_send "T-01 done" → Tester tests
+  → PASS: builder moves to T-02
+  → FAIL: tester creates feedback-T-01.md → builder fixes → re-test
+[Repeat for all tasks]
+  → All tasks pass → Builder notifies Reviewer
+    → Reviewer does architecture/performance/security review
+    → PASS: build complete 🎉
+    → FAIL: reviewer creates feedback-review-NN.md → builder fixes → re-review
+```
+
+Max 3 iterations per issue before human escalation.
+
+### After generating prompts
+
+Confirm to the user:
+- Where the agent prompts are saved (`~/brain-dump/pi-peer-prompts/<project>/<feature>/`)
+- How many agents were configured (2 or 3)
+- The startup command for each agent session: `pi -e ~/.pi/extensions/pi-peer/index.ts`
+- Which plan files each agent should read on startup
+
+---
+
 ## Writing style
 
 Plans are written for an agent, not for a human manager. That means:
@@ -173,6 +298,26 @@ Plans are written for an agent, not for a human manager. That means:
 - Prefer concrete over abstract ("debounce at 300ms" over "add debouncing")
 - Short sentences. No filler.
 - Organize with headers and numbered lists; this is navigation material
+
+**Write as if teaching a junior developer.** This is the single most important writing
+principle in this skill. Concretely, that means:
+
+- **Define terms on first use.** If you reference `the event bus`, add a one-liner: "the
+  event bus (our internal pub/sub system in `src/events/`) ". Never assume the reader
+  knows what a project-specific term means.
+- **Explain the why, not just the what.** Don't write "Add an index on `user_id`." Write
+  "Add an index on `user_id` — without it, this query will do a full table scan and will
+  time out at production row counts."
+- **Spell out the full command or path.** Not "run the migration script" — write
+  `npm run migrate -- --env staging` and explain what it does.
+- **State what correct output looks like.** After each step, tell the reader what they
+  should see if it worked: "You should see `✅ Migration applied: 0023_add_user_index`
+  in the terminal. If you see an error about a missing table, see the Troubleshooting
+  section."
+- **Never use "simply", "just", "obviously", or "as usual".** These words skip over the
+  exact thing a junior developer needs to understand. Remove them on sight.
+- **When in doubt, over-explain.** A senior developer can skim past detail. A junior
+  developer cannot invent detail that isn't there.
 
 ---
 
@@ -185,3 +330,4 @@ Plans are written for an agent, not for a human manager. That means:
 | `references/casual-session.md` | Session was a brainstorm or informal discussion |
 | `references/directory-structure.md` | Always — defines output layout conventions |
 | `references/plan-detail-templates.md` | When writing individual plan-details files |
+| `references/pi-peer-workflow.md` | When generating multi-agent pi-peer prompts (Step 6) |

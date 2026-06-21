@@ -1,0 +1,15 @@
+{
+  "name": "agent-4294236cafca",
+  "displayName": "Agent-agent-",
+  "socketPath": "/tmp/pi-peer/agent-4294236cafca.sock",
+  "pid": 35321,
+  "startedAt": 1781929485945,
+  "lastSeen": 1782069459710,
+  "status": "idle",
+  "cwd": "/home/thanurking",
+  "model": "minimax-m3",
+  "modelDisplayName": "MiniMax M3 (3x usage)",
+  "contextWindow": 512000,
+  "thinkingLevel": "high",
+  "contextUsed": 195620
+}

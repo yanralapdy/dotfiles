@@ -1,0 +1,15 @@
+{
+  "name": "agent-fae6a2a179a2",
+  "displayName": "Agent-agent-",
+  "socketPath": "/tmp/pi-peer/agent-fae6a2a179a2.sock",
+  "pid": 34965,
+  "startedAt": 1781928186376,
+  "lastSeen": 1782069459707,
+  "status": "idle",
+  "cwd": "/home/thanurking",
+  "model": "deepseek-v4-pro",
+  "modelDisplayName": "DeepSeek V4 Pro",
+  "contextWindow": 1000000,
+  "thinkingLevel": "high",
+  "contextUsed": 60416
+}
