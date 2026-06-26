@@ -105,6 +105,30 @@ Split into separate files when:
 - Content has distinct domains (finance vs sales schemas)
 - Advanced features are rarely needed
 
+## Leading Words
+
+A leading word is a compact concept already in the model's pretraining that anchors behavior. Use them to compress meaning into fewer tokens.
+
+**Examples:**
+- "fast, deterministic, low-overhead" → **tight**
+- "a loop you believe in" → **red** (goes red on the bug, or it doesn't)
+- "thorough review" → **relentless**
+
+**Rule:** Hunt for restated ideas and collapse them into one pretrained word. If you're explaining a concept in 3 sentences, find the one word that carries it.
+
+## No-Op Test
+
+Delete lines that don't change behavior versus the model's default.
+
+**Test:** Remove the sentence → does the agent's behavior change?
+- No → delete it (it's a no-op)
+- Yes → keep it
+
+**Common no-ops to cut:**
+- "Be thorough" (agent is already thorough-ish)
+- "Make sure to..." (redundant with doing)
+- Restating the same idea twice
+
 ## Review Checklist
 
 After drafting, verify:
@@ -115,3 +139,5 @@ After drafting, verify:
 - [ ] Consistent terminology
 - [ ] Concrete examples included
 - [ ] References one level deep
+- [ ] Leading words used (not restated phrases)
+- [ ] No-op test passed (every line changes behavior)

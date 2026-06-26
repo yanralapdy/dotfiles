@@ -1,22 +1,14 @@
 ---
 name: session-planner
 description: >
-  Converts a session (review, grill-me, or casual discussion) into a thorough, agent-executable
-  plan. Use this skill whenever a conversation, code review, interview, brainstorm, or informal
-  chat needs to produce a structured action plan that another agent or person can execute without
-  needing to re-read the session transcript. Triggers include: "create a plan from this session",
-  "turn this review into a plan", "write up an execution plan", "make a plan from our discussion",
-  "document what we talked about as tasks", "plan from grill-me", "plan from brainstorm", "plan
-  this out", "I need a plan", "convert this to actionable steps", "write an implementation plan",
-  or any situation where a discussion or review needs to be turned into structured, executable
-  instructions for an agent. Always use this skill when the user has had a substantial conversation
-  and wants to capture its output as a plan — even if they just say "plan this" or "plan it out".
-
-  Also generates multi-agent pi-peer prompts (builder, tester, reviewer) from completed plans.
-  Triggers include: "create agent prompts for this plan", "set up pi-peer for this plan",
-  "generate builder/tester prompts", "create pi-peer workflow", "wire up agents for this plan",
-  "I want agents to execute this", "set up multi-agent for this plan", or when the user asks
-  to have a plan executed by multiple agents with pi-peer communication.
+  Converts a session (review, grill-me, or casual) into an agent-executable plan. Use when a
+  conversation, review, interview, or brainstorm needs structured action steps another agent can
+  execute without re-reading the transcript. Triggers: "create a plan from this session", "turn
+  this review into a plan", "plan from grill-me", "plan this out", "I need a plan", "write an
+  implementation plan", or when user says "plan this" or "plan it out". Also generates multi-agent
+  pi-peer prompts (builder, tester, reviewer) from completed plans. Triggers: "create agent prompts
+  for this plan", "set up pi-peer for this plan", "generate builder/tester prompts", "set up
+  multi-agent for this plan", or when user wants a plan executed by multiple agents via pi-peer.
 ---
 
 # Session Planner

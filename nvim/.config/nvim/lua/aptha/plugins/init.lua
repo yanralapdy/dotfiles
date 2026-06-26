@@ -266,4 +266,14 @@ return {
             { "gkk", function() require("kiro.operator").send_line() end, desc = "Kiro: send line", silent = true },
         },
     },
+
+    {
+        -- ponytail: dir=local clone while iterating; switch to "yanralapdy/pi.nvim" once stable
+        dir = vim.fn.expand("~/Code/pi.nvim"),
+        name = "pi-nvim",
+        lazy = false,
+        cmd = { "PiAsk" },
+        dependencies = { "folke/snacks.nvim" },
+        opts = {},
+    },
 }

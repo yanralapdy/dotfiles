@@ -36,7 +36,11 @@ esac
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  export EDITOR="$HOME/.local/nvim/bin/nvim"
+  case "$OS" in
+    macOS)   export EDITOR="/opt/homebrew/bin/nvim";;
+    Linux)   export EDITOR="$HOME/.local/nvim/bin/nvim";;
+    *)       export EDITOR='vim';;
+  esac
 fi
 
 # ============ ALIASES ============
@@ -60,8 +64,8 @@ alias dart='fvm dart'
 alias f2v='vim $(fzf -m --preview="bat --color=always {}")'
 alias tns='~/.local/scripts/tmux-new-session'
 alias cnmt='curl --connect-timeout 0 --max-time 0'
-alias vim='NVIM_APPNAME=nvim ~/.local/nvim/bin/nvim'
-alias code='NVIM_APPNAME=nvim ~/.local/nvim/bin/nvim'
+alias vim="NVIM_APPNAME=nvim $EDITOR"
+alias code="NVIM_APPNAME=nvim $EDITOR"
 alias g++='clang++ -std=c++17'
 
 # ============ PATH CONFIGURATION ============
