@@ -268,9 +268,7 @@ return {
     },
 
     {
-        -- ponytail: dir=local clone while iterating; switch to "yanralapdy/pi.nvim" once stable
-        dir = vim.fn.expand("~/Code/pi.nvim"),
-        name = "pi-nvim",
+        "yanralapdy/pi.nvim",
         lazy = false,
         cmd = { "PiAsk" },
         dependencies = { "folke/snacks.nvim" },
