@@ -1,7 +1,7 @@
 {
-  "lastChangelogVersion": "0.80.2",
-  "defaultProvider": "opencode-go",
-  "defaultModel": "mimo-v2.5",
+  "lastChangelogVersion": "0.80.3",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.5",
   "defaultThinkingLevel": "high",
   "skills": [
     "~/.config/kiro/skills"
@@ -9,7 +9,8 @@
   "extensions": [
     "~/.config/pi/agent/extensions/plan-mode/index.ts",
     "~/.config/pi/agent/extensions/workflow-orchestrator.ts",
-    "~/.config/pi/agent/extensions/mode-switcher.ts"
+    "~/.config/pi/agent/extensions/mode-switcher.ts",
+    "~/sites/js/node/pi-kiro-models/index.ts"
   ],
   "terminal.showImages": true,
   "terminal.imageWidthCells": 60,

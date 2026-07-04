@@ -1,103 +1,77 @@
 ---
 name: coms-workflow
-description: Set up peer-to-peer agent workflows (builder+tester) using the coms extension. Use when creating multi-agent collaboration prompts, setting up build→test→feedback→fix loops, organizing coms-prompts directories, or when user mentions coms agents, builder/tester pairs, agent feedback loops, or peer-agent communication.
+description: Design and generate peer-to-peer agent teams (pair, trio, or arbitrary N-agent topologies) that collaborate via the coms extension. Use when creating multi-agent collaboration prompts, wiring build→test→review pipelines, adding a reviewer or planner or researcher to an existing pair, running parallel review passes, setting up on-demand consultants, or when the user mentions coms agents, builder/tester/reviewer, feedback loops, peer agents, or multi-agent workflows.
 ---
 
 # Coms Workflow
 
-Set up peer-level agent pairs that collaborate through the coms extension — no delegation, no hierarchy. The builder implements tasks from a plan; the tester verifies each task and creates structured feedback files when things fail. Both agents communicate via `coms_send` / `coms_await`.
+Design peer-to-peer agent teams that coordinate via the coms extension — no orchestrator, no hierarchy. Each agent runs in its own Pi session and communicates through `coms_send` / `coms_await`. Teams range from a **pair** (builder+tester) to a **trio** (add reviewer) to arbitrary N-agent topologies (planner, researcher, deployer, consultants).
 
 ## Quick start
 
 ```
-1. Ensure the coms extension is available (~/.pi/extensions/coms/)
-2. Identify the plan the agents will work from
-3. Create the directory structure (see Conventions below)
-4. Generate builder and tester prompts from templates
-5. Start two Pi sessions, each loading one prompt + coms extension
+1. Pick a topology     → see [TOPOLOGIES.md](TOPOLOGIES.md)   (sequential / concurrent / maker-checker / consultant)
+2. Pick the roles      → see [ROLES.md](ROLES.md)             (which archetypes fill each slot)
+3. Generate prompts    → see [TEMPLATES.md](TEMPLATES.md)     (one per role, filled from the plan)
+4. Wire the protocol   → see [PROTOCOL.md](PROTOCOL.md)       (startup, handoff, escalation)
+5. Feedback format     → see [FEEDBACK.md](FEEDBACK.md)       (task-scoped vs issue-scoped)
+6. Full walkthroughs   → see [EXAMPLES.md](EXAMPLES.md)       (5 worked topologies)
 ```
+
+## Decision tree — which topology?
+
+```
+Does the plan already list ordered stages (build → test → review → deploy)?
+  YES → Sequential pipeline. Each stage blocks the next until PASS.
+  NO  ↓
+
+Do you need multiple independent perspectives on the same output (security + perf + arch)?
+  YES → Concurrent fan-out. One producer, N reviewers in parallel, aggregate results.
+  NO  ↓
+
+Is this an iterative maker/checker where the same two peers loop until convergence?
+  YES → Maker-checker loop. Special-case pair with strict iteration cap.
+  NO  ↓
+
+Does one lead agent occasionally need a specialist (DB expert, security advisor)?
+  YES → On-demand consultant. Lead agent works alone, calls consultant when stuck.
+```
+
+If unsure: start with a **sequential pipeline** — it composes with the other three later.
 
 ## Directory conventions
 
-All coms-related artifacts live under `~/brain-dump/coms-prompts/`:
+All artifacts live under `~/brain-dump/coms-prompts/<project>/<feature>/`:
 
 ```
-~/brain-dump/coms-prompts/
-├── <project>/
-│   └── <feature-or-plan>/
-│       ├── builder-agent.md    # prompt for the builder session
-│       ├── tester-agent.md     # prompt for the tester session
-│       └── feedback-T-XX.md    # created by tester on failure, updated by both
-└── _shared/                    # optional: reusable role templates
+<project>/<feature>/
+├── <role>-agent.md                # one prompt per agent (builder-agent.md, tester-agent.md, reviewer-agent.md, …)
+├── feedback-<TASK-ID>.md          # task-scoped feedback (one per task, updated in-place)
+└── feedback-<role>-<NN>.md        # issue-scoped feedback (one per distinct concern, sequential NN)
 ```
 
-### Naming rules
+Naming rules and lifecycle: [FEEDBACK.md](FEEDBACK.md).
 
-| Artifact | Pattern | Example |
-|----------|---------|---------|
-| Builder prompt | `builder-agent.md` | always `builder-agent.md` per feature |
-| Tester prompt | `tester-agent.md` | always `tester-agent.md` per feature |
-| Feedback file | `feedback-<TASK-ID>.md` | `feedback-T-01.md`, `feedback-T-03.md` |
-| Additional roles | `<role>-agent.md` | `reviewer-agent.md`, `deployer-agent.md` |
+## Generation workflow
 
-**Why `feedback-` prefix**: Groups all feedback files together in directory listings. One file per task — updated in-place by both agents (no version sprawl).
-
-## Workflow
-
-### Create prompts for a plan
+For any team the agent generates:
 
 ```
-1. Read the plan (plan.md, task list, test cases)
-2. Identify what skills each role needs:
-   - Builder: react-patterns (or stack-equivalent), refactoring, git-workflow
-   - Tester: browser-harness, testing, spec-tester (adapt to project stack)
-3. Generate builder prompt from [TEMPLATES.md](TEMPLATES.md):
-   - Fill in plan paths, project info, skill list, task mapping
-   - Wire the coms communication protocol
-4. Generate tester prompt from [TEMPLATES.md](TEMPLATES.md):
-   - Map each task to its test cases
-   - Include feedback file creation workflow
-   - Set the re-test loop (max 3 iterations before human escalation)
-5. Save both prompts to the feature directory
+1. Read the plan (plan.md + plan-details/*). Identify tasks, test cases, decisions, out-of-scope.
+2. Choose topology (decision tree above).
+3. Choose roles (ROLES.md). Confirm each role has a home in the plan.
+4. For each role: copy the base template + role slice from TEMPLATES.md; fill placeholders from plan.
+5. Wire coms handoffs per PROTOCOL.md — every stage transition needs an explicit trigger message.
+6. Set feedback file convention per role (task-scoped or issue-scoped — see FEEDBACK.md).
+7. Save each prompt as <role>-agent.md in the feature directory.
 ```
-
-### The build→test→feedback loop
-
-```
-Builder implements task → build (verify) → coms_send "T-XX done"
-  → Tester reads task spec → runs tests
-    → PASS: coms_send "PASS" → builder marks done, moves to next
-    → FAIL: tester creates feedback-T-XX.md → coms_send "FAIL + link"
-      → Builder reads feedback → fixes code → updates ## Fix section
-      → Builder coms_send "fixed, re-test"
-      → Tester re-tests → updates ## Verification
-        → PASS: feedback closed, loop ends
-        → FAIL again: append to same file, repeat. After 3 iterations → escalate to human
-```
-
-### Feedback file lifecycle
-
-| State | Set by | Meaning |
-|-------|--------|---------|
-| `open` | Tester | Issue reported, awaiting fix |
-| `resolved` | Builder | Fix applied, ready for re-test |
-| `closed` | Tester | Re-test passed, loop complete |
-
-Full format: see [FEEDBACK.md](FEEDBACK.md)
-
-## Adding new roles
-
-Extend beyond builder+tester by following the same conventions:
-
-1. Create `<role>-agent.md` in the feature directory
-2. Use the same coms protocol (announce → wait → act → report)
-3. Map the role's responsibilities to existing plan artifacts (tasks, test cases, requirements)
-4. If the role is reusable, save a base template to `_shared/<role>-base.md`
 
 ## Guardrails
 
-- **Peer, not subordinate**: Agents use `coms_send` directly — no manager routing messages
-- **One feedback file per task**: Don't create `feedback-T-01-v2.md`. Append to the same file
-- **Max 3 re-test iterations**: After 3 failures, escalate to human. Don't loop indefinitely
-- **Plan is the source of truth**: Both agents reference the same plan directory. If the plan changes, regenerate prompts
-- **Coms extension must be loaded**: Each agent session needs `pi -e ~/.pi/extensions/coms/index.ts`
+- **Peer, not subordinate.** Every agent uses `coms_send` directly. No agent routes messages for another.
+- **One prompt per role, per feature.** Never version prompts (`builder-agent-v2.md`). Regenerate in place if the plan changes.
+- **Feedback discipline.** One task-feedback file per task; one issue-feedback file per issue. Append, never fork.
+- **Max 3 iterations per issue.** After 3 failed fix attempts on the same issue, escalate to human. No infinite loops.
+- **Plan is the source of truth.** All agents reference the same plan directory. If the plan changes, regenerate prompts.
+- **Coms extension required in every session.** Start each with `pi -e ~/.pi/extensions/coms/index.ts`.
+- **Deeper the team, stricter the handoffs.** A trio (build→test→review) needs explicit "tester passes to reviewer" messages defined in PROTOCOL.md, not inferred.

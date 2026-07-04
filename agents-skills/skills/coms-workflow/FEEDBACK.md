@@ -1,26 +1,29 @@
-# Feedback File Format
+# Feedback Files
 
-Structured communication channel between tester and builder when a task fails. One file per task, updated in-place by both agents.
+Structured communication artifacts between agents when something needs fixing. Two flavors — pick by role, not by taste.
 
-## Location
+## Two flavors
 
-```
-~/brain-dump/coms-prompts/<project>/<feature>/feedback-<TASK-ID>.md
-```
+| Flavor        | Filename                          | One file per         | Created by     | Best fit for              |
+|---------------|-----------------------------------|----------------------|----------------|---------------------------|
+| Task-scoped   | `feedback-<TASK-ID>.md`           | plan task            | Tester         | Per-task PASS/FAIL loop   |
+| Issue-scoped  | `feedback-<role>-<NN>.md`         | distinct concern     | Reviewer, scanners, deployer-fails | Cross-cutting or specialist review |
 
-Examples:
-- `~/brain-dump/coms-prompts/satis/feedback-june-2026/feedback-T-01.md`
-- `~/brain-dump/coms-prompts/prosper/api-v2/feedback-T-03.md`
+**Task-scoped example:** `feedback-T-03.md` — tester rejects task T-03, builder fixes, tester re-tests, file evolves in place.
 
-## Naming rules
+**Issue-scoped example:** `feedback-security-02.md` — the second finding from the security scanner across the whole feature; unrelated to any single task.
 
-- **Prefix**: `feedback-` — groups feedback files together in directory listings
-- **Task ID**: `T-XX` — matches the plan's task identifier
-- **One file per task**: Don't version (`feedback-T-01-v2.md`). Append to the same file
-- **Created by**: Tester (on first failure)
-- **Updated by**: Both agents as the loop progresses
+Both variants live in the same directory as the agent prompts: `~/brain-dump/coms-prompts/<project>/<feature>/`.
 
-## Template
+## Choosing the flavor
+
+- **Task-scoped** when the concern maps 1:1 to a plan task. The task is the unit of work; the feedback tracks it.
+- **Issue-scoped** when the concern spans modules, doesn't map to a single task, or comes from a whole-system pass.
+- **Never mix.** One task cannot have two files. One issue cannot span two files.
+
+## Task-scoped template
+
+Full lifecycle: `open` (tester) → `resolved` (builder) → `closed` (tester). Re-open on regression.
 
 ```markdown
 # Feedback: T-XX — [Task Description]
@@ -28,119 +31,168 @@ Examples:
 **Status**: open
 **Created**: YYYY-MM-DD HH:MM
 **Last updated**: YYYY-MM-DD HH:MM
+**Iteration**: 1 of 3
 
 ## Issue
 
-[Describe what failed — be specific, include expected vs actual behavior]
+[What failed — expected vs actual. Be specific.]
 
 ### Steps to reproduce
+1. [Step]
+2. [Step]
 
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
+### Expected
+[From plan/requirements]
 
-### Expected behavior
-
-[What should happen according to the plan/requirements]
-
-### Actual behavior
-
-[What actually happens]
+### Actual
+[Observed behavior]
 
 ### Evidence
-
-- Screenshot: [path or description]
-- Console error: [if applicable]
-- Network response: [if applicable]
+- Screenshot: [path or omit]
+- Console error: [text or omit]
+- Test output: [snippet or omit]
 
 ### Environment
-
-- URL: [e.g., http://localhost:3000/login]
-- Browser: [e.g., Chrome via browser-harness]
+- URL / entry point:
+- Browser / runtime:
 - Task: T-XX
 
 ## Fix
 
-*(Filled by builder after applying the fix)*
+*(Builder fills after applying)*
 
 **Date**: YYYY-MM-DD HH:MM
 **Status**: resolved
 
 ### Changes made
-
-- **File**: `path/to/file.tsx`
-  - [What changed and why]
-- **File**: `path/to/another/file.ts`
-  - [What changed and why]
+- **File**: `path/to/file`
+  - [What changed and why — specific: "added `pr-10` to Input className", not "fixed overlap"]
 
 ### Builder verification
-
-- [x] `[build command]` passes
-- [x] [Manual check 1]
-- [x] [Manual check 2]
+- [x] Build command passes
+- [x] [Manual check]
 
 ## Verification
 
-*(Filled by tester after re-testing)*
+*(Tester fills after re-test)*
 
 **Date**: YYYY-MM-DD HH:MM
 
 - [ ] Issue resolved
-- [ ] No regressions introduced
+- [ ] No regressions
 - [ ] Related test cases still pass
 
-**Notes**: [Any observations during re-test]
+**Notes**: [Re-test observations]
 
-**Final status**: [resolved / needs further work]
+**Final status**: closed / re-opened
 ```
 
-## Lifecycle
+**Re-opening a task-scoped file**: append a new `## Issue` section (dated), bump `Iteration`, set Status back to `open`. Never overwrite prior `## Issue` blocks — history matters.
+
+## Issue-scoped template
+
+One file per distinct concern. Severity is mandatory. No re-open — either the fix works or a fresh issue file is opened.
+
+```markdown
+# Feedback: <ROLE>-<NN> — [Issue Title]
+
+**Status**: open
+**Created**: YYYY-MM-DD HH:MM
+**Last updated**: YYYY-MM-DD HH:MM
+**Iteration**: 1 of 3
+**Severity**: Critical | High | Medium | Low
+**Review area**: <e.g., Architecture / Security / Performance / Deploy>
+**Modules affected**: <comma-separated>
+
+## Issue
+
+[Specific problem, quoting or referencing code.]
+
+### Current state
+[The problematic code or design.]
+
+### Why it matters
+[Concrete risk. For security: attack scenario. For perf: measured or estimated impact. For architecture: coupling cost.]
+
+### Recommendation
+[Specific fix. Include code sketch if it clarifies.]
+
+## Fix
+
+*(Builder fills after applying)*
+
+**Date**: YYYY-MM-DD HH:MM
+**Status**: resolved
+
+### Changes made
+- **File**: `path/to/file`
+  - [Specific change]
+
+### Builder verification
+- [x] Build passes
+- [x] [Manual sanity check tied to the issue]
+
+## Verification
+
+*(Reviewer / scanner fills after re-check)*
+
+**Date**: YYYY-MM-DD HH:MM
+
+- [ ] Issue resolved
+- [ ] No new issues introduced
+- [ ] Related area still clean
+
+**Notes**: [Re-review observations]
+
+**Final status**: closed / needs further work
+```
+
+## Severity guide (issue-scoped only)
+
+| Level    | Meaning                                                    | Examples                                                | Must fix? |
+|----------|-----------------------------------------------------------|---------------------------------------------------------|-----------|
+| Critical | Blocks shipping. Data loss, crash, security breach.        | SQL injection, orphan subprocesses, corrupted data      | Yes, immediate |
+| High     | Major gap or risk.                                         | Auth token leaked to logs, missing nil-guard causing silent failure | Yes |
+| Medium   | Design smell that will hurt later.                         | Tight coupling, missing extension point, N+1 in a warm path | Yes for v1 |
+| Low      | Nitpick or future improvement.                             | Variable naming, minor DRY, comment gaps                | Optional; note it |
+
+Every issue-scoped file must include one severity. Task-scoped files inherit "must fix before task closes" and don't need severity.
+
+## Lifecycle diagram
 
 ```
-┌──────────┐     ┌───────────┐     ┌──────────┐
-│  open    │ ──→ │ resolved  │ ──→ │  closed  │
-│ (tester) │     │ (builder) │     │ (tester) │
-└──────────┘     └───────────┘     └──────────┘
-      ↑                                  │
-      │         ┌───────────┐            │
-      └─────────│ re-opened │←───────────┘ (if re-test fails or
-                │ (tester)  │              regression found)
-                └───────────┘
+Task-scoped:
+   open ─(builder fix)─▶ resolved ─(tester ok)─▶ closed
+     ▲                                              │
+     └────────── re-opened (regression) ────────────┘
+
+Issue-scoped:
+   open ─(builder fix)─▶ resolved ─(reviewer ok)─▶ closed
+     │
+     └──── after 3 iterations ────▶ escalation
 ```
 
-| State | Set by | Meaning | Next action |
-|-------|--------|---------|-------------|
-| `open` | Tester | Issue reported, with steps to reproduce | Builder reads and fixes |
-| `resolved` | Builder | Fix applied, `## Fix` filled | Tester re-tests |
-| `closed` | Tester | Re-test passed, `## Verification` confirmed | Loop complete |
-| `open` (again) | Tester | Re-test failed or regression found | Builder reads appended updates and re-fixes |
+Both variants cap at **3 iterations** before mandatory human escalation (see [PROTOCOL.md](PROTOCOL.md#escalation-to-human)).
 
-## Guidelines
+## Guidelines shared across flavors
 
-### For the tester
+**For the reporter (tester / reviewer / scanner):**
 
-- **Be specific**: "Eye icon hidden behind password text on 20+ char passwords" — not "toggle broken"
-- **Include reproduction steps**: Builder must be able to trigger the bug
-- **Capture evidence**: Screenshots, console errors, network responses
-- **Append, don't replace**: If re-test finds issues, append to `## Issue` — don't overwrite history
-- **Don't create for out-of-scope items**: Check the plan's "Out of scope" section first
+- Specificity wins. "Eye icon hidden behind text for passwords >20 chars" beats "toggle broken."
+- Evidence beats opinion. Screenshot, error log, or measured number.
+- Append on re-test failure. Never overwrite.
+- Skip out-of-scope items — check the plan's parking lot / out-of-scope section first.
 
-### For the builder
+**For the fixer (builder):**
 
-- **Read the whole file before fixing**: `## Issue` may have been appended after multiple re-tests
-- **Be specific in `## Fix`**: "Added `pr-10` to Input className" — not "fixed the overlap"
-- **List every file changed**: Tester uses this to know what to regression-test
-- **Verify yourself before marking resolved**: Run build command + manual sanity check
-- **Update status promptly**: Don't leave files in `open` state after fixing
+- Read the whole file — later iterations append; don't miss context.
+- Name every file changed in `## Fix`. The reporter uses this list to know what to regression-test.
+- Verify yourself before marking `resolved`. Build command + a manual sanity check.
+- Update `Status` and `Last updated` promptly. Stale `open` files break the state machine.
 
-## Escalation
+## What NOT to do
 
-After **3 iterations** (open → resolved → open → resolved → open):
-
-```
-Tester sends coms_send:
-"T-XX failed 3 iterations. Feedback: feedback-T-XX.md
-Human review needed before continuing."
-```
-
-Builder should also escalate if unable to reproduce/understand after 2 attempts.
+- **Don't version filenames.** `feedback-T-03-v2.md` breaks the state machine. Use the existing file.
+- **Don't bundle unrelated issues.** One concern per issue-scoped file. Two security findings = two files.
+- **Don't skip severity** on issue-scoped files. Missing severity = the fix priority is undefined.
+- **Don't file feedback for out-of-scope work.** Flag it via a `message` to the human instead.
