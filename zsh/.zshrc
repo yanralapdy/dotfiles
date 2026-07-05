@@ -235,3 +235,4 @@ export BU_CDP_URL="http://127.0.0.1:9222"
 # Kiro CLI post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
 . "$HOME/.cargo/env"
+alias explorer="/mnt/c/Windows/explorer.exe"
