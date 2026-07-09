@@ -9,7 +9,9 @@
     "glob",
     "grep",
     "web_fetch",
-    "web_search"
+    "web_search",
+    "@notion",
+    "@codebase-memory-mcp"
   ],
   "allowedTools": [
     "fs_read",
@@ -18,7 +20,9 @@
     "glob",
     "grep",
     "web_fetch",
-    "web_search"
+    "web_search",
+    "@notion",
+    "@codebase-memory-mcp"
   ],
   "resources": [],
   "mcpServers": {},

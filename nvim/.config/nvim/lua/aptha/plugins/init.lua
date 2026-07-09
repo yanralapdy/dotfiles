@@ -232,7 +232,7 @@ return {
 
     {
         "yanralapdy/kiro.nvim",
-        version = "v0.3.0",
+        version = "v0.4.0",
         lazy = false,
         dependencies = { "folke/snacks.nvim" },
         opts = {
@@ -269,6 +269,7 @@ return {
 
     {
         "yanralapdy/pi.nvim",
+        version = "v0.3.0",
         lazy = false,
         cmd = { "PiAsk" },
         dependencies = { "folke/snacks.nvim" },

@@ -1,7 +1,7 @@
 {
   "lastChangelogVersion": "0.80.3",
   "defaultProvider": "opencode-go",
-  "defaultModel": "deepseek-v4-pro"
+  "defaultModel": "deepseek-v4-pro",
   "defaultThinkingLevel": "high",
   "skills": [
     "~/.config/kiro/skills"
@@ -9,8 +9,7 @@
   "extensions": [
     "~/.config/pi/agent/extensions/plan-mode/index.ts",
     "~/.config/pi/agent/extensions/workflow-orchestrator.ts",
-    "~/.config/pi/agent/extensions/mode-switcher.ts",
-    "~/sites/js/node/pi-kiro-models/index.ts"
+    "~/.config/pi/agent/extensions/mode-switcher.ts"
   ],
   "terminal.showImages": true,
   "terminal.imageWidthCells": 60,
@@ -18,7 +17,9 @@
   "images.blockImages": false,
   "theme": "dark",
   "packages": [
-    "git:github.com/DietrichGebert/ponytail"
+    "git:github.com/DietrichGebert/ponytail",
+    "git:github.com/yanralapdy/pi-kiro-models",
+    "git:github.com/yanralapdy/pi-codebase-memory-bridge"
   ],
   "hideThinkingBlock": true
 }

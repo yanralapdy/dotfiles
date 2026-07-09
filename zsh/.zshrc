@@ -236,3 +236,6 @@ export BU_CDP_URL="http://127.0.0.1:9222"
 [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
 . "$HOME/.cargo/env"
 alias explorer="/mnt/c/Windows/explorer.exe"
+
+# Added by codebase-memory-mcp install
+export PATH="/Users/tnkapdy/.local/bin:$PATH"

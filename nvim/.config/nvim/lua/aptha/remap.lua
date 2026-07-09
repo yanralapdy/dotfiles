@@ -51,14 +51,14 @@ vim.keymap.set("n", "<leader><leader>", function()
 end)
 
 -- duplicate file command
-vim.keymap.set("n", "<leader>cfp", ":let @\" = expand(\"%:p\")<CR>")
-vim.keymap.set("n", "<leader>cpo", ":let @\" = expand(\"%:h\")<CR>")
-vim.keymap.set("n", "<leader>cpf", ":let @\" = expand(\"%\")<CR>")
-vim.keymap.set("n", "<leader>cfn", ":let @\" = expand(\"%:t\")<CR>")
-vim.keymap.set("n", "<leader>ccfp", ":let @+ = expand(\"%:p\")<CR>")
-vim.keymap.set("n", "<leader>ccpo", ":let @+ = expand(\"%:h\")<CR>")
-vim.keymap.set("n", "<leader>ccpf", ":let @+ = expand(\"%\")<CR>")
-vim.keymap.set("n", "<leader>ccfn", ":let @+ = expand(\"%:t\")<CR>")
+vim.keymap.set("n", "<leader>cfp", ":let @\" = expand(\"%:p\")<CR>", { desc = "Copy full file path to unnamed register" })
+vim.keymap.set("n", "<leader>cpo", ":let @\" = expand(\"%:h\")<CR>", { desc = "Copy parent directory path to unnamed register" })
+vim.keymap.set("n", "<leader>cpf", ":let @\" = expand(\"%\")<CR>", { desc = "Copy relative file path to unnamed register" })
+vim.keymap.set("n", "<leader>cfn", ":let @\" = expand(\"%:t\")<CR>", { desc = "Copy file name to unnamed register" })
+vim.keymap.set("n", "<leader>ccfp", ":let @+ = expand(\"%:p\")<CR>", { desc = "Copy full file path to clipboard" })
+vim.keymap.set("n", "<leader>ccpo", ":let @+ = expand(\"%:h\")<CR>", { desc = "Copy parent directory path to clipboard" })
+vim.keymap.set("n", "<leader>ccpf", ":let @+ = expand(\"%\")<CR>", { desc = "Copy relative file path to clipboard" })
+vim.keymap.set("n", "<leader>ccfn", ":let @+ = expand(\"%:t\")<CR>", { desc = "Copy file name to clipboard" })
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
