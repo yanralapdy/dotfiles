@@ -100,5 +100,5 @@ If picking up a plan mid-way:
 4. Adjust: start from the first incomplete task.
 5. Still run pre-flight on remaining tasks — don't skip it.
 6. Announce the resume point:
-   > Resuming from T-03. T-01 and T-02 are merged into `plan/stripe-webhook-refactor`.
+   > Resuming from T-03. T-01 and T-02 are merged into `feature/stripe-webhook-refactor`.
    > Pulling plan branch and creating `task/T-03-...` now.

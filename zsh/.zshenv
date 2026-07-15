@@ -3,6 +3,9 @@
 
 export NVM_DIR="$HOME/.nvm"
 
+# Load local secrets (not in dotfiles repo)
+[ -f ~/.secrets ] && source ~/.secrets
+
 # Load nvm as a function (OS-aware)
 if [[ "$(uname -s)" == "Darwin" ]] && command -v brew &>/dev/null; then
     # macOS with Homebrew-installed nvm

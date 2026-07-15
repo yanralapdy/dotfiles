@@ -74,7 +74,7 @@ Group by severity. Lead with hard blockers. Be direct.
 ### 🔴 Must resolve before starting
 
 **1. Base branch unknown**
-   What branch should I create `plan/stripe-webhook-refactor` from?
+   What branch should I create `feature/stripe-webhook-refactor` from?
    → [A] `main`   [B] `develop`   [C] Something else (specify)
 
 **2. Decision D-01: Redis vs in-memory store (blocks Task T-03)**
@@ -135,7 +135,7 @@ If resuming a partial execution:
 - Announce the resume point:
 
 ```
-Resuming plan/stripe-webhook-refactor from T-03.
+Resuming feature/stripe-webhook-refactor from T-03.
 T-01 and T-02 are already merged into the plan branch.
 Pulling latest plan branch before creating task/T-03 branch.
 ```

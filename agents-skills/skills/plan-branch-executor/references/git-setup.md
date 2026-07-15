@@ -10,7 +10,7 @@ Every plan-branch-executor session uses a two-level branch hierarchy:
 
 ```
 main (or develop)
-  └── plan/<feature-name>          ← one per plan, lives for the entire session
+  └── feature/<feature-name>       ← one per plan, lives for the entire session
         ├── task/T-01-<slug>       ← one per task, merged into plan branch when done
         ├── task/T-02-<slug>       ← created fresh only after T-01 is merged
         └── task/T-03-<slug>       ← and so on
@@ -30,13 +30,13 @@ main (or develop)
 
 ### Plan branch
 ```
-plan/<feature-name>
+feature/<feature-name>
 ```
 - `<feature-name>` comes from the plan directory name, in kebab-case.
 - Example: if the plan is at `/payments-api/stripe-webhook-refactor/plan.md`,
-  the branch name is `plan/stripe-webhook-refactor`.
+  the branch name is `feature/stripe-webhook-refactor`.
 - If the plan directory name is ambiguous or generic (e.g., `refactor/`), use the
-  project name prefix: `plan/payments-api-refactor`.
+  project name prefix: `feature/payments-api-refactor`.
 
 ### Task branch
 ```
@@ -65,15 +65,15 @@ git checkout <base-branch>
 git pull origin <base-branch>
 
 # 3. Create and switch to the plan branch
-git checkout -b plan/<feature-name>
+git checkout -b feature/<feature-name>
 
 # 4. Push to remote and set upstream
-git push -u origin plan/<feature-name>
+git push -u origin feature/<feature-name>
 ```
 
 If any step fails, invoke `blocker-protocol.md` — do not attempt workarounds.
 
-**Expected outcome**: `plan/<feature-name>` exists on both local and remote.
+**Expected outcome**: `feature/<feature-name>` exists on both local and remote.
 The branch tip matches `<base-branch>` at the time of setup.
 
 ---
@@ -84,10 +84,10 @@ Run this sequence at the start of every task:
 
 ```bash
 # 1. Switch to the plan branch
-git checkout plan/<feature-name>
+git checkout feature/<feature-name>
 
 # 2. Pull latest — picks up any previous task merges
-git pull origin plan/<feature-name>
+git pull origin feature/<feature-name>
 
 # 3. Create and switch to the task branch
 git checkout -b task/<task-id>-<short-slug>
@@ -109,16 +109,16 @@ After the proposal pass (Step 4c), create a draft MR with these exact settings:
 | Field | Value |
 |---|---|
 | **Source branch** | `task/<task-id>-<short-slug>` |
-| **Target branch** | `plan/<feature-name>` |
+| **Target branch** | `feature/<feature-name>` |
 | **Title** | `[PROPOSAL] <task-id>: <task title>` |
 | **Status** | Draft / Work in Progress |
 | **Description** | See proposal-protocol.md for the body template |
 
 **Platform-specific instructions:**
 
-*GitHub*: Use `gh pr create --draft --base plan/<feature-name> --head task/T-01-... --title "[PROPOSAL] T-01: ..."` or create via the GitHub UI. Check the "Create as draft" option.
+*GitHub*: Use `gh pr create --draft --base feature/<feature-name> --head task/T-01-... --title "[PROPOSAL] T-01: ..."` or create via the GitHub UI. Check the "Create as draft" option.
 
-*GitLab*: Use `glab mr create --draft --target-branch plan/<feature-name> --source-branch task/T-01-...` or prefix the title with `Draft:` in the UI.
+*GitLab*: Use `glab mr create --draft --target-branch feature/<feature-name> --source-branch task/T-01-...` or prefix the title with `Draft:` in the UI.
 
 *Bitbucket*: Create via the UI; mark the PR as "work in progress" if the platform supports it.
 
@@ -165,7 +165,7 @@ Flag it to the user:
 ```
 ⚠️ The base branch has received commits since we started.
 
-The plan branch (plan/stripe-webhook-refactor) may be behind main.
+The plan branch (feature/stripe-webhook-refactor) may be behind main.
 Options:
 [A] Merge main → plan branch now (safer, preserves history)
 [B] Rebase plan branch onto main (cleaner history, more risk)
@@ -189,6 +189,6 @@ The following task branches can be deleted after the plan branch lands in main:
 - task/T-02-add-signature-verification
 - task/T-03-migrate-legacy-handler
 
-The plan branch (plan/stripe-webhook-refactor) should be merged into main via a PR/MR
+The plan branch (feature/stripe-webhook-refactor) should be merged into main via a PR/MR
 reviewed by your team, then deleted.
 ```

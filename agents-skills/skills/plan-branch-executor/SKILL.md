@@ -117,8 +117,8 @@ all task MRs in this plan. It is created once and lives for the entire plan.
 ```
 git checkout <base-branch>
 git pull origin <base-branch>
-git checkout -b plan/<feature-name>
-git push -u origin plan/<feature-name>
+git checkout -b feature/<feature-name>
+git push -u origin feature/<feature-name>
 ```
 
 Where `<feature-name>` is derived from the plan's directory name (e.g., `stripe-webhook-refactor`).
@@ -126,7 +126,7 @@ Where `<feature-name>` is derived from the plan's directory name (e.g., `stripe-
 Announce the setup:
 
 > **Git setup complete**
-> Plan branch: `plan/stripe-webhook-refactor` (branched from `main`)
+> Plan branch: `feature/stripe-webhook-refactor` (branched from `main`)
 > All task branches will merge into this plan branch, not directly into `main`.
 > Starting Task T-01 now.
 
@@ -144,8 +144,8 @@ run all four sub-steps below in order. Do not skip any sub-step.
 From the plan branch, create a task-scoped branch:
 
 ```
-git checkout plan/<feature-name>
-git pull origin plan/<feature-name>
+git checkout feature/<feature-name>
+git pull origin feature/<feature-name>
 git checkout -b task/<task-id>-<short-description>
 ```
 
@@ -194,7 +194,7 @@ git push -u origin task/T-01-add-idempotency-keys
 
 Create a **draft** pull request / merge request:
 - **From**: `task/T-01-add-idempotency-keys`
-- **Into**: `plan/<feature-name>` (NOT into `main` or `develop`)
+- **Into**: `feature/<feature-name>` (NOT into `main` or `develop`)
 - **Title**: `[PROPOSAL] T-01: <task title>`
 - **Body**: The task's summary from the plan, plus a clear note: "This MR contains
   only TODO annotation comments. No functional code has been changed. Please review
@@ -206,7 +206,7 @@ Report to the user using the status format from `references/status-reporting.md`
 📋 T-01 proposal ready for review
 
 Branch: task/T-01-add-idempotency-keys
-Draft MR: [PROPOSAL] T-01: Add idempotency keys → plan/stripe-webhook-refactor
+Draft MR: [PROPOSAL] T-01: Add idempotency keys → feature/stripe-webhook-refactor
 URL: <MR URL if available>
 
 Review the diff — it shows exactly where and what will change, with explanations.
@@ -310,7 +310,7 @@ Report to the user:
 🔧 T-01 implementation complete — MR ready for review
 
 Branch: task/T-01-add-idempotency-keys
-MR: T-01: Add idempotency keys → plan/stripe-webhook-refactor (ready, not draft)
+MR: T-01: Add idempotency keys → feature/stripe-webhook-refactor (ready, not draft)
 URL: <MR URL if available>
 
 Done when (verified):
@@ -358,8 +358,8 @@ Proceed to Step 4h.
 After the task MR is merged into the plan branch:
 
 ```
-git checkout plan/<feature-name>
-git pull origin plan/<feature-name>
+git checkout feature/<feature-name>
+git pull origin feature/<feature-name>
 ```
 
 Report the completion and announce the next task:
@@ -367,7 +367,7 @@ Report the completion and announce the next task:
 ```
 ✅ T-01 merged and synced
 
-plan/stripe-webhook-refactor is up to date.
+feature/stripe-webhook-refactor is up to date.
 Moving to T-02: Add webhook signature verification.
 ```
 
@@ -401,14 +401,14 @@ Write a brief completion summary (format from `references/status-reporting.md`) 
 - Any tasks skipped and why
 - Any proposal revisions made (so the user knows where the plan evolved)
 - Any assumptions that were used
-- The plan branch status: "Plan branch `plan/stripe-webhook-refactor` contains all
+- The plan branch status: "Plan branch `feature/stripe-webhook-refactor` contains all
   completed tasks and is ready to be merged into `main` (or reviewed before merging)."
 
 Optionally annotate `plan.md` with a completion note at the top:
 
 ```markdown
 > ✅ **Executed** (branch workflow): [date] — All tasks complete. Skipped: [list].
-> Plan branch: `plan/stripe-webhook-refactor`. Ready to merge into `main`.
+> Plan branch: `feature/stripe-webhook-refactor`. Ready to merge into `main`.
 ```
 
 ---

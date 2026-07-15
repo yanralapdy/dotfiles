@@ -195,7 +195,7 @@ leave TODO comments in the final implementation commit.
 A good way to verify no TODO comments remain after implementation:
 
 ```bash
-git diff plan/<feature-name> -- '*.ts' '*.js' | grep "TODO \[T-0"
+git diff feature/<feature-name> -- '*.ts' '*.js' | grep "TODO \[T-0"
 ```
 
 This should return empty before the MR is marked ready.

@@ -12,7 +12,7 @@ Composable, fillable prompts for every role in [ROLES.md](ROLES.md). Assemble a 
    {{FEATURE}}                — feature/plan directory name (e.g., "neovim-plugin")
    {{REPO_PATH}}              — absolute path to repo (e.g., "~/sites/lua/pi.nvim/")
    {{PLAN_ROOT}}              — absolute path with trailing slash (e.g., "~/brain-dump/plans/pi-nvim/neovim-plugin/")
-   {{COM_PROMPTS_DIR}}        — feature coms directory (e.g., "~/brain-dump/coms-prompts/pi-nvim/neovim-plugin")
+   {{COM_PROMPTS_DIR}}        — feature peer directory (e.g., "~/brain-dump/peer-prompts/pi-nvim/neovim-plugin")
    {{STACK_DESCRIPTION}}      — one-line tech stack summary
    {{BUILD_COMMAND}}          — the "did it build?" command (e.g., "npm run build")
    {{DEV_START_COMMAND}}      — how to run locally (only for tester)
@@ -38,7 +38,7 @@ Every role prompt begins with this identical block. Do not edit the shared parts
 ```markdown
 # {{ROLE_TITLE}} — {{PROJECT}} / {{FEATURE}}
 
-> **Start**: `pi -e ~/.pi/extensions/coms/index.ts` (from `{{REPO_PATH}}`)
+> **Start**: `PI_PEER_ROLE={{ROLE}} pi` (after `pi install https://github.com/yanralapdy/pi-peer.git`). Local dev opt-in: `PI_PEER_ROLE={{ROLE}} pi -e ~/sites/js/node/pi-peer`
 
 ---
 
@@ -69,23 +69,27 @@ Every role prompt begins with this identical block. Do not edit the shared parts
 
 {{PEERS_TABLE}}
 
-## Coms Protocol
+## Peer Protocol
 
-Follow [PROTOCOL.md](~/.dotfiles/agents-skills/skills/coms-workflow/PROTOCOL.md) in the coms-workflow skill. Key points inline below.
+Follow [PROTOCOL.md](~/.dotfiles/agents-skills/skills/peer-workflow/PROTOCOL.md) in the peer-workflow skill. Key points inline below.
 
 ### Startup handshake
 
 ```
 1. cd {{REPO_PATH}}
 2. Read plan artifacts and skills listed above
-3. coms_list
-4. coms_send message to each peer: "{{READINESS_LINE}}"
-5. Enter main loop (below)
+3. peer_list  → confirm peers online and their roles (role-bearing peers list first)
+4. peer_send type: "message" to each expected peer (by role): "{{READINESS_LINE}}"
+5. End your turn — you are woken automatically by the next injected prompt/response
 ```
+
+### Delivery model
+
+Event-driven. `peer_send` with `type: "prompt"` or `type: "response"` auto-injects into the receiver's session and wakes it; passive `type: "message"` entries land in the inbox (read with `peer_get(clear: true)`). **There is no `peer_await`** — never block or poll waiting for a handoff. Always specify `type:` explicitly. Address peers by role: `peer_send(to: "tester", type: "prompt", content: "…")`. Add `expectReply: true` to show a waiting indicator in the widget (UI-only; never blocks).
 
 ### Feedback style
 
-This role uses **{{FEEDBACK_STYLE}}** feedback files. See [FEEDBACK.md](~/.dotfiles/agents-skills/skills/coms-workflow/FEEDBACK.md).
+This role uses **{{FEEDBACK_STYLE}}** feedback files. See [FEEDBACK.md](~/.dotfiles/agents-skills/skills/peer-workflow/FEEDBACK.md).
 
 ---
 
@@ -138,17 +142,17 @@ Slice content:
 ```
 1. Implement current task
 2. Run {{BUILD_COMMAND}}; must pass
-3. coms_send prompt to tester: task-done trigger (see PROTOCOL.md)
-4. coms_await tester response
+3. peer_send type: "prompt", expectReply: true, to tester: task-done trigger (see PROTOCOL.md)
+4. End your turn. You are woken by the tester's injected response (PASS/FAIL).
 5a. PASS → mark done, move to next task
 5b. FAIL → open feedback-T-XX.md → read ## Issue → fix → run {{BUILD_COMMAND}} →
     update ## Fix (list every file) → set Status resolved →
-    coms_send prompt to tester: fix-done trigger
+    peer_send type: "prompt", expectReply: true, to tester: fix-done trigger
 6. When every task PASSes:
-   - If team includes reviewer: coms_send prompt to reviewer (stage-handoff trigger)
+   - If team includes reviewer: peer_send type: "prompt", expectReply: true, to reviewer (stage-handoff trigger)
    - Otherwise: announce completion
 7. If reviewer FAILs: open feedback-<reviewer>-NN.md files in order, fix each,
-   update ## Fix per file, coms_send prompt to reviewer (fix-done trigger)
+   update ## Fix per file, peer_send type: "prompt", expectReply: true, to reviewer (fix-done trigger)
 ```
 
 ## Handling consult replies (if consultants exist)
@@ -201,24 +205,24 @@ Slice content:
 ## Main Loop
 
 ```
-1. coms_await task-done prompt from builder
+1. End your turn. You are woken by the builder's injected task-done prompt.
 2. Read task from 03-tasks.md; read matching test cases from 05-testing.md
-3. coms_send message to builder: test-ack trigger
+3. peer_send type: "message", to builder: test-ack trigger
 4. Run tests (Arrange-Act-Assert): happy, error, edge
-5a. All pass → coms_send prompt to builder: test-pass trigger
+5a. All pass → peer_send type: "prompt", to builder: test-pass trigger
 5b. Any fail →
     - Create/update {{COM_PROMPTS_DIR}}/feedback-T-XX.md (Status=open, fill ## Issue)
     - Capture evidence (screenshots, logs, output)
-    - coms_send prompt to builder: test-fail trigger with feedback path
+    - peer_send type: "prompt", to builder: test-fail trigger with feedback path
 6. On re-test (builder sent fix-done):
     - Read ## Fix section
     - Re-run failing tests + related regression tests
-    - PASS → set Verification, Final status=closed, coms_send test-pass
-    - FAIL → append to ## Issue, bump Iteration, Status=open, coms_send test-fail
+    - PASS → set Verification, Final status=closed, peer_send type: "prompt", to builder: test-pass
+    - FAIL → append to ## Issue, bump Iteration, Status=open, peer_send type: "prompt", to builder: test-fail
     - After 3 iterations → escalation trigger to human
 7. When every task closed:
-    - If team includes reviewer: coms_send prompt to reviewer: stage-handoff trigger
-    - Otherwise: coms_send message to builder announcing all-clear, then idle/exit
+    - If team includes reviewer: peer_send type: "prompt", expectReply: true, to reviewer: stage-handoff trigger
+    - Otherwise: peer_send type: "message", to builder announcing all-clear, then idle/exit
 ```
 
 ## Tester-specific guardrails
@@ -256,15 +260,15 @@ Three lenses; one issue-scoped feedback file per finding.
 ## Main Loop
 
 ```
-1. coms_await stage-handoff prompt from tester
-2. coms_send message to builder: acknowledgment + ETA
+1. End your turn. You are woken by the tester's injected stage-handoff prompt.
+2. peer_send type: "message", to builder: acknowledgment + ETA
 3. Read committed code (git log since branch base; skim changed files)
 4. Run three passes: architecture, performance, security
-5a. No issues → coms_send prompt to builder: "Review PASS. All lenses clean." — job done.
+5a. No issues → peer_send type: "prompt", to builder: "Review PASS. All lenses clean." — job done.
 5b. Issues found →
     - For each concern, create feedback-review-<NN>.md
       (fill Severity, Review area, Modules affected, Issue, Recommendation)
-    - coms_send prompt to builder: stage-return trigger listing all files
+    - peer_send type: "prompt", to builder: stage-return trigger listing all files
 6. On re-review (builder sent fix-done):
     - Read ## Fix in each file
     - Re-check only affected modules + related
@@ -301,11 +305,11 @@ Mandatory checks: input validation, injection (SQL/command/template), authz on e
 ## Main Loop
 
 ```
-1. coms_await stage-handoff prompt from builder or tester
-2. coms_send message to builder: acknowledgment + ETA
+1. End your turn. You are woken by an injected stage-handoff prompt from builder or tester.
+2. peer_send type: "message", to builder: acknowledgment + ETA
 3. Read changed files; grep for sinks (query builders, exec/eval, template render, redirect, deserialize)
 4. For each risky sink: trace back to input sources; assess trust boundary
-5a. No findings → coms_send prompt to builder: "Security PASS."
+5a. No findings → peer_send type: "prompt", to builder: "Security PASS."
 5b. Findings → one feedback-security-<NN>.md per finding, severity mandatory,
     exploitation scenario in ## Issue > Why it matters
 6. Re-review on builder's fix-done: verify the specific control, plus regression on
@@ -340,11 +344,11 @@ Mandatory checks: hot-path allocation, N+1 queries, unindexed lookups, synchrono
 ## Main Loop
 
 ```
-1. coms_await stage-handoff prompt from builder or tester
-2. coms_send message to builder: acknowledgment + ETA
+1. End your turn. You are woken by an injected stage-handoff prompt from builder or tester.
+2. peer_send type: "message", to builder: acknowledgment + ETA
 3. Read changed files; identify hot paths (loops, request handlers, render cycles, subscribers)
 4. For each hot path: measure or estimate (ms per call, allocations per iteration, Big-O)
-5a. No findings → coms_send prompt to builder: "Perf PASS."
+5a. No findings → peer_send type: "prompt", to builder: "Perf PASS."
 5b. Findings → one feedback-perf-<NN>.md per finding, severity + impact estimate mandatory
 6. Re-review on builder's fix-done: verify the specific hotspot improved,
    plus regression on related paths. Close or re-open per file.
@@ -384,9 +388,9 @@ Under `{{PLAN_ROOT}}`:
 ```
 1. Read {{REQUIREMENTS_SOURCE}} (PRD, issue, user description)
 2. Discover: read repo structure, existing docs, related plans
-3. Decide topology (see coms-workflow TOPOLOGIES.md) — recommend to human
+3. Decide topology (see peer-workflow TOPOLOGIES.md) — recommend to human
 4. Produce all six files above
-5. coms_send prompt to each peer: "Plan ready. Root: {{PLAN_ROOT}}. Start."
+5. peer_send type: "prompt", to each peer: "Plan ready. Root: {{PLAN_ROOT}}. Start."
 6. Exit — planner does not wait for feedback during execution
 ```
 
@@ -413,7 +417,7 @@ Slice content:
 ## Main Loop
 
 ```
-1. coms_await prompt with subject "research: <question>"
+1. End your turn. You are woken by an injected prompt with subject "research: <question>".
 2. Read context and question
 3. Search: docs, code, web, notion/obsidian if available
 4. Produce {{COM_PROMPTS_DIR}}/research-<NN>.md with:
@@ -422,7 +426,7 @@ Slice content:
    - Citations (URLs, file paths, doc references)
    - Confidence (high / medium / low)
    - Follow-ups worth exploring
-5. coms_send prompt back to caller: "research-<NN>.md ready — <one-line summary>"
+5. peer_send type: "prompt", back to caller: "research-<NN>.md ready — <one-line summary>"
 6. Return to idle
 ```
 
@@ -455,7 +459,7 @@ Common: README.md, CHANGELOG.md, docs/adr/*, docs/api/*, migration guides.
 ## Main Loop
 
 ```
-1. coms_await stage-handoff prompt from reviewer (with PASS)
+1. End your turn. You are woken by the reviewer's injected stage-handoff prompt (with PASS).
 2. Read final code + reviewer's PASS report
 3. Update:
    - README.md — new features, quickstart deltas
@@ -464,8 +468,8 @@ Common: README.md, CHANGELOG.md, docs/adr/*, docs/api/*, migration guides.
    - ADRs if a design decision was made
 4. Verify: stop-slop skill for AI writing patterns; links resolve; examples run
 5. Commit doc changes
-6. coms_send prompt to deployer (if exists): "Docs updated. Ready to deploy."
-   Otherwise coms_send message announcing completion.
+6. peer_send type: "prompt", to deployer (if exists): "Docs updated. Ready to deploy."
+   Otherwise peer_send type: "message" announcing completion.
 ```
 
 ## Documenter-specific guardrails
@@ -494,14 +498,14 @@ Slice content:
 ## Main Loop
 
 ```
-1. coms_await stage-handoff prompt from documenter (or reviewer if no documenter)
+1. End your turn. You are woken by an injected stage-handoff prompt from documenter (or reviewer if no documenter).
 2. Verify preconditions: main up to date, build green, docs merged
 3. Deploy to staging first
 4. Run health checks: {{HEALTH_CHECK_LIST}}
 5a. Staging green → deploy to production (with approval gate if configured) → health checks → PASS
 5b. Any red → rollback, open feedback-deploy-<NN>.md (Critical severity),
-    coms_send prompt to builder with details
-6. coms_send message to team announcing deploy outcome
+    peer_send type: "prompt", to builder with details
+6. peer_send type: "message" to team announcing deploy outcome
 ```
 
 ## Deployer-specific guardrails
@@ -518,7 +522,7 @@ Slice content:
 {{ROLE_TITLE}}         = "{{DOMAIN}}-Consultant Agent"
 {{ROLE_DESCRIPTION}}   = "Domain specialist available on demand. Answers targeted `consult` questions from the lead agent. Never modifies code."
 {{READINESS_LINE}}     = "{{DOMAIN}}-consultant online. Waiting for consult requests."
-{{FEEDBACK_STYLE}}     = "none — replies via coms; optional consult-<NN>.md for reusable answers"
+{{FEEDBACK_STYLE}}     = "none — replies via peer_send; optional consult-<NN>.md for reusable answers"
 ```
 
 Slice content:
@@ -531,10 +535,10 @@ Slice content:
 ## Main Loop
 
 ```
-1. coms_await prompt with subject "consult: <question>"
+1. End your turn. You are woken by an injected prompt with subject "consult: <question>".
 2. Read Context, Constraint, Question
 3. Respond within Deadline
-4. coms_send prompt reply:
+4. peer_send type: "response", to caller:
    - Recommendation (the answer)
    - Rationale (why)
    - Alternatives considered
@@ -585,3 +589,4 @@ Before saving a prompt, verify:
 - [ ] Plan file paths exist under `{{PLAN_ROOT}}`
 - [ ] Feedback style matches the role's declared style in ROLES.md
 - [ ] Trigger phrases used in Main Loop match PROTOCOL.md
+- [ ] Every `peer_send` call has an explicit `type:` field (`"message"`, `"prompt"`, or `"response"`)

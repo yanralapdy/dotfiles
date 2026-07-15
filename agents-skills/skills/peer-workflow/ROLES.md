@@ -12,7 +12,9 @@ For each role:
 - **Skills** — which dotfile skills to include in the prompt
 - **Feedback style** — task-scoped or issue-scoped (see [FEEDBACK.md](FEEDBACK.md))
 - **When to add** — the signal that this role is worth its own session
-- **Peers** — who it typically talks to via coms
+- **Peers** — who it typically talks to via pi-peer (addressed by role)
+
+> **Role vs session name.** A role (e.g. `builder`) is the *addressing key* — what other agents put in `to:`. A session name is Pi's display label shown in the session selector. When a role is set via `PI_PEER_ROLE` or `peer_set_role`, pi-peer also calls `pi.setSessionName(role)` so the selector stays readable; but role is the source of truth for `peer_send` resolution. Never assume session name equals role — always address peers by role.
 
 ## Core roles
 
@@ -118,7 +120,7 @@ For each role:
 
 - **Responsibility**: Answer targeted questions on demand. Never modifies code.
 - **Consumes**: builder's `consult` messages with concrete question + context.
-- **Produces**: advice replies via coms. Optionally a `consult-<NN>.md` note if the answer is long or reusable.
+- **Produces**: advice replies via peer_send. Optionally a `consult-<NN>.md` note if the answer is long or reusable.
 - **Skills**: domain-specific (`database-design`, `laravel-best-practices`, `react-patterns`, `security-review`, whatever expertise is needed).
 - **Feedback style**: not applicable. Consultant advises, never blocks.
 - **When to add**: builder needs a specialist voice occasionally but not on every task. Cheaper than a full reviewer.
@@ -145,3 +147,5 @@ If a proposed role can't answer all seven cleanly, fold it into an existing role
 - **One tester per builder.** If tests take longer than build, add test cases per task rather than a second tester.
 - **Consultants are cheap; add them freely.** They don't block; they only respond to explicit `consult` messages.
 - **Planner exits after handoff.** Don't keep a planner idle for the whole run — regenerate its output as a file, then close the session.
+- **Duplicate roles are rejected.** pi-peer only allows one live agent per role name. If a role is already claimed by an active peer, the new session starts role-less and warns. Check `peer_list` or `/peer list` before assuming a role is free.
+- **Install once per machine.** Run `pi install https://github.com/yanralapdy/pi-peer.git` once. For local dev opt-in without global install, pass `-e ~/sites/js/node/pi-peer` to each session instead.

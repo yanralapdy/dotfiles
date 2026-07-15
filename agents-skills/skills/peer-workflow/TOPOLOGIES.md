@@ -1,6 +1,8 @@
 # Team Topologies
 
-Four ways to wire a peer team over coms. Grounded in the canonical multi-agent patterns (sequential, concurrent, maker-checker, handoff) adapted for a peer-to-peer socket bus with no central orchestrator.
+Four ways to wire a peer team over pi-peer. Grounded in the canonical multi-agent patterns (sequential, concurrent, maker-checker, handoff) adapted for a peer-to-peer socket bus with no central orchestrator.
+
+> **Transport scope.** pi-peer uses Unix-domain sockets on POSIX and named pipes on Windows. All peers must be on the **same machine**. There is no cross-machine transport and no durable message queue — a message sent to an offline peer is lost.
 
 ## Decision matrix
 
@@ -28,7 +30,7 @@ Stages run in fixed order. Each stage blocks the next until it emits PASS. This 
 ```
 
 **Rules:**
-- Every arrow forward is a `coms_send` with a distinct trigger phrase (see [PROTOCOL.md](PROTOCOL.md)).
+- Every arrow forward is a `peer_send` with a distinct trigger phrase (see [PROTOCOL.md](PROTOCOL.md)).
 - Feedback flows backwards only to the immediately previous stage; each stage owns its own feedback style.
 - A stage may fan out one message to **inform** later stages without waking them (e.g., builder pings reviewer "T-01 through T-05 done, tester now verifying" — reviewer stays idle until tester's final PASS).
 
@@ -53,7 +55,7 @@ One producer emits an artifact; multiple specialist reviewers examine it in para
 ```
 
 **Rules:**
-- Builder emits a single "ready for review" `prompt` addressed to all reviewers via multiple `coms_send` calls.
+- Builder emits a single "ready for review" `prompt` addressed to all reviewers via multiple `peer_send` calls.
 - Each reviewer produces its own issue-scoped file prefix (`feedback-<role>-<NN>.md`). Never share a prefix.
 - Builder waits until all reviewers have emitted their final report (PASS or FAIL). Missing reports block the aggregate.
 - On conflicting recommendations (e.g., perf wants caching, security wants no caching), builder escalates to human — not to another agent.
@@ -106,8 +108,8 @@ One lead agent works alone. Specialists sit idle until the lead sends an explici
 
 **Rules:**
 - Consultant advises; it never modifies code or files (except an optional `consult-<NN>.md` note if the answer is reusable).
-- Lead frames each `consult` message with concrete question + minimal context (file paths, current approach, constraint).
-- Consultant reply is single-shot per question. If a back-and-forth is needed, the lead sends another `consult`.
+- Lead frames each `consult` message with concrete question + minimal context (file paths, current approach, constraint). Send as `type: "prompt"` with `expectReply: true`.
+- Consultant replies with `type: "response"`. If a back-and-forth is needed, the lead sends another `consult`.
 - Multiple consultants can coexist; each covers a distinct domain (`db-consultant`, `security-consultant`, `ux-consultant`).
 
 **When to use:** builder is competent generally but hits domain-specific questions occasionally. Cheaper than a full-time reviewer.

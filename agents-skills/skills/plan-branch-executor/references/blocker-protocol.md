@@ -27,7 +27,7 @@ git and MR-specific blockers.
 ### Git and MR blockers (new in this skill)
 | Blocker type | Examples |
 |---|---|
-| **Branch already exists** | `plan/<feature>` or `task/T-XX-...` already exists remotely |
+| **Branch already exists** | `feature/<feature>` or `task/T-XX-...` already exists remotely |
 | **Push rejected** | Remote rejects the push (protected branch, fork required, no access) |
 | **Dirty working tree** | Uncommitted changes exist before a branch switch |
 | **Plan branch behind** | Plan branch is behind `main` in a way that causes conflicts |

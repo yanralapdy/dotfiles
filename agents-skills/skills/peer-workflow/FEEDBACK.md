@@ -13,7 +13,7 @@ Structured communication artifacts between agents when something needs fixing. T
 
 **Issue-scoped example:** `feedback-security-02.md` — the second finding from the security scanner across the whole feature; unrelated to any single task.
 
-Both variants live in the same directory as the agent prompts: `~/brain-dump/coms-prompts/<project>/<feature>/`.
+Both variants live in the same directory as the agent prompts: `~/brain-dump/peer-prompts/<project>/<feature>/`.
 
 ## Choosing the flavor
 

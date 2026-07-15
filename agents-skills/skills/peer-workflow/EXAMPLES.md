@@ -22,7 +22,7 @@ The default. Sequential pipeline with maker-checker loop. Two agents, one featur
 **Directory:**
 
 ```
-~/brain-dump/coms-prompts/<project>/<feature>/
+~/brain-dump/peer-prompts/<project>/<feature>/
 ├── builder-agent.md
 ├── tester-agent.md
 └── feedback-T-<XX>.md      # created by tester on failure, one per task
@@ -33,16 +33,16 @@ The default. Sequential pipeline with maker-checker loop. Two agents, one featur
 ```
 Builder            Tester
    │                 │
-   ├─ handshake ────▶│   "Builder online. Starting T-01."
-   │◀── handshake ───┤   "Tester online. Ready to verify."
+   ├─ handshake ────▶│   peer_send type:"message" — "Builder online. Starting T-01."
+   │◀── handshake ───┤   peer_send type:"message" — "Tester online. Ready to verify."
    │                 │
    │  [implements]   │
    │  {{BUILD_CMD}}  │
    │                 │
-   ├─ task-done ────▶│   prompt: "T-01 done. Files:... Please test."
-   │◀── test-ack ────┤   message: "Ack. Testing T-01. ETA 5m."
+   ├─ task-done ────▶│   peer_send type:"prompt", expectReply:true — "T-01 done. Files:... Please test."
+   │◀── test-ack ────┤   peer_send type:"message" — "Ack. Testing T-01. ETA 5m."
    │                 │  [runs tests]
-   │◀── test-pass ───┤   prompt: "T-01 PASS. Proceed."
+   │◀── test-pass ───┤   peer_send type:"prompt" — "T-01 PASS. Proceed."
    │                 │
    │  [moves to T-02]│
 ```
@@ -51,16 +51,16 @@ Builder            Tester
 
 ```
 Builder            Tester
-   ├─ task-done ────▶│
-   │◀── test-ack ────┤
+   ├─ task-done ────▶│   peer_send type:"prompt", expectReply:true
+   │◀── test-ack ────┤   peer_send type:"message"
    │                 │  [runs; TC-02b fails]
    │                 │  [creates feedback-T-02.md, Status=open]
-   │◀── test-fail ───┤   prompt: "T-02 FAIL. See feedback-T-02.md."
+   │◀── test-fail ───┤   peer_send type:"prompt" — "T-02 FAIL. See feedback-T-02.md."
    │  [reads issue]  │
    │  [fixes]        │
    │  [updates Fix]  │
-   ├─ fix-done ─────▶│   prompt: "T-02 fixed per feedback-T-02.md."
-   │◀── test-pass ───┤   [re-tests, closes file]
+   ├─ fix-done ─────▶│   peer_send type:"prompt", expectReply:true — "T-02 fixed per feedback-T-02.md."
+   │◀── test-pass ───┤   peer_send type:"prompt" — [re-tests, closes file]
 ```
 
 **To generate:**
@@ -70,7 +70,8 @@ Builder            Tester
 2. Pick roles: builder + tester (ROLES.md).
 3. Assemble prompts: base template + Builder slice / Tester slice (TEMPLATES.md).
 4. Fill placeholders from the plan directory.
-5. Save to feature directory. Start both sessions.
+5. Install pi-peer once: `pi install https://github.com/yanralapdy/pi-peer.git`
+6. Save to feature directory. Start both sessions.
 ```
 
 ---
@@ -92,7 +93,7 @@ The pi-nvim shape. Sequential pipeline with a whole-system review stage. Three a
 **Directory:**
 
 ```
-~/brain-dump/coms-prompts/<project>/<feature>/
+~/brain-dump/peer-prompts/<project>/<feature>/
 ├── builder-agent.md
 ├── tester-agent.md
 ├── reviewer-agent.md
@@ -105,10 +106,10 @@ The pi-nvim shape. Sequential pipeline with a whole-system review stage. Three a
 ```
 Builder     Tester      Reviewer
    │           │           │
-   ├─ tri handshake ────────▶│   all three announce
+   ├─ tri handshake (type:"message") ────────▶│   all three announce
    │           │           │
-   │──T-01 done─▶│         │
-   │◀── PASS ────│         │
+   │──T-01 done (type:"prompt")─▶│         │
+   │◀── PASS (type:"prompt")────│         │
    │           │           │
    │──T-02 done─▶│         │
    │◀── PASS ────│         │
@@ -116,10 +117,10 @@ Builder     Tester      Reviewer
    │──T-05 done─▶│         │
    │◀── PASS ────│         │
    │           │           │
-   │           ├─ stage-handoff ─▶│   "All tasks PASS. Reviewer, please review."
-   │◀────────────ack────────┤   "Ack. Reviewing. ETA 15m."
+   │           ├─ stage-handoff (type:"prompt", expectReply:true) ─▶│
+   │◀────────────ack (type:"message")────────┤   "Ack. Reviewing. ETA 15m."
    │           │           │  [architecture + perf + security passes]
-   │◀────────────PASS──────┤   "Review PASS. All lenses clean."
+   │◀────────────PASS (type:"prompt")──────┤   "Review PASS. All lenses clean."
    │           │           │
    │  [build complete]
 ```
@@ -128,14 +129,14 @@ Builder     Tester      Reviewer
 
 ```
 Builder                   Reviewer
-   │◀── stage-return ────────┤   prompt: "Review FAIL. 2 issues.
+   │◀── stage-return (type:"prompt") ────────┤   "Review FAIL. 2 issues.
    │                          │   - R-01: feedback-review-01.md (Security, High)
    │                          │   - R-02: feedback-review-02.md (Perf, Medium)"
    │  [reads both files]      │
    │  [fixes each]            │
    │  [updates ## Fix in each]│
-   ├─ fix-done ──────────────▶│   prompt: "Both fixed."
-   │◀── PASS ─────────────────┤   [re-reviews only affected modules]
+   ├─ fix-done (type:"prompt", expectReply:true) ──────────────▶│   "Both fixed."
+   │◀── PASS (type:"prompt") ─────────────────┤   [re-reviews only affected modules]
 ```
 
 **To generate:**
@@ -147,11 +148,11 @@ Builder                   Reviewer
 4. Ensure:
    - Builder's Main Loop step 6 sends stage-handoff to reviewer after tester all-pass.
    - Tester's Main Loop step 7 sends stage-handoff to reviewer when every task closed.
-   - Reviewer starts at step 1: coms_await stage-handoff prompt.
+   - Reviewer starts at step 1: ends turn, woken by the tester's injected stage-handoff prompt.
 5. Save all three prompts. Start three sessions.
 ```
 
-**Real precedent:** `~/brain-dump/coms-prompts/pi-nvim/neovim-plugin/` — the working example that seeded this skill.
+**Real precedent:** `~/brain-dump/peer-prompts/pi-nvim/neovim-plugin/` — the working example that seeded this skill.
 
 ---
 
@@ -174,7 +175,7 @@ Concurrent fan-out at the review stage. Five agents. One producer, three paralle
 **Directory:**
 
 ```
-~/brain-dump/coms-prompts/<project>/<feature>/
+~/brain-dump/peer-prompts/<project>/<feature>/
 ├── builder-agent.md
 ├── tester-agent.md
 ├── security-agent.md
@@ -248,7 +249,7 @@ Planner runs first, produces the plan, exits. Then the trio begins.
     ├── 05-testing.md
     └── 08-parking-lot.md
 
-~/brain-dump/coms-prompts/<project>/<feature>/  # execution artifacts
+~/brain-dump/peer-prompts/<project>/<feature>/  # execution artifacts
 ├── planner-agent.md                            # optional; can be run inline
 ├── builder-agent.md
 ├── tester-agent.md
@@ -305,7 +306,7 @@ Pair with an ambient specialist. Consultant sits idle; builder calls on demand.
 **Directory:**
 
 ```
-~/brain-dump/coms-prompts/<project>/<feature>/
+~/brain-dump/peer-prompts/<project>/<feature>/
 ├── builder-agent.md
 ├── tester-agent.md
 ├── db-consultant-agent.md
@@ -319,7 +320,8 @@ Pair with an ambient specialist. Consultant sits idle; builder calls on demand.
 Builder                    DB-consultant
    │                            │
    │ [hits DB question mid T-04]│
-   ├── consult ──────────────▶  │   prompt: "consult: how to index this hot query?
+   ├── consult ──────────────▶  │   peer_send type:"prompt", expectReply:true
+   │                            │   content: "consult: how to index this hot query?
    │                            │           File: db/queries.rb:42
    │                            │           Current approach: SELECT * ... ORDER BY created_at
    │                            │           Constraint: no schema change
@@ -327,7 +329,8 @@ Builder                    DB-consultant
    │                            │
    │                            │ [thinks]
    │                            │
-   │◀── reply ───────────────── │   prompt: "reply: how to index this hot query?
+   │◀── reply ───────────────── │   peer_send type:"response"
+   │                            │   content: "reply: how to index this hot query?
    │                            │           Recommendation: composite index (status, created_at DESC)
    │                            │           Rationale: ...
    │                            │           Alternatives considered: ...

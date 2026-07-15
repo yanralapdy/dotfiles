@@ -128,7 +128,7 @@ Before committing the implementation, verify that no `// TODO [T-XX]:` comments 
 in the changed files:
 
 ```bash
-git diff plan/<feature-name> -- '*.ts' '*.js' | grep "TODO \[T-"
+git diff feature/<feature-name> -- '*.ts' '*.js' | grep "TODO \[T-"
 ```
 
 This must return empty. If any TODO comments remain, they are either:
