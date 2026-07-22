@@ -1,6 +1,0 @@
-{
-  "type": "module",
-  "dependencies": {
-    "diff": "^9.0.0"
-  }
-}

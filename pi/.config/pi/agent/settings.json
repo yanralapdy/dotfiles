@@ -6,11 +6,6 @@
   "skills": [
     "~/.config/kiro/skills"
   ],
-  "extensions": [
-    "~/.config/pi/agent/extensions/plan-mode/index.ts",
-    "~/.config/pi/agent/extensions/workflow-orchestrator.ts",
-    "~/.config/pi/agent/extensions/mode-switcher.ts"
-  ],
   "terminal.showImages": true,
   "terminal.imageWidthCells": 60,
   "images.autoResize": true,
@@ -20,7 +15,9 @@
     "git:github.com/DietrichGebert/ponytail",
     "git:github.com/yanralapdy/pi-kiro-models",
     "git:github.com/yanralapdy/pi-codebase-memory-bridge",
-    "~/sites/personal/js/node/pi-cosmoshub"
+    "~/sites/personal/js/node/pi-cosmoshub",
+    "git:github.com/yanralapdy/pi-workbench",
+    "git:github.com/yanralapdy/pi-web-surf"
   ],
   "hideThinkingBlock": false
 }
