@@ -239,3 +239,9 @@ alias explorer="/mnt/c/Windows/explorer.exe"
 
 # Added by codebase-memory-mcp install
 export PATH="/Users/tnkapdy/.local/bin:$PATH"
+
+# 9Router (local AI router on :20128, runs in Docker)
+alias 9router='open http://localhost:20128/dashboard'
+
+# Secrets (API keys)
+[[ -f ~/.secrets ]] && source ~/.secrets

@@ -1,0 +1,17 @@
+{
+  "name": "agent-3d2c17b154e8",
+  "displayName": "agent-3d2c17",
+  "role": "builder",
+  "socketPath": "/var/folders/lj/2lq8qlgx7b1d1spndf6z3zdw0000gn/T/pi-peer/agent-3d2c17b154e8.sock",
+  "pid": 74185,
+  "startedAt": 1784563066924,
+  "lastSeen": 1784686424902,
+  "status": "idle",
+  "cwd": "/Users/tnkapdy/sites/php/laravel/prosper",
+  "model": "deepseek-v4-pro",
+  "modelDisplayName": "DeepSeek V4 Pro",
+  "contextWindow": 1000000,
+  "thinkingLevel": "high",
+  "sessionName": "builder",
+  "contextUsed": 201529
+}

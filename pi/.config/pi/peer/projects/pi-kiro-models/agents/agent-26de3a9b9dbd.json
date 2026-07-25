@@ -1,0 +1,17 @@
+{
+  "name": "agent-26de3a9b9dbd",
+  "displayName": "agent-26de3a",
+  "role": "builder",
+  "socketPath": "/var/folders/lj/2lq8qlgx7b1d1spndf6z3zdw0000gn/T/pi-peer/agent-26de3a9b9dbd.sock",
+  "pid": 9382,
+  "startedAt": 1784618196331,
+  "lastSeen": 1784686424897,
+  "status": "idle",
+  "cwd": "/Users/tnkapdy/sites/js/node/pi-kiro-models",
+  "model": "gpt-5.6-luna",
+  "modelDisplayName": "GPT-5.6 Luna",
+  "contextWindow": 272000,
+  "thinkingLevel": "high",
+  "sessionName": "builder",
+  "contextUsed": 36523
+}
