@@ -10,7 +10,6 @@
     "grep",
     "web_fetch",
     "web_search",
-    "@notion",
     "@codebase-memory-mcp"
   ],
   "allowedTools": [
@@ -21,7 +20,6 @@
     "grep",
     "web_fetch",
     "web_search",
-    "@notion",
     "@codebase-memory-mcp"
   ],
   "resources": [],
