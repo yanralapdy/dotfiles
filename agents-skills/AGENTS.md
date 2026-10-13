@@ -101,6 +101,7 @@ Skills are organized by category. All skills live in one canonical location (`~/
 * **stop-slop** — Remove AI writing patterns from prose
 
 ### Infrastructure & Tools
+* **sssf** — Deploy and operate repeatable agents-plus-code software workflows
 * **browser-harness** — Direct browser control via CDP for automation/scraping
 * **pdf-reader** — Read and comprehend PDF files (hybrid text + vision)
 * **spec-tester** — Test API specs, validation rules, and DTO contracts (Laravel)

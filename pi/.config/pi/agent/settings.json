@@ -1,7 +1,7 @@
 {
-  "lastChangelogVersion": "0.82.0",
-  "defaultProvider": "cosmoshub",
-  "defaultModel": "gpt-5.6-sol",
+  "lastChangelogVersion": "1.1.0",
+  "defaultProvider": "kiro",
+  "defaultModel": "auto",
   "defaultThinkingLevel": "high",
   "skills": [
     "~/.config/kiro/skills"

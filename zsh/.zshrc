@@ -46,7 +46,6 @@ fi
 # ============ ALIASES ============
 # Python
 alias pip='pip3'
-alias pip3='pip3'
 alias python='python3'
 
 # Node - use nvm directly, no need for version switchers
@@ -61,7 +60,7 @@ alias flutter='fvm flutter'
 alias dart='fvm dart'
 
 # Tools
-alias f2v='vim $(fzf -m --preview="bat --color=always {}")'
+alias f2v='vim -- ${(f)"$(fzf -m --preview="bat --color=always {}")"}'
 alias tns='~/.local/scripts/tmux-new-session'
 alias cnmt='curl --connect-timeout 0 --max-time 0'
 alias vim="NVIM_APPNAME=nvim $EDITOR"
@@ -71,7 +70,7 @@ alias g++='clang++ -std=c++17'
 # ============ PATH CONFIGURATION ============
 # Base paths
 if [[ "$OS" == "macOS" ]]; then
-    export PATH="/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:/opt/homebrew/bin"
+    export PATH="/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
     
     # Homebrew Java
     if [[ -d "/opt/homebrew/opt/openjdk@11/bin" ]]; then
@@ -93,7 +92,7 @@ if [[ "$OS" == "macOS" ]]; then
         export PATH="$PATH:/usr/local/mysql-8.0.32-macos13-arm64/bin"
     fi
 elif [[ "$OS" == "Linux" ]]; then
-    export PATH="$HOME/.local/nvim/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/.local/bin"
+    export PATH="$HOME/.local/nvim/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
     
     # Linuxbrew paths
     if [[ -d "/home/linuxbrew/.linuxbrew/bin" ]]; then
@@ -111,10 +110,13 @@ export PATH="$HOME/.composer/vendor/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.pub-cache/bin:$PATH"
 
+# Dedupe PATH: keep only the first occurrence of each entry
+typeset -U path
+
 # Android
 if [[ -d "$HOME/Library/Android/sdk" ]]; then
-    export ANDROID_HOME=$HOME/Library/Android/sdk
-    export PATH="$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools"
+    export ANDROID_HOME="$HOME/Library/Android/sdk"
+    export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"
 fi
 
 # Kafka (if exists)
@@ -151,8 +153,8 @@ export GOENV_ROOT="$HOME/.goenv"
 if [[ -d "$GOENV_ROOT" ]]; then
     export PATH="$GOENV_ROOT/bin:$PATH"
     eval "$(goenv init -)"
-    export PATH="$GOROOT/bin:$PATH"
-    export PATH="$PATH:$GOPATH/bin"
+    [[ -n "$GOROOT" ]] && export PATH="$GOROOT/bin:$PATH"
+    [[ -n "$GOPATH" ]] && export PATH="$PATH:$GOPATH/bin"
 fi
 
 # SDKMAN (Java) - must be at end
@@ -188,8 +190,7 @@ fi
 # ============ FLUTTER / FVM ============
 if [[ -d "$HOME/fvm/default/bin" ]]; then
     export PATH="$HOME/fvm/default/bin:$PATH"
-fi
-if [[ -d "$HOME/.fvm/versions/stable/bin" ]]; then
+elif [[ -d "$HOME/.fvm/versions/stable/bin" ]]; then
     export PATH="$HOME/.fvm/versions/stable/bin:$PATH"
 fi
 
@@ -218,9 +219,21 @@ export RIPGREP_CONFIG_PATH="$HOME/.rgrc"
 
 # ============ PI AGENT ============
 export PI_CODING_AGENT_DIR="$HOME/.config/pi/agent"
+if [[ -d "$HOME/.config/pi/agent/bin" ]]; then
+    export PATH="$HOME/.config/pi/agent/bin:$PATH"
+fi
 if command -v pi &> /dev/null; then
     # Minimal: no extensions or skills (passive mode)
     alias pi-mi='pi --no-extensions --no-skills'
+fi
+
+# ============ GITHUB COPILOT CLI ============
+if command -v copilot &> /dev/null; then
+    alias co="copilot"
+    alias cop="copilot -p"
+    alias coy="copilot --yolo"
+    source <(copilot completion zsh | sed '$d')
+    compdef _copilot copilot
 fi
 
 # ============ KIRO ============
@@ -234,14 +247,43 @@ export BU_CDP_URL="http://127.0.0.1:9222"
 
 # Kiro CLI post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
-. "$HOME/.cargo/env"
-alias explorer="/mnt/c/Windows/explorer.exe"
-
-# Added by codebase-memory-mcp install
-export PATH="/Users/tnkapdy/.local/bin:$PATH"
+[[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
+if [[ "$OS" == "Linux" ]]; then
+    alias explorer="/mnt/c/Windows/explorer.exe"
+fi
 
 # 9Router (local AI router on :20128, runs in Docker)
 alias 9router='open http://localhost:20128/dashboard'
 
 # Secrets (API keys)
 [[ -f ~/.secrets ]] && source ~/.secrets
+# Java 17 for Android/Gradle (openjdk@11 above stays the default `java`)
+if command -v brew &>/dev/null; then
+    _jdk17="$(brew --prefix openjdk@17 2>/dev/null)/libexec/openjdk.jdk/Contents/Home"
+    if [[ -d "$_jdk17" ]]; then
+        export JAVA_HOME="$_jdk17"
+        export PATH="$JAVA_HOME/bin:$PATH"
+    fi
+    unset _jdk17
+fi
+alias pixel="emulator -avd pixel10_pro_xl -gpu swiftshader_indirect"
+
+# OS-aware restart command
+restart() {
+  case "$(uname -s)" in
+    Darwin)  sudo shutdown -r now "${1:-Restarting...}" ;;
+    Linux)   sudo reboot ;;
+    MINGW*|MSYS*|CYGWIN*) shutdown /r /t 0 ;;
+    *)       echo "Unknown OS: $(uname -s)" ;;
+  esac
+}
+
+# QODER_DISPATCHER_PATH v1
+path=("$HOME/.qoder/entry" ${path:#"$HOME/.qoder/entry"})
+export PATH
+# END QODER_DISPATCHER_PATH v1
+
+# Post today's ClickUp -> Discord standup on demand (same script launchd runs at 10:00)
+alias scrum='~/.local/scripts/scrum-standup'
+# List sprint lists + their ids (to update CLICKUP_LIST_ID in ~/.secrets when a sprint rolls over)
+alias scrum-sprints='~/.local/scripts/scrum-sprints'

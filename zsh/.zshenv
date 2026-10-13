@@ -36,3 +36,8 @@ export KIRO_HOME="$HOME/.config/kiro"
 if [[ -d "$HOME/.local/nvim/bin" ]]; then
     export PATH="$HOME/.local/nvim/bin:$PATH"
 fi
+
+# QODER_DISPATCHER_PATH v1
+path=("$HOME/.qoder/entry" ${path:#"$HOME/.qoder/entry"})
+export PATH
+# END QODER_DISPATCHER_PATH v1
