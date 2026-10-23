@@ -95,7 +95,8 @@ instead of dropping it — do not replace this with a fixed 24h window.
 Schedule (every day 10:00):
 
 ```bash
-cp ~/.dotfiles/agents-skills/skills/scrum-flow/local.scrum-flow.plist ~/Library/LaunchAgents/
+sed "s|__HOME__|$HOME|g" ~/.dotfiles/agents-skills/skills/scrum-flow/local.scrum-flow.plist \
+  > ~/Library/LaunchAgents/local.scrum-flow.plist   # launchd can't expand ~/$HOME itself
 launchctl load ~/Library/LaunchAgents/local.scrum-flow.plist
 ```
 

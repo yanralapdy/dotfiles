@@ -7,7 +7,8 @@
 
   <key>ProgramArguments</key>
   <array>
-    <string>/Users/tnkapdy/.dotfiles/agents-skills/skills/scrum-flow/post-standup.sh</string>
+    <!-- launchd does not expand ~ or $HOME: __HOME__ is replaced at install time (see SETUP.md). -->
+    <string>__HOME__/.dotfiles/agents-skills/skills/scrum-flow/post-standup.sh</string>
   </array>
 
   <!-- Every day 10:00. Omitting Weekday means all seven days.

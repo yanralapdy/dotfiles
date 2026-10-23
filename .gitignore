@@ -119,3 +119,5 @@ mcp.json
 *apikey*
 *api_key*
 *access_token*
+# pi-peer runtime agent registrations (pid, socket, cwd) — per machine, stale once the agent exits
+pi/.config/pi/peer/projects/

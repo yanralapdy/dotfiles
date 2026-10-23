@@ -9,8 +9,8 @@
 --local dart_lsp = lsp.build_options('dartls', {})
 --
 --require('flutter-tools').setup({
---    flutter_path = '/Users/thanurking/fvm/versions/3.32.1/bin/flutter',
---    dart_path = '/Users/thanurking/fvm/versions/3.32.1/bin/dart',
+--    flutter_path = vim.fn.expand('~/fvm/versions/3.32.1/bin/flutter'),
+--    dart_path = vim.fn.expand('~/fvm/versions/3.32.1/bin/dart'),
 --    lsp = {
 --        capabilities = dart_lsp.capabilities
 --    }
@@ -30,7 +30,7 @@ M.setup = function()
   local dart_opts = lsp.build_options("dartls", {})
 
   require("flutter-tools").setup({
-    flutter_path = "/Users/thanurking/fvm/versions/3.32.1/bin/flutter", -- or absolute path if needed
+    flutter_path = vim.fn.expand("~/fvm/versions/3.32.1/bin/flutter"), -- expands to the current user's home
     lsp = {
       capabilities = dart_opts.capabilities,
     },

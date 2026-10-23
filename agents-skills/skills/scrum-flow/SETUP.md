@@ -62,7 +62,8 @@ Dry-run it once first — this posts to the real channel, so do it when a stray 
 Then install the daily 10:00 job:
 
 ```bash
-cp ~/.dotfiles/agents-skills/skills/scrum-flow/local.scrum-flow.plist ~/Library/LaunchAgents/
+sed "s|__HOME__|$HOME|g" ~/.dotfiles/agents-skills/skills/scrum-flow/local.scrum-flow.plist \
+  > ~/Library/LaunchAgents/local.scrum-flow.plist
 launchctl load ~/Library/LaunchAgents/local.scrum-flow.plist
 ```
 
