@@ -78,6 +78,7 @@ Skills are organized by category. All skills live in one canonical location (`~/
 * **refactoring** — Safe refactoring patterns without changing behavior
 * **debugging** — Systematic bug diagnosis (reproduce → minimise → hypothesise → fix)
 * **git-workflow** — Git branching, commit, and PR conventions
+* **mr-discord-notify** — Announce a merge request in Discord, mentioning the reviewer and naming the project
 * **security** — Security checklist and patterns for any application
 * **performance** — Stack-agnostic performance optimization principles
 * **docker** — Docker containerization patterns for any project

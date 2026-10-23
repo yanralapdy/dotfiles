@@ -1,0 +1,2 @@
+# One project name per line. The skill offers these as options; new names typed by the user are appended.
+Prosper
