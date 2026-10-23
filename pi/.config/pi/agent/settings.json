@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "1.2.0",
+  "lastChangelogVersion": "1.4.0",
   "defaultProvider": "kiro",
   "defaultModel": "auto",
   "defaultThinkingLevel": "high",
@@ -19,7 +19,8 @@
     "git:github.com/yanralapdy/pi-kiro-models",
     "git:github.com/yanralapdy/pi-peer",
     "git:github.com/yanralapdy/pi-workbench",
-    "git:github.com/yanralapdy/pi-web-surf"
+    "git:github.com/yanralapdy/pi-web-surf",
+    "../../../sites/js/node/pi-clipboard-attach"
   ],
   "hideThinkingBlock": false
 }

@@ -287,3 +287,10 @@ export PATH
 alias scrum='~/.local/scripts/scrum-standup'
 # List sprint lists + their ids (to update CLICKUP_LIST_ID in ~/.secrets when a sprint rolls over)
 alias scrum-sprints='~/.local/scripts/scrum-sprints'
+
+# bun completions
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
