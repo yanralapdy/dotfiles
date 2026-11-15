@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ $# -eq 0 ]; then
+  echo "Usage: $(basename "$0") <profile-name> [args...]" >&2
+  exit 1
+fi
+
+PROFILE_NAME="$1"
+shift
+
+PROFILE_DIR="$HOME/.antigravity-profiles/$PROFILE_NAME"
+KEYCHAIN_PATH="$PROFILE_DIR/Library/Keychains/login.keychain-db"
+USER_DATA_DIR="$PROFILE_DIR/Library/Application Support/Antigravity"
+EXTENSIONS_DIR="$PROFILE_DIR/.antigravity/extensions"
+
+mkdir -p "$PROFILE_DIR/Library/Keychains" "$USER_DATA_DIR" "$EXTENSIONS_DIR"
+
+# Create and configure an isolated keychain for this profile if needed
+if [ ! -f "$KEYCHAIN_PATH" ]; then
+  HOME="$PROFILE_DIR" security create-keychain -p "antigravity" "$KEYCHAIN_PATH"
+  HOME="$PROFILE_DIR" security set-keychain-settings -t 21600 -l "$KEYCHAIN_PATH"
+  HOME="$PROFILE_DIR" security default-keychain -s "$KEYCHAIN_PATH"
+  HOME="$PROFILE_DIR" security list-keychains -s "$KEYCHAIN_PATH"
+fi
+
+# Ensure the isolated keychain is unlocked
+HOME="$PROFILE_DIR" security unlock-keychain -p "antigravity" "$KEYCHAIN_PATH" 2>/dev/null || true
+
+# Convert relative paths to absolute paths
+ARGS=()
+for arg in "$@"; do
+  if [ -d "$arg" ]; then
+    ARGS+=("$(cd "$arg" && pwd)")
+  elif [ -e "$arg" ]; then
+    ARGS+=("$(cd "$(dirname "$arg")" && pwd)/$(basename "$arg")")
+  else
+    ARGS+=("$arg")
+  fi
+done
+
+# Launch Antigravity with isolated HOME so .gemini/ and Keychain remain completely sandboxed
+if [ ${#ARGS[@]} -gt 0 ]; then
+  HOME="$PROFILE_DIR" nohup /Applications/Antigravity.app/Contents/MacOS/Antigravity \
+    --user-data-dir="$USER_DATA_DIR" \
+    --extensions-dir="$EXTENSIONS_DIR" \
+    "${ARGS[@]}" >/dev/null 2>&1 &
+else
+  HOME="$PROFILE_DIR" nohup /Applications/Antigravity.app/Contents/MacOS/Antigravity \
+    --user-data-dir="$USER_DATA_DIR" \
+    --extensions-dir="$EXTENSIONS_DIR" >/dev/null 2>&1 &
+fi

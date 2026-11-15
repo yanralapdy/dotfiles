@@ -1,6 +1,6 @@
 {
-  "lastChangelogVersion": "1.4.0",
-  "defaultProvider": "kiro",
+  "lastChangelogVersion": "1.5.2",
+  "defaultProvider": "kiro-api",
   "defaultModel": "auto",
   "defaultThinkingLevel": "high",
   "skills": [
@@ -16,11 +16,22 @@
     "git:github.com/yanralapdy/pi-codebase-memory-bridge",
     "git:github.com/yanralapdy/pi-cosmoshub-provider",
     "git:github.com/yanralapdy/pi-9router-provider",
-    "git:github.com/yanralapdy/pi-kiro-models",
+    {
+      "source": "git:github.com/yanralapdy/pi-kiro-models",
+      "extensions": []
+    },
     "git:github.com/yanralapdy/pi-peer",
     "git:github.com/yanralapdy/pi-workbench",
     "git:github.com/yanralapdy/pi-web-surf",
-    "../../../sites/js/node/pi-clipboard-attach"
+    "../../../sites/js/node/pi-clipboard-attach",
+    "git:github.com/yanralapdy/pi-kiro-api"
   ],
-  "hideThinkingBlock": false
+  "hideThinkingBlock": false,
+  "extensionChangelogVersions": {
+    "{\"source\":\"git:github.com/yanralapdy/pi-cosmoshub-provider\",\"scope\":\"user\"}": "1.1.0",
+    "{\"source\":\"git:github.com/yanralapdy/pi-9router-provider\",\"scope\":\"user\"}": "1.0.1",
+    "{\"source\":\"git:github.com/yanralapdy/pi-kiro-models\",\"scope\":\"user\"}": "0.4.3",
+    "{\"source\":\"git:github.com/yanralapdy/pi-peer\",\"scope\":\"user\"}": "1.0.0",
+    "{\"source\":\"git:github.com/yanralapdy/pi-kiro-api\",\"scope\":\"user\"}": "0.1.0"
+  }
 }

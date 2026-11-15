@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Launch the primary (default) Antigravity instance
+USER_DATA_DIR="$HOME/Library/Application Support/Antigravity"
+EXTENSIONS_DIR="$HOME/.antigravity/extensions"
+
+mkdir -p "$USER_DATA_DIR" "$EXTENSIONS_DIR"
+
+# Convert relative paths to absolute paths
+ARGS=()
+for arg in "$@"; do
+  if [ -d "$arg" ]; then
+    ARGS+=("$(cd "$arg" && pwd)")
+  elif [ -e "$arg" ]; then
+    ARGS+=("$(cd "$(dirname "$arg")" && pwd)/$(basename "$arg")")
+  else
+    ARGS+=("$arg")
+  fi
+done
+
+if [ ${#ARGS[@]} -gt 0 ]; then
+  open -n -a "Antigravity" --args \
+    --user-data-dir="$USER_DATA_DIR" \
+    --extensions-dir="$EXTENSIONS_DIR" \
+    "${ARGS[@]}"
+else
+  open -n -a "Antigravity" --args \
+    --user-data-dir="$USER_DATA_DIR" \
+    --extensions-dir="$EXTENSIONS_DIR"
+fi
