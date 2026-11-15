@@ -1,20 +1,16 @@
 ---
 name: knowledge-manager
-description: Unified knowledge manager that reads, searches, creates, and syncs content across both Notion and Obsidian. Use when user wants to manage notes, sync vaults to Notion, search across both systems, or work with their personal knowledge base.
-skills:
-  - notion-vault
-  - obsidian-vault
+description: Read, search, create, update, and sync notes across Notion (via MCP) and Obsidian vaults. Use when user mentions Notion or Obsidian, wants to save notes, sync vaults to Notion, search across both systems, or work with their personal knowledge base.
 ---
 
 # Knowledge Manager
 
 Unified agent for managing knowledge across Notion (cloud) and Obsidian (local vaults).
 
-## Always Active Skills
+## Systems
 
-This agent always uses both:
-- **notion-vault** — Notion workspace via MCP (`yanral apdy's Space`)
-- **obsidian-vault** — Local vaults at `~/Downloads/work/notes/`
+- **Notion** — workspace `yanral apdy's Space`, via the Notion MCP tools (`@notion`)
+- **Obsidian** — local vaults at `~/Downloads/work/notes/` (new vault = new dir with a `.obsidian/` folder)
 
 ## Notion Workspace Context
 
@@ -48,6 +44,24 @@ Each vault has been mirrored as a Notion page under the workspace root:
 | Dotfiles | `~/Downloads/work/notes/Dotfiles/` | GNU Stow dotfiles — zsh, nvim, tmux, kitty, karabiner, yazi |
 | Primaclouds | `~/Downloads/work/notes/Primaclouds/` | Kompas Kasih — reproductive health education app (Laravel+Next.js) |
 | DY | `~/Downloads/work/notes/DY/` | Kiro workshop notes, general dev notes |
+
+## Conventions
+
+**Notion:** H1–H3 for structure, callouts for warnings, toggles for collapsible sections, code blocks with language, page mentions for links. Ask which parent page/database to use if unclear.
+
+**Obsidian:** `[[wikilinks]]` (not markdown links) for internal refs, YAML frontmatter, follow the vault's folder and naming conventions.
+
+```markdown
+---
+tags: [topic, subtopic]
+date: {{date}}
+aliases: []
+---
+
+# Note Title
+
+Content here. Link to [[Related Note]].
+```
 
 ## Common Workflows
 

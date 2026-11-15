@@ -76,6 +76,7 @@ def main() -> int:
     p.add_argument("--task-url", default="")
     p.add_argument("--reviewer", default="", help="Discord user id; defaults to REVIEWER_DISCORD_USER_ID")
     p.add_argument("--by", default="", help="Author name; defaults to MERGE_REQUEST_BY")
+    p.add_argument("--bot-name", default="", help="Override the webhook's display name for this message")
     p.add_argument("--dry-run", action="store_true", help="Print the payload; do not post")
     a = p.parse_args()
 
@@ -118,6 +119,7 @@ def main() -> int:
     payload = {
         "content": f"<@{reviewer}> new merge request for **{a.project}** ready for your review",
         "allowed_mentions": {"parse": [], "users": [reviewer]},
+        **({"username": clip(a.bot_name, 80)} if a.bot_name.strip() else {}),
         "embeds": [{
             "title": clip(title, 256),
             "url": a.url,

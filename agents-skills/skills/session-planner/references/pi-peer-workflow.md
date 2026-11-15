@@ -220,7 +220,7 @@ Please test.
 | `{{PROJECT}}` / `{{FEATURE}}` | From directory path and plan.md header |
 | `{{REPO_PATH}}` | From plan-details/01-context.md — the project repo location |
 | `{{PLAN_ROOT}}` | Full path to the plan directory, e.g., `~/brain-dump/plans/pi-nvim/neovim-plugin/` |
-| `{{SKILL_TABLE_ROWS}}` | Identify all implementation skills needed from the tech stack. Always include `caveman`. Add `tdd` if tests are written first. Add `doctree` if documentation is part of scope. |
+| `{{SKILL_TABLE_ROWS}}` | Identify project-specific skills needed. Always include `ponytail`. |
 | `{{PLAN_FILE_TABLE}}` | List the plan files the builder needs: plan.md, context, tasks, architecture, decisions. Exclude testing (that's the tester's job). |
 | `{{STACK_DESCRIPTION}}` | From plan-details/01-context.md — language, framework, key APIs |
 | `{{BUILD_COMMAND}}` | The command that verifies the build. For Neovim plugins: `:lua require("module").setup({})`. For web apps: `npm run build`. For anything else: find the verification step from the plan. |
@@ -377,7 +377,7 @@ When all tasks pass, your job is done. If a reviewer is configured, the builder 
 
 | Placeholder | Source |
 |---|---|
-| `{{SKILL_TABLE_ROWS}}` | Include `testing` (always). Add `spec-tester` if the plan involves API/DTO validation. Add `diagnose` for complex debugging. Add `browser-harness` if UI testing is needed. Always include `caveman`. |
+| `{{SKILL_TABLE_ROWS}}` | Add project test skills if present (e.g., `prosper-testing-db`). Add `browser` or `webwright` if UI testing is needed. |
 | `{{TESTING_FILE}}` | Filename of the testing plan-details file (e.g., `07-testing.md`) |
 | `{{TASK_FILE}}` | Filename of the main task file |
 | `{{DEV_START_COMMAND}}` | How to start the dev environment. For web: `npm run dev`. For plugins: how to load/activate. |
@@ -412,12 +412,7 @@ system** — cross-cutting concerns, design integrity, and non-functional requir
 
 | Skill | Path | Use When |
 |-------|------|----------|
-| architecture-review | `~/.config/kiro/skills/architecture-review/SKILL.md` | Deep module design, coupling, cohesion, finding refactoring opportunities |
-| performance-optimization | `~/.config/kiro/skills/performance/SKILL.md` | Stack-agnostic performance analysis |
-| security-review | `~/.config/kiro/skills/security/SKILL.md` | Code injection risks, data safety, process security |
-| refactoring | `~/.config/kiro/skills/refactoring/SKILL.md` | Safe refactoring patterns |
-| zoom-out | `~/.config/kiro/skills/zoom-out/SKILL.md` | Understanding unfamiliar modules |
-| caveman | `~/.config/kiro/skills/caveman/SKILL.md` | Efficient communication |
+| ponytail-review | `ponytail` pi package | Logic, safety, load, test coverage, speed, unneeded code |
 
 ## The Plan
 
@@ -464,13 +459,13 @@ peer_send to builder: "Acknowledged. Starting architecture, performance, and sec
 ### 4. Three review passes
 
 **Architecture Review**: Module boundaries, coupling, cohesion, data flow, decision compliance,
-extension points for future versions. Use `architecture-review` skill.
+extension points for future versions.
 
 **Performance Review**: Startup cost, memory, subprocess/IO efficiency, streaming, event
-dispatch, cleanup. Use `performance-optimization` skill.
+dispatch, cleanup.
 
 **Security Review**: Injection risks, input sanitization, config safety, process lifecycle,
-auth protection, orphan processes. Use `security-review` skill.
+auth protection, orphan processes.
 
 ### 5. Report — PASS
 
@@ -574,13 +569,9 @@ When choosing skills for each agent, map from the plan's tech stack to available
 
 | Plan stack | Builder skills | Tester skills | Reviewer always gets |
 |---|---|---|---|
-| React/Next.js | `react-patterns`, `tdd`, `caveman` | `testing`, `browser-harness`, `diagnose`, `caveman` | `architecture-review`, `performance-optimization`, `security-review`, `refactoring`, `zoom-out`, `caveman` |
-| Laravel/PHP | `laravel-best-practices`, `tdd`, `refactoring`, `caveman` | `testing`, `spec-tester`, `diagnose`, `caveman` | same |
-| Vue 3 | `vue3-composition-api`, `tdd`, `caveman` | `testing`, `browser-harness`, `diagnose`, `caveman` | same |
-| Neovim/Lua | `tdd`, `doctree`, `caveman` | `testing`, `spec-tester`, `diagnose`, `caveman` | same |
-| Node.js/CLI | `tdd`, `refactoring`, `caveman` | `testing`, `spec-tester`, `diagnose`, `caveman` | same |
-| Docker/Infra | `docker-deployment`, `caveman` | `testing`, `diagnose`, `caveman` | same |
-| Generic/Unknown | `tdd`, `refactoring`, `caveman` | `testing`, `diagnose`, `caveman` | same |
+| Web UI (Vue/React/Next.js) | project skills, `ponytail` | `browser` or `webwright`, project test skills | `ponytail-review` |
+| Laravel/PHP | project skills, `ponytail` | project test skills (e.g., `prosper-testing-db`) | same |
+| Generic/Unknown | `ponytail` | stack test commands from the plan | same |
 
 Note: The reviewer agent always gets the same quality skills regardless of stack. The builder
 and tester skills change based on what the plan needs.

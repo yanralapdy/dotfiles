@@ -8,8 +8,8 @@ Single canonical home for skills used by **kiro** and **pi** coding agents.
 ~/.dotfiles/agents-skills/
 ├── skills/                 # Canonical source — every skill lives here
 │   ├── handoff/
-│   ├── tdd/
-│   ├── diagnose/
+│   ├── grill-me/
+│   ├── session-planner/
 │   └── ...
 ├── AGENTS.md               # Full inventory of agents and skills
 └── README.md               # This file
@@ -80,7 +80,7 @@ If you are setting this up from scratch:
    ```bash
    ls ~/.config/kiro/skills | wc -l
    ls ~/.pi/agent/skills | wc -l
-   # Both should show 37 (or current skill count)
+   # Both should show the same count
    ```
 
 ## Adding a New Skill

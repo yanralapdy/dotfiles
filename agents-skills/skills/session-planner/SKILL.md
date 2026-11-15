@@ -213,11 +213,9 @@ Map the plan's content to agent roles dynamically based on what skills are neede
 
 | Role | Purpose | Skills to assign | Derived from |
 |------|---------|-----------------|--------------|
-| **Builder** | Implements tasks from the plan | Implementation skills (e.g., react-patterns, laravel-best-practices, vue3-composition-api, tdd, refactoring, doctree) + caveman | The plan's tech stack and task files |
-| **Tester** | Verifies each task against test cases | Testing skills (e.g., testing, spec-tester, diagnose, browser-harness) + caveman | The plan's testing file |
-| **Reviewer** | Reviews complete work for architecture, performance, security | Quality skills (e.g., architecture-review, performance-optimization, security-review, zoom-out) + caveman | The plan's architecture and risk register |
-
-Always include `caveman` for all three — it saves tokens in pi-peer communication.
+| **Builder** | Implements tasks from the plan | Project-specific skills if any + `ponytail` | The plan's tech stack and task files |
+| **Tester** | Verifies each task against test cases | `browser` / `webwright` for UI checks + project test skills (e.g., prosper-testing-db) | The plan's testing file |
+| **Reviewer** | Reviews complete work for architecture, performance, security | `ponytail-review` | The plan's architecture and risk register |
 
 If the user specifies custom skill assignments, use those instead.
 
@@ -246,8 +244,8 @@ For each agent prompt, fill in the template from `references/pi-peer-workflow.md
 
 3. **Determine skills**: Pick from the available skills list based on the plan's stack:
    - Builder: implementation skills matching the tech stack
-   - Tester: `testing` + stack-appropriate verification skills
-   - Reviewer: `architecture-review` + `performance-optimization` + `security-review`
+   - Tester: stack-appropriate verification skills (`browser`, `webwright`, project test skills)
+   - Reviewer: `ponytail-review`
 
 4. **Fill in project info**: Repo path, build command, stack description, config details
 

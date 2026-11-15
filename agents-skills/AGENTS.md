@@ -61,57 +61,38 @@ After running `/workflow-orchestrator` to activate:
 
 Skills are organized by category. All skills live in one canonical location (`~/.dotfiles/agents-skills/skills/`) and are exposed to both kiro and pi through symlinks.
 
-### Engineering
-* **diagnose** — Disciplined diagnosis loop for hard bugs and performance regressions
-* **grill-with-docs** — Grilling session that updates CONTEXT.md and ADRs inline
-* **triage** — Triage issues through a state machine of triage roles
-* **architecture-review** — Find deepening opportunities in a codebase
-* **setup-skills** — Scaffold per-repo config for engineering skills
-* **tdd** — Test-driven development with red-green-refactor loop
-* **to-issues** — Break plans into independently-grabbable issues
-* **to-prd** — Turn conversation context into a PRD
-* **zoom-out** — Give broader context on unfamiliar code
-
-### Development Patterns
-* **prototype** — Build throwaway prototypes for design questions
-* **testing** — Stack-agnostic testing strategies and principles
-* **refactoring** — Safe refactoring patterns without changing behavior
-* **debugging** — Systematic bug diagnosis (reproduce → minimise → hypothesise → fix)
-* **git-workflow** — Git branching, commit, and PR conventions
-* **mr-discord-notify** — Announce a merge request in Discord, mentioning the reviewer and naming the project
-* **security** — Security checklist and patterns for any application
-* **performance** — Stack-agnostic performance optimization principles
-* **docker** — Docker containerization patterns for any project
-
-### Framework-Specific
-* **laravel** — Laravel conventions, patterns, and best practices
-* **react** — React 18 Composition API patterns and conventions
-* **vue3** — Vue 3 Composition API patterns and conventions
-* **postgres** — Database schema design, indexing, and query optimization
-
-### Productivity
-* **caveman** — Ultra-compressed communication mode (~75% token reduction)
-* **grill-me** — Relentless interview about plans/designs
+### Planning & Multi-Agent
+* **session-planner** — Turn a session into an agent-executable plan
+* **plan-executor** — Execute a session-planner plan task by task
+* **plan-branch-executor** — Execute a plan with branch + MR review per task
+* **peer-workflow** — Design peer agent teams for pi-peer
+* **peer-runner** — Bootstrap a peer-workflow role session
 * **handoff** — Compact conversation into handoff document
-* **write-a-skill** — Create new skills with proper structure
+
+### Thinking & Research
+* **grill-me** — Relentless interview about plans/designs
+* **grill-with-docs** — Grilling session that updates CONTEXT.md and ADRs inline
+* **research** — Research a question against primary sources into a Markdown file
+* **web-research** — Web research with source triage and citations
+* **codebase-memory** — Index codebases into a knowledge graph
+
+### Development
+* **git-workflow** — Git branching, commit, and PR conventions
+* **git-guardrails** — Block dangerous git commands
+* **mr-discord-notify** — Announce a merge request in Discord, mentioning the reviewer and naming the project
+* **taste-skill** — Frontend design direction (symlink to leonxlnx/taste-skill)
 
 ### Knowledge & Writing
-* **knowledge-manager** — Unified manager for Notion and Obsidian vaults
-* **notion-vault** — Read, search, create, and update Notion pages via MCP
-* **obsidian-vault** — Read, search, create, and update Obsidian vault notes
+* **knowledge-manager** — Read, search, create, and sync Notion and Obsidian notes
 * **stop-slop** — Remove AI writing patterns from prose
-
-### Infrastructure & Tools
-* **sssf** — Deploy and operate repeatable agents-plus-code software workflows
-* **browser-harness** — Direct browser control via CDP for automation/scraping
 * **pdf-reader** — Read and comprehend PDF files (hybrid text + vision)
-* **spec-tester** — Test API specs, validation rules, and DTO contracts (Laravel)
+* **teach** / **teach-full** — Structured lessons in a workspace
 
-### Misc
-* **git-guardrails** — Block dangerous git commands
-* **migrate-to-shoehorn** — Migrate test files from `as` to @total-typescript/shoehorn
-* **scaffold-exercises** — Create exercise directory structures
-* **setup-pre-commit** — Set up Husky pre-commit hooks
+### Tools
+* **browser-harness** — Direct browser control via CDP for automation/scraping
+* **webwright** — Playwright web tasks with screenshots (symlink)
+* **write-a-skill** — Create new skills with proper structure
+* **matt-pocock/** — ask-matt, implement, research, to-spec, to-tickets, wayfinder, setup-matt-pocock-skills
 
 ## File Locations
 
