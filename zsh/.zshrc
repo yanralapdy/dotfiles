@@ -51,9 +51,11 @@ alias python='python3'
 # Node - use nvm directly, no need for version switchers
 # Run `nvm use <version>` or set default with `nvm alias default <version>`
 
-# PHP - use brew pin or shims
-alias php83='brew link --overwrite php@8.3'
-alias php82='brew link --overwrite php@8.2'
+# PHP - use brew pin or shims (macOS/brew only)
+if command -v brew &>/dev/null; then
+    alias php83='brew link --overwrite php@8.3'
+    alias php82='brew link --overwrite php@8.2'
+fi
 
 # Flutter
 alias flutter='fvm flutter'
@@ -64,7 +66,10 @@ alias f2v='vim -- ${(f)"$(fzf -m --preview="bat --color=always {}")"}'
 alias tns='~/.local/scripts/tmux-new-session'
 alias cnmt='curl --connect-timeout 0 --max-time 0'
 alias vim="NVIM_APPNAME=nvim $EDITOR"
-alias code="NVIM_APPNAME=nvim $EDITOR"
+# On WSL/Linux `code` is usually VS Code (Remote-WSL); don't shadow it there.
+if [[ "$OS" == "macOS" ]]; then
+    alias code="NVIM_APPNAME=nvim $EDITOR"
+fi
 alias g++='clang++ -std=c++17'
 
 # ============ PATH CONFIGURATION ============
@@ -115,7 +120,11 @@ typeset -U path
 
 # Android
 if [[ -d "$HOME/Library/Android/sdk" ]]; then
-    export ANDROID_HOME="$HOME/Library/Android/sdk"
+    export ANDROID_HOME="$HOME/Library/Android/sdk"       # macOS
+elif [[ -d "$HOME/Android/Sdk" ]]; then
+    export ANDROID_HOME="$HOME/Android/Sdk"               # Linux/WSL
+fi
+if [[ -n "$ANDROID_HOME" ]]; then
     export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"
 fi
 
@@ -212,9 +221,22 @@ fi
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # ============ ANTIGRAVITY ============
-if [[ -d "$HOME/.antigravity/antigravity/bin" ]]; then
-    export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
-fi
+unalias agy 2>/dev/null || true
+# Desktop GUI Launchers
+alias antigravity='~/.local/scripts/antigravity-main'
+alias agymain='~/.local/scripts/antigravity-main'
+alias agyalt='~/.local/scripts/antigravity2'
+alias agy2='agyalt'
+alias agyalt2='~/.local/scripts/antigravity-profile alt2'
+alias agy3='agyalt2'
+alias agyalt3='~/.local/scripts/antigravity-profile alt3'
+alias agy4='agyalt3'
+alias agyprofile='~/.local/scripts/antigravity-profile'
+
+# CLI Multi-Account Launchers (CLI binary is ~/.local/bin/agy)
+alias agy-alt='HOME="$HOME/.antigravity-profiles/alt" agy'
+alias agy-alt2='HOME="$HOME/.antigravity-profiles/alt2" agy'
+alias agy-alt3='HOME="$HOME/.antigravity-profiles/alt3" agy'
 export RIPGREP_CONFIG_PATH="$HOME/.rgrc"
 
 # ============ PI AGENT ============
@@ -294,3 +316,12 @@ alias scrum-sprints='~/.local/scripts/scrum-sprints'
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/tnkapdy/.local/bin:$PATH"
+
+
+alias vpn-up="sudo openvpn --config ~/brain-dump/local_files/premiro/openvpn-license/profile-userlocked-apdy.ovpn --auth-user-pass ~/.vpn-auth --data-ciphers AES-256-GCM:AES-128-GCM:CHACHA20-POLY1305:AES-256-CBC --daemon"
+alias vpn-down="sudo killall openvpn"
+alias vpn-status="pgrep -fl openvpn"

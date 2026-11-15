@@ -16,7 +16,7 @@ fi
 
 # Set default node version if not set
 if [[ -z "$NODE_PATH" ]]; then
-    if [[ -d "$(brew --prefix)/opt/nvm/versions/node" ]] 2>/dev/null; then
+    if command -v brew &>/dev/null && [[ -d "$(brew --prefix)/opt/nvm/versions/node" ]]; then
         NODE_VERSIONS_DIR="$(brew --prefix)/opt/nvm/versions/node"
     elif [[ -d "$NVM_DIR/versions/node" ]]; then
         NODE_VERSIONS_DIR="$NVM_DIR/versions/node"
@@ -30,7 +30,7 @@ if [[ -z "$NODE_PATH" ]]; then
 fi
 
 export KIRO_HOME="$HOME/.config/kiro"
-. "$HOME/.cargo/env"
+[[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
 
 # Neovim (Ubuntu/local install) - must be early in PATH
 if [[ -d "$HOME/.local/nvim/bin" ]]; then
