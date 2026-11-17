@@ -60,12 +60,17 @@ stow karabiner   # symlinks karabiner.json into ~/.config/karabiner/assets/compl
 ```bash
 yazi
 ```
-### Custom shell scripts (tns, etc.)
-All scripts are symlinked into ~/scripts/ (or ~/.local/bin/ if you prefer).
-Make sure the directory is in your $PATH.
+### Custom shell scripts (tns, phone, etc.)
+All scripts live in `shellscript/.local/scripts/` (stowed to `~/.local/scripts/`).
 Example usage after install:
 ```bash
-tns "path=$HOME/sites;m_d=4;s_n=prosper"   # search max-depth 3, session name "myproject"
+# Fuzzy-find project directory and attach/create tmux session
+tns "path=$HOME/sites;m_d=4;s_n=prosper"
+
+# Control Android phone with Mac mouse & keyboard via scrcpy UHID mode (requires: brew install scrcpy)
+phone        # Auto-discover over Wi-Fi mDNS (or USB) and attach mouse/keyboard
+phone -l     # Force phone into landscape (even portrait-only apps) and restore on exit
+phone -l -w  # Landscape + keep screen awake
 ```
 # Updating
 ```bash

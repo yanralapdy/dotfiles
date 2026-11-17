@@ -64,6 +64,7 @@ alias dart='fvm dart'
 # Tools
 alias f2v='vim -- ${(f)"$(fzf -m --preview="bat --color=always {}")"}'
 alias tns='~/.local/scripts/tmux-new-session'
+alias phone='~/.local/scripts/phone-control'
 alias cnmt='curl --connect-timeout 0 --max-time 0'
 alias vim="NVIM_APPNAME=nvim $EDITOR"
 # On WSL/Linux `code` is usually VS Code (Remote-WSL); don't shadow it there.

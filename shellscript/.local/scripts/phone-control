@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Control Android device with Mac mouse & keyboard via scrcpy UHID mode.
+# Safe for public dotfiles: contains no hardcoded IPs, ports, or secrets.
+#
+# Usage:
+#   phone                       # Auto-discover/connect phone & start mouse/keyboard sharing
+#   phone -l / --landscape      # Force phone into landscape (even portrait-only apps) & restore on exit
+#   phone -rl / --rev-landscape # Force reverse-landscape (270 deg) & restore on exit
+#   phone -p / --portrait       # Force portrait (0 deg)
+#   phone 192.168.1.50:41234    # Connect to explicit IP:PORT (if router blocks mDNS)
+#   phone -w                    # Pass any extra flags (like -w / --stay-awake) to scrcpy
+
+adb start-server >/dev/null 2>&1
+
+rotation_mode=""
+scrcpy_args=()
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -l|--landscape)
+            rotation_mode="1"
+            shift
+            ;;
+        -rl|--rev-landscape|--reverse-landscape)
+            rotation_mode="3"
+            shift
+            ;;
+        -p|--portrait)
+            rotation_mode="0"
+            shift
+            ;;
+        *)
+            if [[ "$1" == *:* && "$1" != -* ]]; then
+                echo "Connecting to $1..."
+                adb connect "$1"
+            else
+                scrcpy_args+=("$1")
+            fi
+            shift
+            ;;
+    esac
+done
+
+# Find an attached physical/wireless phone (ignoring Android Studio emulators)
+get_phone_serial() {
+    adb devices | awk 'NR>1 && $2=="device" && $1 !~ /^emulator-/ {print $1; exit}'
+}
+
+serial="$(get_phone_serial)"
+
+# If not connected yet, auto-discover via Android Wireless Debugging mDNS
+if [[ -z "$serial" ]]; then
+    target="$(adb mdns services 2>/dev/null | awk '/_adb-tls-connect\._tcp/ {print $3; exit}')"
+    if [[ -n "$target" ]]; then
+        echo "Discovered phone via mDNS at $target, connecting..."
+        adb connect "$target" >/dev/null
+        serial="$(get_phone_serial)"
+    fi
+fi
+
+if [[ -z "$serial" ]]; then
+    echo "No Android phone detected."
+    echo "Make sure 'Wireless debugging' is ON (or plug in via USB), or run: phone <IP:PORT>"
+    exit 1
+fi
+
+# Optional: Force Android device screen orientation & restore when scrcpy exits
+if [[ -n "$rotation_mode" ]]; then
+    orig_rot="$(adb -s "$serial" shell wm user-rotation 2>/dev/null | tr -d '\r')"
+    restore_rotation() {
+        echo "Restoring phone orientation..."
+        adb -s "$serial" shell wm set-ignore-orientation-request false >/dev/null 2>&1 || true
+        if [[ "$orig_rot" == free* ]]; then
+            adb -s "$serial" shell wm user-rotation free >/dev/null 2>&1 || true
+        else
+            local rot_val="${orig_rot##* }"
+            adb -s "$serial" shell wm user-rotation lock "${rot_val:-0}" >/dev/null 2>&1 || true
+        fi
+    }
+    trap restore_rotation EXIT INT TERM
+
+    echo "Forcing phone orientation (rotation=$rotation_mode)..."
+    adb -s "$serial" shell wm set-ignore-orientation-request true >/dev/null 2>&1 || true
+    adb -s "$serial" shell wm user-rotation lock "$rotation_mode" >/dev/null 2>&1 || true
+fi
+
+echo "Connected to $serial — launching scrcpy mouse & keyboard control (press Left Option to release cursor)..."
+scrcpy -s "$serial" --no-video -KM ${scrcpy_args[@]+"${scrcpy_args[@]}"}
