@@ -9,6 +9,7 @@ set -euo pipefail
 #   phone -l / --landscape      # Force phone into landscape (even portrait-only apps) & restore on exit
 #   phone -rl / --rev-landscape # Force reverse-landscape (270 deg) & restore on exit
 #   phone -p / --portrait       # Force portrait (0 deg)
+#   phone pair                  # Auto-discover pairing IP:PORT via mDNS & prompt for 6-digit code
 #   phone 192.168.1.50:41234    # Connect to explicit IP:PORT (if router blocks mDNS)
 #   phone -w                    # Pass any extra flags (like -w / --stay-awake) to scrcpy
 
@@ -19,6 +20,23 @@ scrcpy_args=()
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        pair|--pair)
+            echo "Searching for phone with 'Pair device with pairing code' popup open..."
+            pair_target=""
+            for _ in 1 2 3 4 5; do
+                pair_target="$(adb mdns services 2>/dev/null | awk '/_adb-tls-pairing\._tcp/ {print $3; exit}')"
+                [[ -n "$pair_target" ]] && break
+                sleep 1
+            done
+            if [[ -z "$pair_target" ]]; then
+                echo "Could not auto-discover pairing popup via mDNS."
+                echo "Make sure the 'Pair device with pairing code' dialog is open on your phone, or run: adb pair <IP:PORT>"
+                exit 1
+            fi
+            echo "Found pairing service at $pair_target"
+            adb pair "$pair_target"
+            shift
+            ;;
         -l|--landscape)
             rotation_mode="1"
             shift
@@ -51,13 +69,21 @@ get_phone_serial() {
 serial="$(get_phone_serial)"
 
 # If not connected yet, auto-discover via Android Wireless Debugging mDNS
+# Retry up to 4 seconds in case `adb start-server` just cold-started the daemon
 if [[ -z "$serial" ]]; then
-    target="$(adb mdns services 2>/dev/null | awk '/_adb-tls-connect\._tcp/ {print $3; exit}')"
-    if [[ -n "$target" ]]; then
-        echo "Discovered phone via mDNS at $target, connecting..."
-        adb connect "$target" >/dev/null
+    for _ in 1 2 3 4; do
         serial="$(get_phone_serial)"
-    fi
+        [[ -n "$serial" ]] && break
+        target="$(adb mdns services 2>/dev/null | awk '/_adb-tls-connect\._tcp/ {print $3; exit}')"
+        if [[ -n "$target" ]]; then
+            echo "Discovered phone via mDNS at $target, connecting..."
+            adb connect "$target" >/dev/null 2>&1 || true
+            sleep 0.5
+            serial="$(get_phone_serial)"
+            [[ -n "$serial" ]] && break
+        fi
+        sleep 1
+    done
 fi
 
 if [[ -z "$serial" ]]; then
