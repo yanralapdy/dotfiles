@@ -12,6 +12,7 @@ NC='\033[0m' # No Color
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CANONICAL_DIR="$REPO_ROOT/skills"
+REAL_HOME="${HOME%/.antigravity-profiles/*}"
 
 # All locations that should resolve to the canonical skills directory.
 # Format: "target_dir|relative_symlink_path"
@@ -20,10 +21,10 @@ CANONICAL_DIR="$REPO_ROOT/skills"
 # into ~/.dotfiles/kiro/, so their skill paths share inodes with the dotfiles
 # paths below and are intentionally omitted.
 LINK_TARGETS=(
-    "$HOME/.dotfiles/kiro/.config/kiro/skills|../../../agents-skills/skills"
-    "$HOME/.dotfiles/kiro/.kiro/skills|../../agents-skills/skills"
-    "$HOME/.dotfiles/pi/.config/pi/agent/skills|../../../../agents-skills/skills"
-    "$HOME/.pi/agent/skills|../../.dotfiles/agents-skills/skills"
+    "$REAL_HOME/.dotfiles/kiro/.config/kiro/skills|../../../agents-skills/skills"
+    "$REAL_HOME/.dotfiles/kiro/.kiro/skills|../../agents-skills/skills"
+    "$REAL_HOME/.dotfiles/pi/.config/pi/agent/skills|../../../../agents-skills/skills"
+    "$REAL_HOME/.pi/agent/skills|../../.dotfiles/agents-skills/skills"
 )
 
 # List all skills in the canonical directory
@@ -93,6 +94,11 @@ setup_links() {
 
     echo ""
     echo -e "${GREEN}Done.${NC} $fixed new/repaired symlinks."
+
+    if [[ -x "$CANONICAL_DIR/agy-profile-boundary/scripts/sync-profiles.sh" ]]; then
+        echo ""
+        "$CANONICAL_DIR/agy-profile-boundary/scripts/sync-profiles.sh"
+    fi
 }
 
 # Show status of all configured locations and installed skills
@@ -144,10 +150,16 @@ verify() {
     # Check runtime access paths (kiro is reached through ~/.config/kiro which
     # symlinks into ~/.dotfiles/kiro/.config/kiro).
     local check_paths=(
-        "$HOME/.config/kiro/skills"
-        "$HOME/.kiro/skills"
-        "$HOME/.pi/agent/skills"
+        "$REAL_HOME/.config/kiro/skills"
+        "$REAL_HOME/.kiro/skills"
+        "$REAL_HOME/.pi/agent/skills"
+        "$REAL_HOME/.gemini/config/skills"
     )
+    if [[ -d "$REAL_HOME/.antigravity-profiles" ]]; then
+        for pdir in "$REAL_HOME/.antigravity-profiles"/*; do
+            [[ -d "$pdir" ]] && check_paths+=("$pdir/.gemini/config/skills")
+        done
+    fi
 
     for target in "${check_paths[@]}"; do
         if [[ ! -e "$target" ]]; then

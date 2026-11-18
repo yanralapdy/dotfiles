@@ -14,7 +14,15 @@ KEYCHAIN_PATH="$PROFILE_DIR/Library/Keychains/login.keychain-db"
 USER_DATA_DIR="$PROFILE_DIR/Library/Application Support/Antigravity"
 EXTENSIONS_DIR="$PROFILE_DIR/.antigravity/extensions"
 
-mkdir -p "$PROFILE_DIR/Library/Keychains" "$USER_DATA_DIR" "$EXTENSIONS_DIR"
+mkdir -p "$PROFILE_DIR/Library/Keychains" "$USER_DATA_DIR" "$EXTENSIONS_DIR" "$PROFILE_DIR/.gemini/config/plugins"
+
+# Share host tool configs, skills, and always-on rules while keeping AGY auth & app data isolated
+[[ -d "$HOME/.dotfiles/agents-skills/skills" ]] && ln -sfn "$HOME/.dotfiles/agents-skills/skills" "$PROFILE_DIR/.gemini/config/skills"
+[[ -d "$HOME/.dotfiles/agents-skills/agy-plugins/agy-profile-boundary" ]] && ln -sfn "$HOME/.dotfiles/agents-skills/agy-plugins/agy-profile-boundary" "$PROFILE_DIR/.gemini/config/plugins/agy-profile-boundary"
+[[ -f "$HOME/.gemini/GEMINI.md" ]] && ln -sfn "$HOME/.gemini/GEMINI.md" "$PROFILE_DIR/.gemini/GEMINI.md"
+for item in .android .gitconfig .ssh; do
+  [[ -e "$HOME/$item" && ! -d "$PROFILE_DIR/$item" || -L "$PROFILE_DIR/$item" ]] && ln -sfn "$HOME/$item" "$PROFILE_DIR/$item"
+done
 
 # Create and configure an isolated keychain for this profile if needed
 if [ ! -f "$KEYCHAIN_PATH" ]; then
