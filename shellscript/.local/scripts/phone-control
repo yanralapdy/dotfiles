@@ -124,4 +124,4 @@ if [[ "$show_video" != true ]]; then
 fi
 
 echo "Connected to $serial — launching scrcpy mouse & keyboard control (press Left Option to release cursor)..."
-scrcpy -s "$serial" "${video_flags[@]}" -KM ${scrcpy_args[@]+"${scrcpy_args[@]}"}
+scrcpy -s "$serial" ${video_flags[@]+"${video_flags[@]}"} -KM ${scrcpy_args[@]+"${scrcpy_args[@]}"}

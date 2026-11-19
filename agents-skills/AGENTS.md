@@ -92,7 +92,7 @@ Skills are organized by category. All skills live in one canonical location (`~/
 * **browser-harness** — Direct browser control via CDP for automation/scraping
 * **webwright** — Playwright web tasks with screenshots (symlink)
 * **write-a-skill** — Create new skills with proper structure
-* **matt-pocock/** — ask-matt, implement, research, to-spec, to-tickets, wayfinder, setup-matt-pocock-skills
+* **matt-pocock/** — implement, research, to-spec, to-tickets, wayfinder, setup-matt-pocock-skills
 
 ## File Locations
 
