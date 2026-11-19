@@ -5,7 +5,8 @@ set -euo pipefail
 # Safe for public dotfiles: contains no hardcoded IPs, ports, or secrets.
 #
 # Usage:
-#   phone                       # Auto-discover/connect phone & start mouse/keyboard sharing
+#   phone                       # Auto-discover/connect phone & start mouse/keyboard sharing (no video)
+#   phone -v / --video          # Also show Android screen video in a window on Mac
 #   phone -l / --landscape      # Force phone into landscape (even portrait-only apps) & restore on exit
 #   phone -rl / --rev-landscape # Force reverse-landscape (270 deg) & restore on exit
 #   phone -p / --portrait       # Force portrait (0 deg)
@@ -16,6 +17,7 @@ set -euo pipefail
 adb start-server >/dev/null 2>&1
 
 rotation_mode=""
+show_video=false
 scrcpy_args=()
 
 while [[ $# -gt 0 ]]; do
@@ -35,6 +37,10 @@ while [[ $# -gt 0 ]]; do
             fi
             echo "Found pairing service at $pair_target"
             adb pair "$pair_target"
+            shift
+            ;;
+        -v|--video)
+            show_video=true
             shift
             ;;
         -l|--landscape)
@@ -112,5 +118,10 @@ if [[ -n "$rotation_mode" ]]; then
     adb -s "$serial" shell wm user-rotation lock "$rotation_mode" >/dev/null 2>&1 || true
 fi
 
+video_flags=()
+if [[ "$show_video" != true ]]; then
+    video_flags+=("--no-video")
+fi
+
 echo "Connected to $serial — launching scrcpy mouse & keyboard control (press Left Option to release cursor)..."
-scrcpy -s "$serial" --no-video -KM ${scrcpy_args[@]+"${scrcpy_args[@]}"}
+scrcpy -s "$serial" "${video_flags[@]}" -KM ${scrcpy_args[@]+"${scrcpy_args[@]}"}

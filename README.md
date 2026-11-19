@@ -68,7 +68,8 @@ Example usage after install:
 tns "path=$HOME/sites;m_d=4;s_n=prosper"
 
 # Control Android phone with Mac mouse & keyboard via scrcpy UHID mode (requires: brew install scrcpy)
-phone        # Auto-discover over Wi-Fi mDNS (or USB) and attach mouse/keyboard
+phone        # Auto-discover over Wi-Fi mDNS (or USB) and attach mouse/keyboard (no video by default)
+phone -v     # Mirror Android screen video in a window on Mac + mouse/keyboard
 phone -l     # Force phone into landscape (even portrait-only apps) and restore on exit
 phone -l -w  # Landscape + keep screen awake
 ```
