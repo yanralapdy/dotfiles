@@ -14,7 +14,7 @@ import sys
 import urllib.error
 import urllib.request
 
-KEYS = ("DISCORD_MERGE_REQUEST_WEBHOOK", "REVIEWER_DISCORD_USER_ID", "MERGE_REQUEST_BY")
+KEYS = ("DISCORD_MERGE_REQUEST_WEBHOOK", "REVIEWER_DISCORD_USER_ID", "MERGE_REQUEST_BY", "BOT_NAME")
 SECRETS = os.path.expanduser("~/.secrets")
 WEBHOOK_RE = re.compile(r"^https://(?:\w+\.)?discord(?:app)?\.com/api/webhooks/\d+/[\w-]+$")
 SNOWFLAKE_RE = re.compile(r"^\d{15,21}$")
@@ -24,11 +24,13 @@ SETUP_HELP = f"""Setup needed. Create {SECRETS} (chmod 600) containing:
   export DISCORD_MERGE_REQUEST_WEBHOOK="https://discord.com/api/webhooks/<id>/<token>"
   export REVIEWER_DISCORD_USER_ID="<default reviewer's Discord user id>"
   export MERGE_REQUEST_BY="<your name as shown in the notification>"
+  export BOT_NAME="<optional default webhook display name>"
 
 Webhook: Discord channel > Edit Channel > Integrations > Webhooks > New Webhook > Copy URL.
 User id: Discord Settings > Advanced > Developer Mode on, then right-click the user > Copy User ID.
 REVIEWER_DISCORD_USER_ID is optional if you always pass --reviewer;
-MERGE_REQUEST_BY is optional if you always pass --by."""
+MERGE_REQUEST_BY is optional if you always pass --by;
+BOT_NAME is optional (falls back to the Discord webhook's configured name unless --bot-name is passed)."""
 
 
 def load_secrets() -> tuple[dict, bool]:
@@ -76,13 +78,14 @@ def main() -> int:
     p.add_argument("--task-url", default="")
     p.add_argument("--reviewer", default="", help="Discord user id; defaults to REVIEWER_DISCORD_USER_ID")
     p.add_argument("--by", default="", help="Author name; defaults to MERGE_REQUEST_BY")
-    p.add_argument("--bot-name", default="", help="Override the webhook's display name for this message")
+    p.add_argument("--bot-name", default="", help="Override the webhook's display name for this message; defaults to BOT_NAME")
     p.add_argument("--dry-run", action="store_true", help="Print the payload; do not post")
     a = p.parse_args()
 
     s, exists = load_secrets()
     reviewer = (a.reviewer or s["REVIEWER_DISCORD_USER_ID"]).strip().strip("<@!>")
     by = (a.by or s["MERGE_REQUEST_BY"]).strip()
+    bot_name = (a.bot_name or s["BOT_NAME"]).strip()
 
     problems = setup_problems(s, exists, reviewer, by)
     if problems:
@@ -94,7 +97,8 @@ def main() -> int:
         return 1
     if a.check:
         src = "--reviewer" if a.reviewer else "REVIEWER_DISCORD_USER_ID"
-        print(f"setup ok: webhook set, reviewer from {src}, by={by}")
+        bot_label = bot_name if bot_name else "(webhook default)"
+        print(f"setup ok: webhook set, reviewer from {src}, by={by}, bot_name={bot_label}")
         return 0
 
     for name in ("project", "title", "url"):
@@ -119,7 +123,7 @@ def main() -> int:
     payload = {
         "content": f"<@{reviewer}> new merge request for **{a.project}** ready for your review",
         "allowed_mentions": {"parse": [], "users": [reviewer]},
-        **({"username": clip(a.bot_name, 80)} if a.bot_name.strip() else {}),
+        **({"username": clip(bot_name, 80)} if bot_name else {}),
         "embeds": [{
             "title": clip(title, 256),
             "url": a.url,
