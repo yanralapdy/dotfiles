@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Check if Main Antigravity is already running
+if ! pgrep -f "/Applications/Antigravity.app/Contents/MacOS/Antigravity" | grep -v "antigravity-profiles" >/dev/null 2>&1; then
+  echo "Starting Main Antigravity..."
+  "$HOME/.local/scripts/antigravity-main" "$@"
+  sleep 1
+else
+  echo "Main Antigravity is already running."
+fi
+
+# Start all alt profiles
+for prof in alt alt2 alt3; do
+  echo "Starting Antigravity ($prof)..."
+  "$HOME/.local/scripts/antigravity-profile" "$prof" "$@"
+  sleep 1
+done
+
+echo "All profiles started."

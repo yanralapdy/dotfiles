@@ -233,6 +233,7 @@ alias agy3='agyalt2'
 alias agyalt3='~/.local/scripts/antigravity-profile alt3'
 alias agy4='agyalt3'
 alias agyprofile='~/.local/scripts/antigravity-profile'
+alias agyall='~/.local/scripts/antigravity-all'
 
 # CLI Multi-Account Launchers (CLI binary is ~/.local/bin/agy)
 alias agy-alt='HOME="$HOME/.antigravity-profiles/alt" agy'
@@ -292,9 +293,34 @@ fi
 alias pixel="emulator -avd pixel10_pro_xl -gpu swiftshader_indirect"
 
 # OS-aware restart command
+# restart -f: skip the macOS app-save prompts and reboot via sudo shutdown
 restart() {
+  local force=0
+  [[ "$1" == -f ]] && force=1
+  read -q "?Restart now? [y/N] " || { echo; return 1; }
+  echo
+  # Ask for sudo up front so the password prompt doesn't come after containers are already down
+  [[ "$(uname -s)" == Linux || $force == 1 ]] && { sudo -v || return 1; }
+
+  # Stop running Colima VMs cleanly so the Docker disk isn't left dirty; force only if graceful stop fails
+  if command -v colima >/dev/null && command -v jq >/dev/null; then
+    local p
+    for p in $(colima list -j 2>/dev/null | jq -r 'select(.status=="Running") | .name'); do
+      echo "Stopping colima profile: $p"
+      colima stop -p "$p" || colima stop -f -p "$p"
+    done
+  fi
+
+  # Linux: stop containers on the native Docker daemon
+  if [[ "$(uname -s)" == Linux ]] && command -v docker >/dev/null; then
+    docker ps -q | xargs -r docker stop
+  fi
+
   case "$(uname -s)" in
-    Darwin)  sudo shutdown -r now "${1:-Restarting...}" ;;
+    # Same as Apple menu > Restart: apps quit normally and can prompt to save
+    Darwin)
+      if (( force )); then sudo shutdown -r now
+      else osascript -e 'tell application "System Events" to restart'; fi ;;
     Linux)   sudo reboot ;;
     MINGW*|MSYS*|CYGWIN*) shutdown /r /t 0 ;;
     *)       echo "Unknown OS: $(uname -s)" ;;
