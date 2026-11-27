@@ -16,6 +16,40 @@ set -euo pipefail
 
 adb start-server >/dev/null 2>&1
 
+# Print IP:PORT of an mDNS service. adb's own mDNS often finds nothing on macOS,
+# so fall back to the system resolver (dns-sd), which does see the phone.
+find_service() {
+    local svc="$1" target="" out pid name="" hp="" ip=""
+    target="$(adb mdns services 2>/dev/null | awk -v s="$svc" '$0 ~ s {print $3; exit}')"
+    if [[ -n "$target" ]]; then echo "$target"; return; fi
+    command -v dns-sd >/dev/null || return 0
+
+    out="$(mktemp)"
+    dns-sd -B "$svc" local. >"$out" 2>/dev/null & pid=$!
+    for _ in {1..30}; do
+        name="$(awk -v s="$svc." '$2=="Add" && $6==s {print $NF; exit}' "$out")"
+        [[ -n "$name" ]] && break
+        sleep 0.1
+    done
+    kill "$pid" 2>/dev/null; wait "$pid" 2>/dev/null || true
+
+    if [[ -n "$name" ]]; then
+        dns-sd -L "$name" "$svc" local. >"$out" 2>/dev/null & pid=$!
+        for _ in {1..30}; do
+            # line: "... can be reached at Android.local.:42389 (interface 14)"
+            hp="$(awk '/can be reached at/ {print $(NF-2); exit}' "$out")"
+            [[ -n "$hp" ]] && break
+            sleep 0.1
+        done
+        kill "$pid" 2>/dev/null; wait "$pid" 2>/dev/null || true
+    fi
+    rm -f "$out"
+    [[ -z "$hp" ]] && return 0
+
+    ip="$(dscacheutil -q host -a name "${hp%:*}" | awk '/^ip_address/ {print $2; exit}')"
+    [[ -n "$ip" ]] && echo "$ip:${hp##*:}"
+}
+
 rotation_mode=""
 show_video=false
 scrcpy_args=()
@@ -26,7 +60,7 @@ while [[ $# -gt 0 ]]; do
             echo "Searching for phone with 'Pair device with pairing code' popup open..."
             pair_target=""
             for _ in 1 2 3 4 5; do
-                pair_target="$(adb mdns services 2>/dev/null | awk '/_adb-tls-pairing\._tcp/ {print $3; exit}')"
+                pair_target="$(find_service _adb-tls-pairing._tcp)"
                 [[ -n "$pair_target" ]] && break
                 sleep 1
             done
@@ -77,10 +111,12 @@ serial="$(get_phone_serial)"
 # If not connected yet, auto-discover via Android Wireless Debugging mDNS
 # Retry up to 4 seconds in case `adb start-server` just cold-started the daemon
 if [[ -z "$serial" ]]; then
+    # Drop stale entries left from an old port so they don't pile up as "offline"
+    adb devices | awk 'NR>1 && $2=="offline" {print $1}' | while read -r s; do adb disconnect "$s" >/dev/null 2>&1 || true; done
     for _ in 1 2 3 4; do
         serial="$(get_phone_serial)"
         [[ -n "$serial" ]] && break
-        target="$(adb mdns services 2>/dev/null | awk '/_adb-tls-connect\._tcp/ {print $3; exit}')"
+        target="$(find_service _adb-tls-connect._tcp)"
         if [[ -n "$target" ]]; then
             echo "Discovered phone via mDNS at $target, connecting..."
             adb connect "$target" >/dev/null 2>&1 || true
