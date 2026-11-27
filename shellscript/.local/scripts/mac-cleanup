@@ -1,0 +1,184 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# mac-cleanup: Safe, repeatable Mac storage maintenance script
+# Respects Antigravity secondary profile boundaries (~/.antigravity-profiles/*)
+
+REAL_HOME="${HOME%/.antigravity-profiles/*}"
+export HOME="$REAL_HOME"
+
+DRY_RUN=false
+CLEAN_BUILDS=false
+PRUNE_VOLUMES=false
+
+usage() {
+  cat <<'EOF'
+Usage: mac-cleanup [OPTIONS]
+
+Safe, repeatable macOS disk cleanup for dev machines running Colima/Docker.
+
+Options:
+  --dry-run          Preview what would be cleaned without deleting anything
+  --builds           Also remove regeneratable .next and Rust target/ dirs under ~/sites
+  --docker-volumes   Also prune anonymous dangling Docker volumes (preserves named volumes)
+  -h, --help         Show this help message
+EOF
+}
+
+for arg in "$@"; do
+  case "$arg" in
+    --dry-run) DRY_RUN=true ;;
+    --builds) CLEAN_BUILDS=true ;;
+    --docker-volumes) PRUNE_VOLUMES=true ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "Unknown option: $arg" >&2; usage; exit 1 ;;
+  esac
+done
+
+free_kb() {
+  df -k /System/Volumes/Data 2>/dev/null | awk 'NR==2 {print $4}'
+}
+
+fmt_kb() {
+  awk -v kb="$1" 'BEGIN {
+    if (kb >= 1048576) printf "%.2f GiB", kb/1048576;
+    else if (kb >= 1024) printf "%.1f MiB", kb/1024;
+    else printf "%d KiB", kb;
+  }'
+}
+
+run_or_echo() {
+  if $DRY_RUN; then
+    echo "  [dry-run] $*"
+  else
+    "$@"
+  fi
+}
+
+remove_path() {
+  local target="$1"
+  if [ -e "$target" ]; then
+    local size
+    size=$(du -sh "$target" 2>/dev/null | cut -f1)
+    if $DRY_RUN; then
+      echo "  [dry-run] would remove $target ($size)"
+    else
+      echo "  Removing $target ($size)"
+      rm -rf "$target"
+    fi
+  fi
+}
+
+START_KB=$(free_kb)
+echo "=== Mac Cleanup ==="
+echo "Home:       $REAL_HOME"
+echo "Free now:   $(fmt_kb "$START_KB")"
+$DRY_RUN && echo "Mode:       DRY RUN (no files will be deleted)"
+echo ""
+
+# 1. Docker & Colima
+echo "--- 1. Docker & Colima ---"
+if command -v colima >/dev/null 2>&1 && colima status >/dev/null 2>&1; then
+  if $DRY_RUN; then
+    docker system df || true
+    echo "  [dry-run] would prune unused Docker images, build cache, and run colima fstrim"
+    $PRUNE_VOLUMES && echo "  [dry-run] would prune anonymous Docker volumes"
+  else
+    docker image prune -a -f || true
+    docker builder prune -a -f || true
+    if $PRUNE_VOLUMES; then
+      docker volume prune -f || true
+    fi
+    echo "  Trimming Colima sparse disk..."
+    colima ssh -- sudo fstrim -av 2>/dev/null || true
+  fi
+else
+  echo "  Colima is not running — skipping Docker prune & fstrim."
+fi
+echo ""
+
+# 2. Package manager caches
+echo "--- 2. Package Manager Caches ---"
+if [ -d "$REAL_HOME/.npm" ]; then
+  if $DRY_RUN; then
+    echo "  [dry-run] npm cache: $(du -sh "$REAL_HOME/.npm" 2>/dev/null | cut -f1)"
+  else
+    command -v npm >/dev/null 2>&1 && npm cache clean --force >/dev/null 2>&1 || true
+    remove_path "$REAL_HOME/.npm/_npx"
+    remove_path "$REAL_HOME/.npm/_cacache"
+  fi
+fi
+
+if command -v pnpm >/dev/null 2>&1; then
+  run_or_echo pnpm store prune || true
+fi
+remove_path "$REAL_HOME/Library/Caches/pnpm"
+
+if command -v brew >/dev/null 2>&1; then
+  if $DRY_RUN; then
+    echo "  [dry-run] Homebrew cache: $(du -sh "$REAL_HOME/Library/Caches/Homebrew" 2>/dev/null | cut -f1 || echo 0B)"
+  else
+    brew cleanup --prune=all -s >/dev/null 2>&1 || true
+  fi
+fi
+
+remove_path "$REAL_HOME/Library/Caches/pip"
+
+if command -v uv >/dev/null 2>&1; then
+  if $DRY_RUN; then
+    echo "  [dry-run] uv cache: $(du -sh "$REAL_HOME/.cache/uv" 2>/dev/null | cut -f1 || echo 0B)"
+  else
+    uv cache clean >/dev/null 2>&1 || remove_path "$REAL_HOME/.cache/uv"
+  fi
+else
+  remove_path "$REAL_HOME/.cache/uv"
+fi
+echo ""
+
+# 3. Safe app & updater caches
+echo "--- 3. Safe App & Updater Caches ---"
+for cache_dir in \
+  "$REAL_HOME/Library/Caches/colima" \
+  "$REAL_HOME/Library/Caches/com.operasoftware.Opera" \
+  "$REAL_HOME/Library/Caches/com.google.antigravity.ShipIt" \
+  "$REAL_HOME/Library/Caches/com.hnc.Discord.ShipIt" \
+  "$REAL_HOME/Library/Caches/antigravity-updater" \
+  "$REAL_HOME/Library/Caches/sideloadly"; do
+  remove_path "$cache_dir"
+done
+echo ""
+
+# 4. Optional regeneratable project builds
+if $CLEAN_BUILDS; then
+  echo "--- 4. Project Build Caches (~/sites) ---"
+  if [ -d "$REAL_HOME/sites" ]; then
+    while IFS= read -r dir; do
+      [ -n "$dir" ] && remove_path "$dir"
+    done < <(find "$REAL_HOME/sites" -maxdepth 4 -type d \( -name ".next" -o -name "target" \) -prune 2>/dev/null)
+  fi
+  echo ""
+fi
+
+# 5. System checks & advisories
+echo "--- System Advisories ---"
+if tmutil listlocalsnapshots / 2>/dev/null | grep -q "MSUPrepareUpdate"; then
+  echo "  [!] Staged macOS update snapshot detected (MSUPrepareUpdate)."
+  echo "      Apply the pending update in System Settings -> Software Update to reclaim Preboot/Update space."
+fi
+
+VM_BYTES=$(diskutil apfs list 2>/dev/null | awk '/Role.*\(VM\)/{f=1} f && /Capacity Consumed:/{print $3; exit}')
+if [ -n "${VM_BYTES:-}" ] && [ "$VM_BYTES" -gt 6442450944 ]; then
+  VM_GB=$(awk -v b="$VM_BYTES" 'BEGIN { printf "%.1f", b/1000000000 }')
+  echo "  [!] VM swap volume is ${VM_GB} GB — rebooting your Mac will reclaim excess swap."
+fi
+echo "  [i] Remember to empty Finder Trash and check Downloads for old .dmg/.sql files."
+echo ""
+
+END_KB=$(free_kb)
+DIFF_KB=$((END_KB - START_KB))
+echo "=== Summary ==="
+echo "Free before: $(fmt_kb "$START_KB")"
+echo "Free after:  $(fmt_kb "$END_KB")"
+if [ "$DIFF_KB" -gt 0 ]; then
+  echo "Reclaimed:   $(fmt_kb "$DIFF_KB")"
+fi
