@@ -35,6 +35,15 @@ fi
 # Ensure the isolated keychain is unlocked
 HOME="$PROFILE_DIR" security unlock-keychain -p "antigravity" "$KEYCHAIN_PATH" 2>/dev/null || true
 
+# Clean up stale Chromium/Electron singleton locks if the previous process died
+if [ -L "$USER_DATA_DIR/SingletonLock" ]; then
+  lock_target="$(readlink "$USER_DATA_DIR/SingletonLock" || true)"
+  lock_pid="${lock_target##*-}"
+  if [[ "$lock_pid" =~ ^[0-9]+$ ]] && ! kill -0 "$lock_pid" 2>/dev/null; then
+    rm -f "$USER_DATA_DIR"/Singleton*
+  fi
+fi
+
 # Convert relative paths to absolute paths
 ARGS=()
 for arg in "$@"; do
